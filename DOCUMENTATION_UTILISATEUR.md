@@ -14,13 +14,13 @@
 
 > **Conseil :** Utilisez Google Chrome ou Mozilla Firefox pour une meilleure expérience.
 
+Une fois connecté, cliquez sur l'icône **Immobilier** pour accéder au module.
+
 ---
 
 ## 🏠 Présentation générale
 
-Le module **Gestion Immobilière** est accessible depuis l'icône **Immobilier** sur l'écran d'accueil d'Odoo.
-
-Il se compose de 5 grandes sections :
+Le module **Gestion Immobilière** se compose de 5 grandes sections accessibles depuis la barre de navigation :
 
 | Section | Description |
 |---------|-------------|
@@ -36,108 +36,102 @@ Il se compose de 5 grandes sections :
 
 Le tableau de bord est votre page d'accueil. Il affiche un résumé en temps réel de tout votre parc immobilier.
 
-### Que voit-on sur le tableau de bord ?
+![Tableau de bord Immobilier](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/01_dashboard.png)
 
-- **KPIs (indicateurs clés)** : nombre total de biens, taux d'occupation, loyers attendus, factures impayées, pénalités en cours
-- **Liste des baux actifs** : avec statut, locataire, bien, montant du loyer et délai avant expiration
-- **Interventions en cours** : travaux et services planifiés
-- **Alertes** : baux qui expirent bientôt, factures en retard, pénalités non facturées
+### Ce que vous voyez sur le tableau de bord
+
+**Ligne des KPIs (indicateurs clés) :**
+- **Biens totaux** : nombre total de biens dans votre parc, avec le détail (disponibles / en travaux)
+- **Taux d'occupation** : pourcentage de biens actuellement loués
+- **LMR Global** : total des loyers mensuels des baux actifs
+- **Impayés** : montant total des factures en retard
+- **Pénalités actives** : montant des pénalités en cours
+
+**Tableau des baux actifs :** liste de tous vos baux en cours avec le bien, le locataire, le loyer mensuel, la prochaine échéance de facturation, et un indicateur visuel du temps restant (rouge si moins de 30 jours, orange si moins de 60 jours, vert sinon).
+
+**Panneau de droite :**
+- **Alertes & Rappels** : baux qui expirent bientôt, pénalités non traitées, factures en retard
+- **Interventions en cours** : liste des travaux et services planifiés avec statut et priorité
 
 ### Comment rafraîchir le tableau de bord ?
 
-Cliquez sur le bouton **« Actualiser »** en haut à droite. Le tableau se rafraîchit aussi automatiquement à une fréquence configurable dans les paramètres.
+Cliquez sur le bouton **« Actualiser »** en haut à droite. Le tableau se rafraîchit aussi **automatiquement toutes les 60 secondes** (durée configurable dans les paramètres).
 
 ---
 
 ## 🏢 2. Patrimoine — Gestion des Immeubles et Biens
 
-### 2.1 Les Immeubles
-
-Un **immeuble** est le bâtiment physique qui regroupe plusieurs biens.
-
-**Comment voir la liste des immeubles ?**
-> Menu → **Patrimoine** → **Immeubles**
-
-**Pour créer un nouvel immeuble :**
-1. Cliquez sur **« Nouveau »**
-2. Saisissez le **nom de l'immeuble**
-3. Renseignez l'**adresse** (rue, ville, pays)
-4. Désignez le **propriétaire** si applicable
-5. Ajoutez une **note** si besoin
-6. Cliquez **« Enregistrer »** (l'icône disquette)
-
-### 2.2 Les Biens Immobiliers
+### 2.1 Les Biens Immobiliers
 
 Un **bien** est l'unité locative : appartement, bureau, terrain, parking, etc.
 
 **Comment voir la liste des biens ?**
 > Menu → **Patrimoine** → **Biens immobiliers**
 
-Chaque bien affiche :
+![Liste des Biens Immobiliers](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/02_properties_list.png)
+
+La liste affiche pour chaque bien :
 - Sa **référence** automatique (ex : BIEN/2026/0001)
 - Son **nom** et son **type** (Résidentiel, Commercial, Terrain, Parking, Mixte)
-- Le **loyer mensuel de référence**
+- L'**immeuble** auquel il appartient
+- Le **loyer mensuel de référence** en CFA
 - Son **statut** : Disponible | Occupé | En travaux
 
-> **Important :** Le statut se met à jour **automatiquement** quand un bail est confirmé (passe à "Occupé") ou résilié (revient à "Disponible").
+> **À savoir :** Le statut se met à jour **automatiquement** quand un bail est confirmé (passe à "Occupé") ou résilié (revient à "Disponible"). Vous n'avez rien à faire manuellement.
+
+### 2.2 Fiche détail d'un bien
+
+![Fiche d'un Bien Immobilier](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/03_property_form.png)
+
+La fiche d'un bien contient :
+
+- **Référence et nom** du bien en en-tête
+- **Type, immeuble parent, propriétaire** à gauche
+- **Loyer de référence, surface, nombre de pièces** à droite
+- **Barre de statut** (Disponible / Occupé) en haut
+- **Bouton « Baux »** : accès direct aux contrats liés à ce bien
+- Onglet **Description** : texte libre de présentation du bien
+- Onglet **Équipements** : liste des équipements inclus
+- **Chatter** (à droite) : historique complet de toutes les modifications (qui a fait quoi, quand)
 
 **Pour créer un nouveau bien :**
-1. Cliquez sur **« Nouveau »**
+1. Cliquez sur **« Nouveau »** en haut à gauche
 2. Saisissez le **nom** du bien
 3. Sélectionnez le **type** (résidentiel, commercial, etc.)
 4. Choisissez l'**immeuble parent**
-5. Renseignez la **surface (m²)**, le nombre de **pièces**, de **salles de bain**
+5. Renseignez la **surface (m²)** et le nombre de **pièces**
 6. Indiquez le **loyer mensuel de référence** en CFA
 7. Ajoutez une **description** dans l'onglet Description
-8. Enregistrez
-
-**Fiche détail d'un bien :**
-- Onglet **Description** : texte libre de présentation
-- Onglet **Équipements** : liste des équipements inclus
-- Bouton **« Baux »** : accès aux contrats liés à ce bien
-- **Chatter** (à droite) : historique de toutes les actions
+8. Cliquez sur **« Enregistrer »**
 
 ---
 
 ## 📄 3. Locations — Gestion des Baux
 
-### 3.1 Créer un nouveau bail
+### 3.1 Liste des baux
 
-> Menu → **Locations** → **Baux Actifs** → **« Nouveau »**
+> Menu → **Locations** → **Baux Actifs**
 
-**Étapes de création d'un bail :**
+![Liste des Baux Actifs](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/04_leases_list.png)
 
-1. **Sélectionner le bien immobilier** à louer
-2. **Sélectionner le locataire** (contact Odoo existant ou à créer)
-3. Renseigner le **type de bail** : Mensuel, Annuel, Commercial, Saisonnier
-4. Choisir le **plan de récurrence** : Mensuel, Trimestriel, Semestriel, Annuel
-5. Indiquer la **date de début** et la **date de fin** du contrat
-6. Saisir le **loyer mensuel de base** en CFA
-7. Indiquer le **dépôt de garantie**
-8. Cliquer **« Enregistrer »**
+La liste affiche tous vos baux en cours : référence, bien, locataire, date de début, loyer et statut.
 
-### 3.2 Confirmer un bail (le rendre actif)
+### 3.2 Fiche détail d'un bail
 
-Après création, le bail est en statut **"Devis de bail"**. Pour l'activer :
+![Fiche d'un Bail](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/05_lease_form.png)
 
-> Dans la barre de statut : cliquer sur **« En cours (Actif) »**
-
-Le bail passe à l'état actif, le bien associé devient automatiquement **"Occupé"**, et le système génère les lignes de facturation.
-
-### 3.3 Comprendre la fiche bail
-
-La fiche bail contient :
+La fiche d'un bail contient deux grandes sections :
 
 **Section CONTRAT :**
 | Champ | Description |
 |-------|-------------|
 | Bien immobilier | Le logement ou bureau loué |
 | Locataire principal | Le signataire du bail |
-| Réf. Locataire | Référence unique du locataire |
+| Réf. Locataire | Référence unique du locataire dans le système |
 | Garant | Personne se portant caution |
-| Type de bail | Mensuel, Commercial, etc. |
-| Plan de récurrence | Fréquence de facturation |
-| Dates | Début et fin du contrat |
+| Type de bail | Mensuel, Annuel, Commercial ou Saisonnier |
+| Plan de récurrence | Fréquence de facturation (Mensuel, Trimestriel...) |
+| Date de début / de fin | Durée du contrat |
 
 **Section FINANCIER :**
 | Champ | Description |
@@ -147,84 +141,96 @@ La fiche bail contient :
 | Total à la signature | Dépôt + avances |
 | Prochaine échéance | Date de la prochaine facture |
 
-**Onglets en bas de la fiche :**
-- **Facturation** : lignes de loyer de base et services inclus
-- **Taxes & Épargne** : gestion des taxes et règles d'épargne
-- **Docs & Signatures** : documents contractuels et signatures électroniques
+**Barre de statut :** Devis de bail → **En cours (Actif)** → Résilié
 
-### 3.4 Actions disponibles sur un bail actif
+**Onglets en bas :**
+- **Facturation** : lignes de loyer et services inclus
+- **Taxes & Épargne** : taxes applicables et règles d'épargne
+- **Docs & Signatures** : documents contractuels
+
+### 3.3 Créer un nouveau bail
+
+1. Cliquez sur **« Nouveau »**
+2. Sélectionnez le **bien immobilier** à louer
+3. Sélectionnez le **locataire** (ou créez-le)
+4. Renseignez le **type de bail** et le **plan de récurrence**
+5. Indiquez la **date de début** et la **date de fin**
+6. Saisissez le **loyer mensuel de base** et le **dépôt de garantie**
+7. Cliquez **« Enregistrer »**
+
+### 3.4 Activer un bail
+
+Après création, le bail est en statut **"Devis de bail"**. Pour le rendre actif :
+
+> Cliquer sur **« En cours (Actif) »** dans la barre de statut
+
+Le bail passe à l'état actif et le bien associé devient automatiquement **"Occupé"**.
+
+### 3.5 Actions disponibles sur un bail actif
 
 | Bouton | Action |
 |--------|--------|
-| **Calculer pénalités** | Lance le calcul automatique des pénalités de retard |
-| **Résilier** | Ferme le bail avec une date et un motif |
-| **Pénalités** | Voir les pénalités associées à ce bail |
-| **Avenant** | Modifier les termes du bail (loyer, durée) avec traçabilité |
-| **Renouveler** | Créer un renouvellement du bail en cours |
-| **Suspendre** | Mettre le bail en pause temporairement |
+| **Calculer pénalités** | Calcul automatique des pénalités de retard |
+| **Résilier** | Clôturer le bail avec date et motif |
+| **Pénalités** | Voir toutes les pénalités de ce bail |
+| **Avenant** | Modifier les termes sans créer un nouveau bail |
+| **Renouveler** | Renouveler le bail à son expiration |
+| **Suspendre** | Suspendre temporairement le bail |
 
-### 3.5 Pénalités de retard
+### 3.6 Les Pénalités de retard
 
-Les pénalités peuvent être créées manuellement ou calculées automatiquement.
+Les pénalités se créent depuis la fiche du bail :
+> Cliquer **« Calculer pénalités »** → le système analyse les factures en retard et applique les règles configurées
 
-**Calcul automatique :**
-> Dans la fiche bail → cliquer **« Calculer pénalités »**
+**Cycle de vie d'une pénalité :**
+```
+Brouillon → Confirmée → Facturée
+```
 
-Le système analysera les factures en retard et calculera les pénalités selon les règles configurées (montant fixe ou pourcentage).
+### 3.7 Les Avenants (modifications de bail)
 
-**Statuts d'une pénalité :**
-- Brouillon : pénalité calculée, non encore validée
-- Confirmée : validée, en attente de facturation
-- Facturée : intégrée à une facture
-- Annulée : annulée sans suite
-
-### 3.6 Avenant (modification du bail)
-
-Un **avenant** permet de modifier les termes d'un bail en cours (ex : augmentation du loyer) **sans créer un nouveau bail** et avec traçabilité complète.
-
-1. Cliquer sur **« Avenant »** dans la fiche bail
-2. Indiquer la nature et la date de l'avenant
-3. Modifier les paramètres (loyer, durée, etc.)
-4. Valider
-
-L'historique complet des modifications est conservé dans le chatter.
+Un avenant permet de modifier le loyer, la durée ou d'autres termes **sans interrompre le bail**. Toute modification est tracée dans le chatter avec la date et l'auteur.
 
 ---
 
 ## 🔧 4. Interventions — Services et Travaux
 
-### 4.1 Voir les interventions
+### 4.1 Liste des interventions
 
 > Menu → **Interventions** → **Services**
 
+![Liste des Interventions](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/06_interventions_list.png)
+
 Chaque intervention affiche :
-- Sa **référence** (ex : INT/2026/0001)
+- Sa **référence** (INT/2026/0001...)
 - Son **intitulé** et le **bien** concerné
-- Le **type** : Réparation, Maintenance, Rénovation, Inspection, etc.
-- Sa **priorité** : Normal | Urgent | Critique | Bloquant
+- Le **type** : Réparation, Maintenance, Rénovation, Inspection...
+- Sa **priorité** (étoiles) : Normal / Urgent / Critique / Bloquant
 - Les **dates** demandée et planifiée
 - Le **coût estimé** en CFA
-- Son **statut** : Demande → Soumise → Approuvée → En cours → Validée → Clôturée
+- Son **statut** : Demande / Soumise / Approuvée / En cours / Validée / Clôturée
 
-### 4.2 Créer une intervention
+### 4.2 Fiche détail d'une intervention
+
+![Fiche d'une Intervention](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/07_intervention_form.png)
+
+### 4.3 Créer une intervention
 
 1. Cliquer **« Nouveau »**
-2. Saisir l'**intitulé** de l'intervention
+2. Saisir l'**intitulé** (ex : "Réparation fuite robinet cuisine")
 3. Sélectionner le **bien** concerné
 4. Choisir le **type** d'intervention
-5. Définir la **priorité**
-6. Indiquer les **dates** (demande et planification)
+5. Définir la **priorité** (1 à 4 étoiles)
+6. Indiquer les dates de **demande** et de **planification**
 7. Renseigner le **coût estimé**
 8. Décrire les travaux dans **Description**
 9. Enregistrer
 
-### 4.3 Cycle de vie d'une intervention
+### 4.4 Cycle de vie d'une intervention
 
 ```
 Demande → Soumise → Approuvée → En cours → En attente validation → Validée → Facturée → Clôturée
 ```
-
-Chaque étape peut être franchie via les boutons d'action en haut de la fiche.
 
 ---
 
@@ -232,87 +238,80 @@ Chaque étape peut être franchie via les boutons d'action en haut de la fiche.
 
 > Menu → **Configuration**
 
-### 5.1 Types de taxes
+Cette section permet de personnaliser le module selon vos besoins :
 
-Configurez les taxes applicables aux loyers (TVA, etc.) pour qu'elles s'appliquent automatiquement lors de la facturation.
+- **Types de taxes** : taxes applicables aux loyers (ex : TVA)
+- **Plans de récurrence** : fréquences de facturation disponibles
+- **Motifs de résiliation** : causes de fin de bail pour vos rapports
 
-### 5.2 Plans de récurrence
+### Paramètre de rafraîchissement du tableau de bord
 
-Définissez les fréquences de facturation disponibles (ex : Mensuel, Trimestriel, Semestriel, Annuel).
+Pour changer la fréquence d'auto-refresh :
+> **Configuration** → **Paramètres techniques** → rechercher `re.dashboard.refresh_interval`
 
-### 5.3 Motifs de résiliation
-
-Personnalisez les motifs de résiliation de bail pour les rapports et le suivi.
-
-### 5.4 Paramètre de rafraîchissement du tableau de bord
-
-Pour configurer la fréquence d'auto-refresh du tableau de bord :
-> Menu → **Configuration** → **Paramètres techniques** → Rechercher `re.dashboard.refresh_interval`
-
-La valeur est en **secondes** (défaut : 60 secondes).
+La valeur est en **secondes**. Par défaut : **60 secondes**.
 
 ---
 
-## 💬 6. Communications
+## 💬 6. Communications et suivi
 
-### 6.1 Le Chatter Odoo (messages internes)
+### Le Chatter (messagerie interne)
 
-Chaque fiche (bien, bail, intervention) dispose d'un **chatter** sur la droite. Il permet :
-- D'envoyer un **message** aux membres de l'équipe
-- D'ajouter une **note** interne
-- De planifier une **activité** (appel, réunion, etc.)
-- De voir l'**historique** complet des modifications
+Chaque fiche dispose d'un **chatter** sur la droite de l'écran. Il permet de :
+- **Envoyer un message** à un collaborateur (qui reçoit une notification)
+- **Ajouter une note** interne (non envoyée)
+- **Planifier une activité** : appel téléphonique, réunion, relance...
+- **Voir l'historique** complet : qui a modifié quoi et quand
 
 **Pour envoyer un message :**
-1. Cliquer **« Envoyer message »** en haut du chatter
-2. Tapez votre message
-3. Ajoutez des **abonnés** si nécessaire (ils recevront une notification)
-4. Cliquer **« Envoyer »**
+1. Cliquer **« Envoyer message »**
+2. Saisir le message
+3. Mentionner une personne avec **@nom** si besoin
+4. Cliquer **« Envoyer »** — la personne reçoit une notification par email
 
-### 6.2 Notifications email
+### Notifications automatiques
 
-Les parties prenantes reçoivent des notifications par email automatiquement pour :
+Le système envoie des emails automatiquement lors de :
 - La confirmation d'un bail
-- Les relances de paiement
-- Les pénalités appliquées
-- Les interventions assignées
+- L'approche de l'expiration d'un bail (alerte visible sur le dashboard)
+- L'application de pénalités
 
 ---
 
 ## 📱 7. Conseils pratiques
 
-### Rechercher rapidement
+### Recherche rapide
 
-La barre de **recherche** en haut de chaque liste permet de filtrer par nom, référence, locataire, etc.
+La barre de **recherche** (en haut de chaque liste) permet de filtrer par nom, référence, locataire, etc.
 
 ### Filtres et regroupements
 
-Cliquez sur la flèche à côté de la barre de recherche pour accéder aux **filtres** prédéfinis et aux **regroupements** (par statut, par bien, par mois, etc.).
+Cliquer sur la flèche **▼** à côté de la barre de recherche pour accéder aux **filtres** prédéfinis (ex : "Baux actifs", "Biens occupés") et aux **regroupements** (par statut, par mois, par bien...).
 
-### Vues liste et kanban
+### Vue liste et vue kanban
 
-En haut à droite de chaque liste, vous pouvez basculer entre :
-- **Vue liste** : affichage en tableau
-- **Vue kanban** : affichage en cartes (idéal pour les baux et interventions)
+En haut à droite de chaque liste, basculez entre :
+- **Vue liste** (≡) : tableau classique
+- **Vue kanban** (⊞) : cartes visuelles, idéal pour les baux et interventions
 
 ---
 
 ## ❓ 8. Questions fréquentes
 
-**Q : Le statut de mon bien n'a pas changé après avoir créé un bail, que faire ?**
-> Vérifiez que le bail a bien été **confirmé** (cliquer sur "En cours (Actif)" dans la barre de statut). Le statut du bien se met à jour automatiquement à la confirmation.
+**Q : Le statut de mon bien n'a pas changé après avoir créé un bail ?**
+> Vérifiez que le bail a bien été **confirmé** : cliquer sur "En cours (Actif)" dans la barre de statut. Le statut du bien se met à jour automatiquement à la confirmation.
 
-**Q : Je ne vois pas le tableau de bord, que faire ?**
-> Cliquez sur le menu **Immobilier** dans la barre de navigation, puis sur **Tableau de bord**.
-
-**Q : Comment savoir quelles factures sont en retard ?**
-> Le tableau de bord affiche les alertes de factures en retard. Vous pouvez aussi aller dans **Locations** et filtrer par "En retard".
+**Q : Je ne vois pas le tableau de bord ?**
+> Cliquez sur le menu **Immobilier** dans la barre de navigation du haut, puis **Tableau de bord**.
 
 **Q : Peut-on modifier un bail actif sans le résilier ?**
-> Oui, utilisez le bouton **Avenant** sur la fiche du bail. Cela crée une modification tracée sans interrompre le bail.
+> Oui : utilisez le bouton **Avenant** sur la fiche du bail. Cela crée une modification tracée sans interrompre le bail.
 
-**Q : Comment générer un reçu ou une quittance de loyer ?**
-> Depuis la fiche du bail, cliquez sur **Menu Actions** → **Imprimer** → **Quittance de loyer**.
+**Q : Comment voir les baux qui expirent bientôt ?**
+> Le tableau de bord affiche les alertes dans le panneau **Alertes & Rappels** à droite. Les baux à moins de 30 jours apparaissent en rouge.
+
+**Q : Comment calculer les pénalités de retard ?**
+> Sur la fiche du bail concerné, cliquer **« Calculer pénalités »**. Le système calcule automatiquement les montants selon les règles configurées.
 
 ---
 
