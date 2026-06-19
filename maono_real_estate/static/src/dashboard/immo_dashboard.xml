@@ -64,7 +64,7 @@
                         value="state.data.kpis.total_properties"
                         subtitle="state.data.kpis.available + ' disponibles / ' + state.data.kpis.in_works + ' en travaux'"
                         color="'blue'"
-                        onClick="() => openAllProperties()"
+                        onClick="kpiCallbacks.allProperties"
                     />
                     <ImmoKpiCard
                         icon="'fa-pie-chart'"
@@ -72,7 +72,7 @@
                         value="state.data.kpis.occupation_rate + ' %'"
                         subtitle="state.data.kpis.occupied + ' biens occupés'"
                         color="state.data.kpis.occupation_rate >= 80 ? 'green' : state.data.kpis.occupation_rate >= 50 ? 'orange' : 'red'"
-                        onClick="() => openOccupiedProperties()"
+                        onClick="kpiCallbacks.occupiedProperties"
                     />
                     <ImmoKpiCard
                         icon="'fa-money'"
@@ -80,7 +80,7 @@
                         value="formatAmount(state.data.kpis.lmr_global)"
                         subtitle="state.data.kpis.active_leases_count + ' baux actifs'"
                         color="'green'"
-                        onClick="() => openAllLeases()"
+                        onClick="kpiCallbacks.allLeases"
                     />
                     <ImmoKpiCard
                         icon="'fa-exclamation-circle'"
@@ -88,7 +88,7 @@
                         value="formatAmount(state.data.kpis.unpaid_amount)"
                         subtitle="state.data.kpis.unpaid_count + ' factures'"
                         color="state.data.kpis.unpaid_count > 0 ? 'red' : 'green'"
-                        onClick="() => openUnpaidInvoices()"
+                        onClick="kpiCallbacks.unpaidInvoices"
                     />
                     <ImmoKpiCard
                         icon="'fa-warning'"
@@ -96,7 +96,7 @@
                         value="formatAmount(state.data.kpis.penalty_amount)"
                         subtitle="state.data.kpis.penalty_count + ' pénalités'"
                         color="state.data.kpis.penalty_count > 0 ? 'orange' : 'green'"
-                        onClick="() => openAllPenalties()"
+                        onClick="kpiCallbacks.allPenalties"
                     />
                 </div>
 

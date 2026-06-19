@@ -49,6 +49,40 @@ export class ImmoDashboard extends Component {
 
         this._refreshTimer = null;
 
+        // Pre-bind KPI navigation callbacks so `this` is always the ImmoDashboard
+        // instance even when called as props.onClick() from a child component.
+        this.kpiCallbacks = {
+            allProperties: () => this._doAction({
+                res_model: "re.property",
+                name: "Biens immobiliers",
+            }),
+            occupiedProperties: () => this._doAction({
+                res_model: "re.property",
+                domain: [["state", "=", "occupied"]],
+                name: "Biens occupés",
+            }),
+            allLeases: () => this._doAction({
+                res_model: "re.lease",
+                domain: [["lease_state", "=", "3_progress"]],
+                name: "Baux actifs",
+            }),
+            unpaidInvoices: () => this._doAction({
+                res_model: "account.move",
+                domain: [
+                    ["move_type", "=", "out_invoice"],
+                    ["state", "=", "posted"],
+                    ["payment_state", "not in", ["paid", "in_payment"]],
+                    ["invoice_date_due", "<", new Date().toISOString().split("T")[0]],
+                ],
+                name: "Factures impayées",
+            }),
+            allPenalties: () => this._doAction({
+                res_model: "re.penalty",
+                domain: [["state", "not in", ["cancelled", "invoiced"]]],
+                name: "Pénalités actives",
+            }),
+        };
+
         onWillStart(async () => {
             await this.loadData();
         });
@@ -124,78 +158,26 @@ export class ImmoDashboard extends Component {
         });
     }
 
-    // ── KPI navigation (tuiles cliquables) ──
-    openAllProperties() {
-        this.action.doAction({
+    // ── Core action helper ──
+    _doAction({ res_model, res_id = undefined, domain = undefined, name = undefined }) {
+        const act = {
             type: "ir.actions.act_window",
-            res_model: "re.property",
-            views: [[false, "list"], [false, "form"]],
-            name: "Biens immobiliers",
-        });
+            res_model,
+            views: res_id ? [[false, "form"]] : [[false, "list"], [false, "form"]],
+        };
+        if (res_id !== undefined) act.res_id = res_id;
+        if (domain !== undefined) act.domain = domain;
+        if (name !== undefined) act.name = name;
+        this.action.doAction(act);
     }
 
-    openOccupiedProperties() {
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            res_model: "re.property",
-            views: [[false, "list"], [false, "form"]],
-            domain: [["state", "=", "occupied"]],
-            name: "Biens occupés",
-        });
-    }
-
-    openUnpaidInvoices() {
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            res_model: "account.move",
-            views: [[false, "list"], [false, "form"]],
-            domain: [
-                ["move_type", "=", "out_invoice"],
-                ["state", "=", "posted"],
-                ["payment_state", "not in", ["paid", "in_payment"]],
-                ["invoice_date_due", "<", new Date().toISOString().split("T")[0]],
-            ],
-            name: "Factures impayées",
-        });
-    }
-
-    openAllPenalties() {
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            res_model: "re.penalty",
-            views: [[false, "list"], [false, "form"]],
-            domain: [["state", "not in", ["cancelled", "invoiced"]]],
-            name: "Pénalités actives",
-        });
-    }
-
-    openAllLeases() {
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            res_model: "re.lease",
-            views: [[false, "list"], [false, "form"]],
-            domain: [["lease_state", "=", "3_progress"]],
-            name: "Baux actifs",
-        });
-    }
-
-    openAllServices() {
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            res_model: "re.property.service",
-            views: [[false, "list"], [false, "form"]],
-            name: "Interventions",
-        });
-    }
-
-    navigateAlert(alert) {
-        this.action.doAction({
-            type: "ir.actions.act_window",
-            res_model: alert.link_model,
-            res_id: alert.link_id,
-            views: [[false, "form"]],
-        });
-    }
+    // ── Navigation helpers ──
+    openLease(id) { this._doAction({ res_model: "re.lease", res_id: id }); }
+    openProperty(id) { this._doAction({ res_model: "re.property", res_id: id }); }
+    openService(id) { this._doAction({ res_model: "re.property.service", res_id: id }); }
+    openAllLeases() { this.kpiCallbacks.allLeases(); }
+    openAllServices() { this._doAction({ res_model: "re.property.service", name: "Interventions" }); }
+    navigateAlert(alert) { this._doAction({ res_model: alert.link_model, res_id: alert.link_id }); }
 
     // ── Formatters ──
     formatAmount(amount) {
