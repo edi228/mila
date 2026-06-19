@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Paramètre système : fréquence de refresh du dashboard (en secondes) -->
+    <record id="re_dashboard_refresh_interval" model="ir.config_parameter">
+        <field name="key">re.dashboard.refresh_interval</field>
+        <field name="value">60</field>
+    </record>
+
+    <!-- Action client pour le dashboard OWL -->
+    <record id="action_re_dashboard_owl" model="ir.actions.client">
+        <field name="name">Tableau de bord Immobilier</field>
+        <field name="tag">maono_real_estate.immo_dashboard</field>
+    </record>
+</odoo>

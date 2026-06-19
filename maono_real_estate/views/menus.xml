@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_re_property" model="ir.actions.act_window">
+        <field name="name">Biens immobiliers</field>
+        <field name="res_model">re.property</field>
+        <field name="view_mode">list,form,kanban</field>
+    </record>
+    <record id="action_re_dashboard_dummy" model="ir.actions.act_window">
+        <field name="name">Dashboard</field>
+        <field name="res_model">re.property</field>
+        <field name="view_mode">kanban,list</field>
+    </record>
+    <record id="action_re_building" model="ir.actions.act_window">
+        <field name="name">Immeubles</field>
+        <field name="res_model">re.building</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_re_lease_all" model="ir.actions.act_window">
+        <field name="name">Tous les baux</field>
+        <field name="res_model">re.lease</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_re_lease_active" model="ir.actions.act_window">
+        <field name="name">Baux Actifs</field>
+        <field name="res_model">re.lease</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_re_penalty" model="ir.actions.act_window">
+        <field name="name">Pénalités</field>
+        <field name="res_model">re.penalty</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('state', '!=', 'cancelled')]</field>
+    </record>
+    <record id="action_re_property_service" model="ir.actions.act_window">
+        <field name="name">Services</field>
+        <field name="res_model">re.property.service</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_re_lease_plan" model="ir.actions.act_window">
+        <field name="name">Plans</field>
+        <field name="res_model">re.lease.plan</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="action_re_tax_real_estate" model="ir.actions.act_window">
+        <field name="name">Taxes</field>
+        <field name="res_model">account.tax</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Root Menu -->
+    <menuitem id="menu_re_root" name="Immobilier" web_icon="maono_real_estate,static/description/icon.png" sequence="10"/>
+
+    <!-- Level 1 -->
+    <menuitem id="menu_re_dashboard" name="Tableau de bord" parent="menu_re_root" sequence="10" action="action_re_dashboard_owl"/>
+    <menuitem id="menu_re_patrimoine" name="Patrimoine" parent="menu_re_root" sequence="20"/>
+    <menuitem id="menu_re_locations" name="Locations" parent="menu_re_root" sequence="30"/>
+    <menuitem id="menu_re_facturation" name="Facturation" parent="menu_re_root" sequence="40"/>
+    <menuitem id="menu_re_interventions" name="Interventions" parent="menu_re_root" sequence="50"/>
+    <menuitem id="menu_re_reporting" name="Reporting" parent="menu_re_root" sequence="80"/>
+    <menuitem id="menu_re_config" name="Configuration" parent="menu_re_root" sequence="100"/>
+
+    <!-- Level 2: Patrimoine -->
+    <menuitem id="menu_re_building" name="Immeubles" parent="menu_re_patrimoine" sequence="10" action="action_re_building"/>
+    <menuitem id="menu_re_property" name="Biens" parent="menu_re_patrimoine" sequence="20" action="action_re_property"/>
+
+    <!-- Level 2: Locations -->
+    <menuitem id="menu_re_lease_active" name="Baux actifs" parent="menu_re_locations" sequence="10" action="action_re_lease_active"/>
+    <menuitem id="menu_re_lease_all" name="Tous les baux" parent="menu_re_locations" sequence="20" action="action_re_lease_all"/>
+    <menuitem id="menu_re_penalty" name="Pénalités" parent="menu_re_locations" sequence="30" action="action_re_penalty"/>
+
+    <!-- Level 2: Interventions -->
+    <menuitem id="menu_re_service" name="Services &amp; Travaux" parent="menu_re_interventions" sequence="10" action="action_re_property_service"/>
+
+    <!-- Level 2: Configuration -->
+    <menuitem id="menu_re_config_plan" name="Plans de périodicité" parent="menu_re_config" sequence="10" action="action_re_lease_plan"/>
+    <menuitem id="menu_re_config_tax" name="Taxes immobilières" parent="menu_re_config" sequence="20" action="action_re_tax_real_estate"/>
+
+</odoo>

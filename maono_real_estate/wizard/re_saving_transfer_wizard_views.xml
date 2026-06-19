@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_re_saving_transfer_wizard_form" model="ir.ui.view">
+        <field name="name">re.saving.transfer.wizard.form</field>
+        <field name="model">re.saving.transfer.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Transférer l'épargne">
+                <sheet>
+                    <group>
+                        <field name="move_id"/>
+                        <field name="journal_id"/>
+                        <field name="transfer_date"/>
+                    </group>
+                    <field name="saving_line_ids" widget="many2many" nolabel="1">
+                        <list>
+                            <field name="name"/>
+                            <field name="base_amount"/>
+                            <field name="saving_amount"/>
+                            <field name="target_account_id"/>
+                        </list>
+                    </field>
+                    <group class="oe_subtotal_footer">
+                        <field name="total_saving_amount" string="Total à transférer" class="fw-bold"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                    <field name="note" string="Référence"/>
+                </sheet>
+                <footer>
+                    <button name="action_transfer" string="Valider le transfert" type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

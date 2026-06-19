@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_re_lease_template_form" model="ir.ui.view">
+        <field name="name">re.lease.template.form</field>
+        <field name="model">re.lease.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du modèle de bail…"/></h1>
+                    </div>
+                    <group>
+                        <field name="plan_id"/>
+                        <field name="advance_months"/>
+                        <field name="deposit_months"/>
+                        <field name="active"/>
+                    </group>
+                    <group string="Services inclus par défaut">
+                        <field name="service_ids" widget="many2many_tags" nolabel="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_re_lease_template_list" model="ir.ui.view">
+        <field name="name">re.lease.template.list</field>
+        <field name="model">re.lease.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="plan_id"/>
+                <field name="advance_months"/>
+                <field name="deposit_months"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_re_lease_template" model="ir.actions.act_window">
+        <field name="name">Modèles de bail</field>
+        <field name="res_model">re.lease.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

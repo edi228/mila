@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_re_lease_identity_form" model="ir.ui.view">
+        <field name="name">re.lease.identity.form</field>
+        <field name="model">re.lease.identity</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <widget name="web_ribbon" title="Expiré" bg_color="bg-danger" invisible="is_valid"/>
+                    <group>
+                        <group string="Partie concernée">
+                            <field name="lease_id"/>
+                            <field name="party"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group string="Document">
+                            <field name="doc_type"/>
+                            <field name="doc_number"/>
+                            <field name="issued_by"/>
+                            <field name="issue_date"/>
+                            <field name="expiry_date"/>
+                            <field name="is_valid" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Vérification">
+                        <field name="verified"/>
+                        <field name="verified_by" invisible="not verified"/>
+                        <field name="verified_date" invisible="not verified"/>
+                    </group>
+                    <group string="Scans">
+                        <field name="attachment_id" widget="many2one_binary" string="Recto"/>
+                        <field name="attachment_back_id" widget="many2one_binary" string="Verso"/>
+                    </group>
+                    <field name="note" string="Observations"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_re_lease_identity_list" model="ir.ui.view">
+        <field name="name">re.lease.identity.list</field>
+        <field name="model">re.lease.identity</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="not is_valid">
+                <field name="partner_id"/>
+                <field name="party"/>
+                <field name="doc_type"/>
+                <field name="doc_number"/>
+                <field name="expiry_date"/>
+                <field name="is_valid" optional="show"/>
+                <field name="verified" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>

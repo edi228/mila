@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_re_account_tax_re_form" model="ir.ui.view">
+        <field name="name">account.tax.re.form</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Paramètres Immobiliers" invisible="not is_real_estate_tax">
+                    <group>
+                        <field name="is_real_estate_tax"/>
+                        <field name="tax_category"/>
+                        <field name="tax_bearer"/>
+                        <field name="tenant_share_percent" invisible="tax_bearer != 'shared'"/>
+                        <field name="owner_share_percent" readonly="1" invisible="tax_bearer != 'shared'"/>
+                    </group>
+                    <group>
+                        <field name="declaration_periodicity"/>
+                        <field name="declaration_journal_id"/>
+                    </group>
+                </group>
+                <group invisible="is_real_estate_tax">
+                    <field name="is_real_estate_tax"/>
+                </group>
+                <field name="note" string="Base légale / Conditions"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_re_account_tax_list" model="ir.ui.view">
+        <field name="name">account.tax.re.list</field>
+        <field name="model">account.tax</field>
+        <field name="inherit_id" ref="account.view_tax_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="inside">
+                <field name="tax_category" optional="show"/>
+                <field name="tax_bearer" optional="show"/>
+                <field name="is_real_estate_tax" optional="show"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="module_category_maono_real_estate" model="ir.module.category">
+            <field name="name">Immobilier</field>
+            <field name="description">Gestion immobilière locative complète</field>
+            <field name="sequence">10</field>
+        </record>
+
+        <!-- Groupe : Consultation -->
+        <record id="group_re_estate_readonly" model="res.groups">
+            <field name="name">Consultation</field>
+
+            <field name="comment">Lecture seule sur tous les objets immobiliers.</field>
+        </record>
+
+        <!-- Groupe : Agent commercial -->
+        <record id="group_re_estate_agent" model="res.groups">
+            <field name="name">Agent commercial</field>
+
+            <field name="implied_ids" eval="[(4, ref('group_re_estate_readonly'))]"/>
+            <field name="comment">Biens, baux (sauf clôture), contacts, pas de facturation.</field>
+        </record>
+
+        <!-- Groupe : Comptable -->
+        <record id="group_re_estate_accountant" model="res.groups">
+            <field name="name">Comptable</field>
+
+            <field name="implied_ids" eval="[(4, ref('group_re_estate_readonly'))]"/>
+            <field name="comment">Facturation, quittances, taxes, épargne, transferts, pénalités.</field>
+        </record>
+
+        <!-- Groupe : Gestionnaire immobilier -->
+        <record id="group_re_estate_manager" model="res.groups">
+            <field name="name">Gestionnaire immobilier</field>
+            <field name="implied_ids" eval="[(4, ref('group_re_estate_agent')), (4, ref('group_re_estate_accountant'))]"/>
+            <field name="comment">Accès complet : patrimoine, baux, taxes, épargne, pénalités, facturation, config.</field>
+            <field name="user_ids" eval="[(4, ref('base.user_root')), (4, ref('base.user_admin'))]"/>
+        </record>
+    </data>
+</odoo>

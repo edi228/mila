@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Plans de périodicité -->
+        <record id="plan_monthly" model="re.lease.plan">
+            <field name="name">Mensuel</field>
+            <field name="billing_period_value">1</field>
+            <field name="billing_period_unit">month</field>
+            <field name="billing_first_day" eval="True"/>
+            <field name="notice_days">30</field>
+            <field name="auto_close_limit">90</field>
+        </record>
+
+        <record id="plan_quarterly" model="re.lease.plan">
+            <field name="name">Trimestriel</field>
+            <field name="billing_period_value">3</field>
+            <field name="billing_period_unit">month</field>
+            <field name="billing_first_day" eval="True"/>
+            <field name="notice_days">60</field>
+            <field name="auto_close_limit">120</field>
+        </record>
+
+        <record id="plan_semiannual" model="re.lease.plan">
+            <field name="name">Semestriel</field>
+            <field name="billing_period_value">6</field>
+            <field name="billing_period_unit">month</field>
+            <field name="billing_first_day" eval="True"/>
+            <field name="notice_days">90</field>
+            <field name="auto_close_limit">180</field>
+        </record>
+
+        <record id="plan_annual" model="re.lease.plan">
+            <field name="name">Annuel</field>
+            <field name="billing_period_value">1</field>
+            <field name="billing_period_unit">year</field>
+            <field name="billing_first_day" eval="True"/>
+            <field name="notice_days">90</field>
+            <field name="auto_close_limit">180</field>
+        </record>
+
+    </data>
+</odoo>

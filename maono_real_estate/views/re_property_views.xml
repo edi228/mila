@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_re_property_form" model="ir.ui.view">
+        <field name="name">re.property.form</field>
+        <field name="model">re.property</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="available,occupied"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_leases" type="object" class="oe_stat_button" icon="fa-file-text-o">
+                            <field name="lease_count" widget="statinfo" string="Baux"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <field name="image_1920" widget="image" class="oe_avatar" options="{'preview_image': 'image_128'}"/>
+                    <div class="oe_title">
+                        <h1><field name="ref" readonly="1"/> - <field name="name" placeholder="Nom du bien"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="type"/>
+                            <field name="building_id"/>
+                            <field name="owner_id"/>
+                        </group>
+                        <group>
+                            <field name="rent_amount"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="surface"/>
+                            <field name="rooms"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Équipements">
+                            <field name="amenities"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_re_property_tree" model="ir.ui.view">
+        <field name="name">re.property.tree</field>
+        <field name="model">re.property</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state=='available'" decoration-info="state=='occupied'" decoration-warning="state=='works'">
+                <field name="ref"/>
+                <field name="name"/>
+                <field name="type"/>
+                <field name="owner_id"/>
+                <field name="rent_amount"/>
+                <field name="state" widget="badge" decoration-success="state=='available'" decoration-info="state=='occupied'" decoration-warning="state=='works'" decoration-danger="state=='suspended'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_re_property" model="ir.actions.act_window">
+        <field name="name">Biens immobiliers</field>
+        <field name="res_model">re.property</field>
+        <field name="view_mode">tree,form,kanban</field>
+    </record>
+    
+    <record id="action_re_dashboard_dummy" model="ir.actions.act_window">
+        <field name="name">Dashboard</field>
+        <field name="res_model">re.property</field>
+        <field name="view_mode">kanban,tree</field>
+    </record>
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_re_tenant_ref" model="ir.sequence">
+            <field name="name">Référence locataire</field>
+            <field name="code">re.tenant.ref</field>
+            <field name="prefix">LOC/%(year)s/</field>
+            <field name="padding">5</field>
+        </record>
+        
+        <record id="seq_re_lease" model="ir.sequence">
+            <field name="name">Contrat Bail</field>
+            <field name="code">re.lease.seq</field>
+            <field name="prefix">BAIL/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+        
+        <record id="seq_re_property" model="ir.sequence">
+            <field name="name">Bien</field>
+            <field name="code">re.property.seq</field>
+            <field name="prefix">BIEN/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_re_building" model="ir.sequence">
+            <field name="name">Immeuble</field>
+            <field name="code">re.building.seq</field>
+            <field name="prefix">IMM/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_re_property_service" model="ir.sequence">
+            <field name="name">Intervention / Travaux</field>
+            <field name="code">re.property.service.seq</field>
+            <field name="prefix">INT/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+
+        <record id="seq_re_penalty" model="ir.sequence">
+            <field name="name">Pénalité</field>
+            <field name="code">re.penalty</field>
+            <field name="prefix">PEN/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_re_lease_close_wizard_form" model="ir.ui.view">
+        <field name="name">re.lease.close.wizard.form</field>
+        <field name="model">re.lease.close.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Résilier le bail">
+                <sheet>
+                    <group>
+                        <group string="Bail">
+                            <field name="lease_id" readonly="1"/>
+                            <field name="tenant_id" readonly="1"/>
+                            <field name="property_id" readonly="1"/>
+                        </group>
+                        <group string="Résiliation">
+                            <field name="close_reason_id"/>
+                            <field name="close_date"/>
+                        </group>
+                    </group>
+                    <group string="Dépôt de garantie">
+                        <field name="deposit_returned"/>
+                        <field name="deposit_deductions"/>
+                        <field name="deposit_deduction_note" invisible="deposit_deductions == 0"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                    <group string="État des lieux de sortie">
+                        <field name="checkout_done"/>
+                        <field name="checkout_note" invisible="not checkout_done"/>
+                    </group>
+                    <field name="note" string="Observations"/>
+                </sheet>
+                <footer>
+                    <button name="action_close" string="Confirmer la résiliation" type="object"
+                            class="btn-danger"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

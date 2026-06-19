@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_re_lease_renew_wizard_form" model="ir.ui.view">
+        <field name="name">re.lease.renew.wizard.form</field>
+        <field name="model">re.lease.renew.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Renouveler le bail">
+                <sheet>
+                    <group>
+                        <group string="Bail actuel">
+                            <field name="lease_id" readonly="1"/>
+                            <field name="tenant_id" readonly="1"/>
+                            <field name="property_id" readonly="1"/>
+                        </group>
+                        <group string="Nouveau bail">
+                            <field name="new_start_date"/>
+                            <field name="new_end_date"/>
+                            <field name="new_rent_amount"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Options à copier">
+                        <field name="copy_services"/>
+                        <field name="copy_tax_lines"/>
+                        <field name="copy_saving_rules"/>
+                        <field name="copy_penalty_schedules"/>
+                    </group>
+                    <field name="note" string="Commentaire"/>
+                </sheet>
+                <footer>
+                    <button name="action_renew" string="Renouveler" type="object" class="btn-primary"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

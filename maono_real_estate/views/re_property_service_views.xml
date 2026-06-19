@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         INTERVENTION — FORM
+    ============================================================ -->
+    <record id="view_re_property_service_form" model="ir.ui.view">
+        <field name="name">re.property.service.form</field>
+        <field name="model">re.property.service</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_submit" string="Soumettre" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_approve" string="Approuver" type="object" class="oe_highlight"
+                            invisible="state != 'submitted'"
+                            groups="maono_real_estate.group_re_estate_manager"/>
+                    <button name="action_start" string="Démarrer" type="object"
+                            invisible="state != 'approved'"/>
+                    <button name="action_validate" string="Valider" type="object" class="oe_highlight"
+                            invisible="state != 'pending_validation'"
+                            groups="maono_real_estate.group_re_estate_manager"/>
+                    <button name="action_done" string="Clôturer" type="object"
+                            invisible="state not in ('validated', 'invoiced')"/>
+                    <button name="action_cancel" string="Annuler" type="object"
+                            invisible="state in ('done', 'cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,approved,in_progress,validated,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_vendor_bills" type="object" class="oe_stat_button"
+                                icon="fa-file-text-o" invisible="vendor_bill_count == 0">
+                            <field name="vendor_bill_count" widget="statinfo" string="Factures"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Intitulé de l'intervention…"/></h1>
+                        <h4><field name="ref" readonly="1"/></h4>
+                    </div>
+                    <group>
+                        <group string="Bien &amp; Bail">
+                            <field name="property_id"/>
+                            <field name="lease_id" domain="[('property_id', '=', property_id)]"/>
+                            <field name="service_type"/>
+                            <field name="priority" widget="priority"/>
+                        </group>
+                        <group string="Planification">
+                            <field name="requested_by"/>
+                            <field name="requested_date"/>
+                            <field name="provider_id"/>
+                            <field name="planned_date"/>
+                            <field name="start_date_real"/>
+                            <field name="end_date_real"/>
+                        </group>
+                    </group>
+                    <group string="Coûts">
+                        <field name="estimated_cost"/>
+                        <field name="actual_cost"/>
+                        <field name="total_billed"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Travaux demandés">
+                            <field name="description" placeholder="Décrivez les travaux à réaliser…"/>
+                        </page>
+                        <page string="Travaux réalisés">
+                            <field name="work_done_description" placeholder="Décrivez ce qui a été fait…"/>
+                        </page>
+                        <page string="Documents &amp; Photos">
+                            <group>
+                                <group string="Avant">
+                                    <field name="image_before_ids" widget="many2many_binary" nolabel="1"/>
+                                </group>
+                                <group string="Après">
+                                    <field name="image_after_ids" widget="many2many_binary" nolabel="1"/>
+                                </group>
+                            </group>
+                            <field name="document_ids" widget="many2many_binary" string="Devis / PV / Documents"/>
+                        </page>
+                        <page string="Notes internes">
+                            <field name="note"/>
+                            <field name="cancellation_reason" invisible="state != 'cancelled'" string="Motif annulation"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         INTERVENTION — LIST
+    ============================================================ -->
+    <record id="view_re_property_service_list" model="ir.ui.view">
+        <field name="name">re.property.service.list</field>
+        <field name="model">re.property.service</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="priority=='3'" decoration-warning="priority=='2'"
+                  decoration-info="state=='in_progress'">
+                <field name="ref"/>
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="service_type"/>
+                <field name="priority" widget="priority"/>
+                <field name="requested_date" optional="show"/>
+                <field name="planned_date"/>
+                <field name="provider_id" optional="show"/>
+                <field name="estimated_cost" optional="show"/>
+                <field name="actual_cost" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-muted="state=='draft'"
+                       decoration-info="state in ('submitted','approved')"
+                       decoration-warning="state=='in_progress'"
+                       decoration-success="state in ('validated','done')"
+                       decoration-danger="state=='cancelled'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         INTERVENTION — KANBAN
+    ============================================================ -->
+    <record id="view_re_property_service_kanban" model="ir.ui.view">
+        <field name="name">re.property.service.kanban</field>
+        <field name="model">re.property.service</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="priority"/>
+                <field name="state"/>
+                <field name="planned_date"/>
+                <field name="estimated_cost"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <strong><field name="name"/></strong>
+                                <field name="priority" widget="priority"/>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div><i class="fa fa-home"/> <field name="property_id"/></div>
+                                <div invisible="planned_date == False">
+                                    <i class="fa fa-calendar"/> <field name="planned_date"/>
+                                </div>
+                                <div class="text-warning" invisible="estimated_cost == 0">
+                                    Est.: <field name="estimated_cost" widget="monetary"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         INTERVENTION — SEARCH
+    ============================================================ -->
+    <record id="view_re_property_service_search" model="ir.ui.view">
+        <field name="name">re.property.service.search</field>
+        <field name="model">re.property.service</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="property_id"/>
+                <field name="provider_id"/>
+                <filter string="Urgentes" name="urgent" domain="[('priority', 'in', ['2','3'])]"/>
+                <filter string="En cours" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter string="À valider" name="to_validate" domain="[('state', '=', 'pending_validation')]"/>
+                <separator/>
+                <filter name="by_state" string="Statut" context="{'group_by': 'state'}"/>
+                <filter name="by_property" string="Bien" context="{'group_by': 'property_id'}"/>
+                <filter name="by_type" string="Type" context="{'group_by': 'service_type'}"/>
+            </search>
+        </field>
+    </record>
+
+</odoo>

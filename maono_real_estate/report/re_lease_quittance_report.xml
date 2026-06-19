@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         RAPPORT QUITTANCE DE LOYER
+    ============================================================ -->
+    <record id="report_re_lease_quittance" model="ir.actions.report">
+        <field name="name">Quittance de Loyer</field>
+        <field name="model">account.move</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">maono_real_estate.report_re_lease_quittance_doc</field>
+        <field name="report_file">maono_real_estate.report_re_lease_quittance_doc</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_re_lease_quittance_doc">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="move">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center">QUITTANCE DE LOYER</h2>
+                        <h3 class="text-center"><t t-out="move.name"/></h3>
+
+                        <div class="row" style="margin-top:20px;">
+                            <div class="col-6">
+                                <h5>Propriétaire / Bailleur</h5>
+                                <p>
+                                    <strong><t t-out="move.company_id.name"/></strong><br/>
+                                    <t t-out="move.company_id.street"/><br/>
+                                    <t t-out="move.company_id.city"/>
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <h5>Locataire</h5>
+                                <p>
+                                    <strong><t t-out="move.partner_id.name"/></strong><br/>
+                                    <t t-if="move.partner_id.street"><t t-out="move.partner_id.street"/><br/></t>
+                                    <t t-if="move.partner_id.city"><t t-out="move.partner_id.city"/></t>
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr/>
+                        <p>
+                            Je soussigné(e), propriétaire du logement désigné ci-dessous, déclare avoir reçu
+                            de <strong><t t-out="move.partner_id.name"/></strong>,
+                            à titre de loyer pour la période correspondant à la facture
+                            <strong><t t-out="move.name"/></strong> du
+                            <strong><t t-out="move.invoice_date"/></strong>,
+                            la somme de :
+                        </p>
+
+                        <h3 class="text-center" style="margin: 20px 0;">
+                            <t t-esc="'{:,.0f}'.format(move.amount_total)"/>
+                            <t t-out="move.currency_id.symbol"/>
+                        </h3>
+
+                        <table class="table table-bordered" style="margin-top:20px;">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th class="text-end">Montant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="move.invoice_line_ids" t-as="line">
+                                    <tr>
+                                        <td><t t-out="line.name"/></td>
+                                        <td class="text-end">
+                                            <t t-esc="'{:,.0f}'.format(line.price_subtotal)"/>
+                                            <t t-out="move.currency_id.symbol"/>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr class="fw-bold">
+                                    <td>Total</td>
+                                    <td class="text-end">
+                                        <t t-esc="'{:,.0f}'.format(move.amount_total)"/>
+                                        <t t-out="move.currency_id.symbol"/>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <p style="margin-top:20px;">
+                            Cette quittance annule tous les reçus qui auraient pu être établis
+                            précédemment en cas de paiement partiel du montant précité.
+                        </p>
+
+                        <div style="margin-top:60px;" class="text-end">
+                            <p>Fait le : <t t-out="move.invoice_date"/></p>
+                            <p style="margin-top:40px; border-top:1px solid #000; display:inline-block; min-width:200px;">
+                                Signature du propriétaire
+                            </p>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

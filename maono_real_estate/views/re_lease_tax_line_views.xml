@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Taxes sur un bail — inline seulement, pas de menu dédié -->
+    <record id="view_re_lease_tax_line_form" model="ir.ui.view">
+        <field name="name">re.lease.tax.line.form</field>
+        <field name="model">re.lease.tax.line</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="tax_id"/>
+                            <field name="tax_bearer"/>
+                            <field name="tenant_share_percent" invisible="tax_bearer != 'shared'"/>
+                            <field name="is_active"/>
+                        </group>
+                        <group>
+                            <field name="tax_amount_tenant"/>
+                            <field name="tax_amount_owner"/>
+                            <field name="currency_id" invisible="1"/>
+                            <field name="declaration_periodicity"/>
+                            <field name="next_declaration_date"/>
+                        </group>
+                    </group>
+                    <field name="note"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

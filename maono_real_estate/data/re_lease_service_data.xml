@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- Services locatifs fréquents -->
+        <record id="service_eau" model="re.lease.service">
+            <field name="name">Eau</field>
+        </record>
+        <record id="service_electricite" model="re.lease.service">
+            <field name="name">Électricité</field>
+        </record>
+        <record id="service_gardiennage" model="re.lease.service">
+            <field name="name">Gardiennage</field>
+        </record>
+        <record id="service_entretien" model="re.lease.service">
+            <field name="name">Entretien espaces communs</field>
+        </record>
+        <record id="service_internet" model="re.lease.service">
+            <field name="name">Internet / Fibre</field>
+        </record>
+        <record id="service_parking" model="re.lease.service">
+            <field name="name">Place de parking</field>
+        </record>
+        <record id="service_climatisation" model="re.lease.service">
+            <field name="name">Climatisation</field>
+        </record>
+
+    </data>
+</odoo>

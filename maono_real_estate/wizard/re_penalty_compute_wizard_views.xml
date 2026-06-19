@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_re_penalty_compute_wizard_form" model="ir.ui.view">
+        <field name="name">re.penalty.compute.wizard.form</field>
+        <field name="model">re.penalty.compute.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Calculer les pénalités">
+                <sheet>
+                    <group>
+                        <field name="lease_id"/>
+                        <field name="computation_date"/>
+                    </group>
+                    <notebook>
+                        <page string="Aperçu des pénalités à générer">
+                            <field name="preview_line_ids" nolabel="1">
+                                <list create="0" delete="0">
+                                    <field name="invoice_id"/>
+                                    <field name="schedule_id"/>
+                                    <field name="days_late"/>
+                                    <field name="invoice_amount"/>
+                                    <field name="penalty_amount" class="fw-bold text-danger"/>
+                                </list>
+                            </field>
+                            <group class="oe_subtotal_footer">
+                                <field name="total_preview" class="fw-bold" string="Total pénalités"/>
+                                <field name="currency_id" invisible="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <footer>
+                    <button name="action_generate_penalties" string="Générer les pénalités" type="object"
+                            class="btn-primary" invisible="total_preview == 0"/>
+                    <button string="Fermer" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+</odoo>

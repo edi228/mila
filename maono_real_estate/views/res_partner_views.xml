@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Extension de la fiche contact pour le rôle immobilier -->
+    <record id="view_res_partner_re_form" model="ir.ui.view">
+        <field name="name">res.partner.re.form</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <!-- Smart buttons -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_re_properties" type="object" class="oe_stat_button"
+                        icon="fa-home" invisible="owner_property_count == 0">
+                    <field name="owner_property_count" widget="statinfo" string="Biens"/>
+                </button>
+                <button name="action_view_re_leases" type="object" class="oe_stat_button"
+                        icon="fa-file-text-o" invisible="lease_count == 0">
+                    <field name="lease_count" widget="statinfo" string="Baux"/>
+                </button>
+            </xpath>
+            <!-- Champs rôle immobilier — après le champ company_type -->
+            <xpath expr="//field[@name='name']" position="after">
+                <group string="Rôle Immobilier" col="2">
+                    <field name="is_property_owner"/>
+                    <field name="is_tenant"/>
+                    <field name="is_guarantor"/>
+                    <field name="tenant_ref" readonly="1" invisible="not is_tenant"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_re_lease_penalty_schedule_form" model="ir.ui.view">
+        <field name="name">re.lease.penalty.schedule.form</field>
+        <field name="model">re.lease.penalty.schedule</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <group string="Déclencheur">
+                            <field name="name"/>
+                            <field name="trigger_days" string="Jours après échéance"/>
+                            <field name="is_active"/>
+                            <field name="auto_generate"/>
+                        </group>
+                        <group string="Calcul">
+                            <field name="mode"/>
+                            <field name="value"/>
+                            <field name="base"/>
+                        </group>
+                    </group>
+                    <field name="note" string="Conditions"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_re_lease_penalty_schedule_list" model="ir.ui.view">
+        <field name="name">re.lease.penalty.schedule.list</field>
+        <field name="model">re.lease.penalty.schedule</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="trigger_days"/>
+                <field name="mode"/>
+                <field name="value"/>
+                <field name="base"/>
+                <field name="auto_generate"/>
+                <field name="is_active"/>
+            </list>
+        </field>
+    </record>
+
+</odoo>

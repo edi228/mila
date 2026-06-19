@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_re_lease_log_list" model="ir.ui.view">
+        <field name="name">re.lease.log.list</field>
+        <field name="model">re.lease.log</field>
+        <field name="arch" type="xml">
+            <list create="0" edit="0" delete="0">
+                <field name="event_date"/>
+                <field name="event_type"/>
+                <field name="recurring_monthly"/>
+                <field name="amount_signed"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_re_lease_log_form" model="ir.ui.view">
+        <field name="name">re.lease.log.form</field>
+        <field name="model">re.lease.log</field>
+        <field name="arch" type="xml">
+            <form create="0" edit="0">
+                <sheet>
+                    <group>
+                        <field name="lease_id"/>
+                        <field name="event_type"/>
+                        <field name="event_date"/>
+                        <field name="recurring_monthly"/>
+                        <field name="amount_signed"/>
+                        <field name="currency_id" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

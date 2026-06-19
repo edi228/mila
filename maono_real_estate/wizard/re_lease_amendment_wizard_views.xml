@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_re_lease_amendment_wizard_form" model="ir.ui.view">
+        <field name="name">re.lease.amendment.wizard.form</field>
+        <field name="model">re.lease.amendment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Avenant de bail">
+                <group>
+                    <group string="Avenant">
+                        <field name="amendment_type"/>
+                        <field name="effective_date"/>
+                        <field name="reason"/>
+                    </group>
+                    <group string="Loyer" invisible="amendment_type not in ('upsell', 'downsell')">
+                        <field name="current_rent" readonly="1"/>
+                        <field name="new_rent_amount"/>
+                    </group>
+                </group>
+                <group string="Services à ajouter" invisible="amendment_type not in ('service_add', 'upsell')">
+                    <field name="lines_to_add_ids" nolabel="1">
+                        <list editable="bottom">
+                            <field name="product_id"/>
+                            <field name="name"/>
+                            <field name="price_unit"/>
+                            <field name="quantity"/>
+                        </list>
+                    </field>
+                </group>
+                <footer>
+                    <button name="action_apply" string="Appliquer l'avenant" type="object" class="oe_highlight"/>
+                    <button string="Annuler" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>

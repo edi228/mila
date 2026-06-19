@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         RAPPORT CONTRAT DE BAIL
+    ============================================================ -->
+    <record id="report_re_lease_contract" model="ir.actions.report">
+        <field name="name">Contrat de Bail</field>
+        <field name="model">re.lease</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">maono_real_estate.report_re_lease_contract_doc</field>
+        <field name="report_file">maono_real_estate.report_re_lease_contract_doc</field>
+        <field name="binding_model_id" ref="model_re_lease"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_re_lease_contract_doc">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="lease">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 class="text-center">CONTRAT DE BAIL</h2>
+                        <h3 class="text-center"><t t-out="lease.name"/></h3>
+                        <br/>
+
+                        <div class="row">
+                            <div class="col-6">
+                                <h4>Le Bailleur</h4>
+                                <p>
+                                    <strong><t t-out="lease.owner_id.name"/></strong><br/>
+                                    <t t-if="lease.owner_id.street"><t t-out="lease.owner_id.street"/><br/></t>
+                                    <t t-if="lease.owner_id.city"><t t-out="lease.owner_id.city"/></t>
+                                </p>
+                            </div>
+                            <div class="col-6">
+                                <h4>Le Locataire</h4>
+                                <p>
+                                    <strong><t t-out="lease.tenant_id.name"/></strong><br/>
+                                    <t t-if="lease.tenant_id.street"><t t-out="lease.tenant_id.street"/><br/></t>
+                                    <t t-if="lease.tenant_id.city"><t t-out="lease.tenant_id.city"/></t>
+                                    <t t-if="lease.tenant_ref_snapshot">
+                                        <br/>Réf : <t t-out="lease.tenant_ref_snapshot"/>
+                                    </t>
+                                </p>
+                            </div>
+                        </div>
+
+                        <hr/>
+                        <h4>Article 1 — Objet du bail</h4>
+                        <p>
+                            Le présent contrat porte sur le bien suivant :
+                            <strong><t t-out="lease.property_id.name"/></strong>
+                            <t t-if="lease.property_id.building_id">
+                                — <t t-out="lease.property_id.building_id.name"/>
+                            </t>
+                            <t t-if="lease.property_id.surface">
+                                — Surface : <t t-out="lease.property_id.surface"/> m²
+                            </t>
+                        </p>
+
+                        <h4>Article 2 — Durée</h4>
+                        <p>
+                            Le présent bail prend effet le <strong><t t-out="lease.start_date"/></strong>
+                            <t t-if="lease.end_date">
+                                et prend fin le <strong><t t-out="lease.end_date"/></strong>.
+                            </t>
+                            <t t-else="">
+                                et est à durée indéterminée.
+                            </t>
+                        </p>
+
+                        <h4>Article 3 — Loyer</h4>
+                        <p>
+                            Le loyer mensuel est fixé à
+                            <strong>
+                                <t t-esc="'{:,.0f}'.format(lease.rent_amount)"/>
+                                <t t-out="lease.currency_id.symbol"/>
+                            </strong>
+                            payable le 1er de chaque mois.
+                        </p>
+
+                        <t t-if="lease.deposit_amount">
+                            <h4>Article 4 — Dépôt de garantie</h4>
+                            <p>
+                                Un dépôt de garantie de
+                                <strong>
+                                    <t t-esc="'{:,.0f}'.format(lease.deposit_amount)"/>
+                                    <t t-out="lease.currency_id.symbol"/>
+                                </strong>
+                                est versé à la signature.
+                            </p>
+                        </t>
+
+                        <t t-if="lease.service_ids">
+                            <h4>Article 5 — Services inclus</h4>
+                            <ul>
+                                <t t-foreach="lease.service_ids" t-as="svc">
+                                    <li><t t-out="svc.name"/></li>
+                                </t>
+                            </ul>
+                        </t>
+
+                        <br/><br/>
+                        <div class="row" style="margin-top: 60px;">
+                            <div class="col-6 text-center">
+                                <p>Le Bailleur</p>
+                                <t t-if="lease.signature_owner">
+                                    <img t-att-src="'data:image/png;base64,' + lease.signature_owner.decode()"
+                                         style="max-height:80px;"/>
+                                </t>
+                                <p style="margin-top:40px; border-top:1px solid #000;">
+                                    <t t-out="lease.owner_id.name"/>
+                                </p>
+                            </div>
+                            <div class="col-6 text-center">
+                                <p>Le Locataire</p>
+                                <t t-if="lease.signature_tenant">
+                                    <img t-att-src="'data:image/png;base64,' + lease.signature_tenant.decode()"
+                                         style="max-height:80px;"/>
+                                </t>
+                                <p style="margin-top:40px; border-top:1px solid #000;">
+                                    <t t-out="lease.tenant_id.name"/>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

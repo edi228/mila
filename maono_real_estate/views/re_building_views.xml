@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         IMMEUBLE — FORM
+    ============================================================ -->
+    <record id="view_re_building_form" model="ir.ui.view">
+        <field name="name">re.building.form</field>
+        <field name="model">re.building</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_properties" type="object" class="oe_stat_button"
+                                icon="fa-home">
+                            <field name="property_count" widget="statinfo" string="Biens"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archivé" bg_color="bg-danger" invisible="active"/>
+                    <field name="active" invisible="1"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Nom de l'immeuble…"/></h1>
+                        <h3><field name="ref" readonly="1"/></h3>
+                    </div>
+                    <group>
+                        <group string="Propriétaire">
+                            <field name="owner_id"/>
+                        </group>
+                        <group string="Statistiques">
+                            <field name="occupation_rate" widget="percentage"/>
+                            <field name="occupied_count"/>
+                            <field name="available_count"/>
+                            <field name="expected_monthly_revenue"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                    <group string="Adresse">
+                        <field name="street" placeholder="Rue"/>
+                        <field name="street2" placeholder="Complément"/>
+                        <field name="city"/>
+                        <field name="zip"/>
+                        <field name="country_id"/>
+                    </group>
+                    <notebook>
+                        <page string="Biens">
+                            <field name="property_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="type"/>
+                                    <field name="surface"/>
+                                    <field name="rent_amount"/>
+                                    <field name="state" widget="badge"
+                                           decoration-success="state=='available'"
+                                           decoration-info="state=='occupied'"
+                                           decoration-warning="state=='works'"
+                                           decoration-danger="state=='suspended'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Description">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         IMMEUBLE — LIST
+    ============================================================ -->
+    <record id="view_re_building_list" model="ir.ui.view">
+        <field name="name">re.building.list</field>
+        <field name="model">re.building</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="ref"/>
+                <field name="name"/>
+                <field name="city"/>
+                <field name="owner_id"/>
+                <field name="property_count"/>
+                <field name="occupied_count"/>
+                <field name="occupation_rate" widget="percentage"/>
+                <field name="expected_monthly_revenue"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================
+         IMMEUBLE — KANBAN
+    ============================================================ -->
+    <record id="view_re_building_kanban" model="ir.ui.view">
+        <field name="name">re.building.kanban</field>
+        <field name="model">re.building</field>
+        <field name="arch" type="xml">
+            <kanban class="o_kanban_mobile">
+                <field name="name"/>
+                <field name="city"/>
+                <field name="occupation_rate"/>
+                <field name="property_count"/>
+                <field name="expected_monthly_revenue"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_card oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                <span class="badge text-bg-secondary"><field name="city"/></span>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <div>
+                                    <i class="fa fa-home"/> <field name="property_count"/> biens —
+                                    <field name="occupation_rate" widget="percentage"/> occupés
+                                </div>
+                                <div class="fw-bold text-success">
+                                    <field name="expected_monthly_revenue" widget="monetary"/> / mois
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+</odoo>
