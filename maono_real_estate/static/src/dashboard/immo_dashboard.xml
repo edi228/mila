@@ -4,7 +4,7 @@
     <!-- ── KPI Card ─────────────────────────────────────────────────────── -->
     <t t-name="maono_real_estate.ImmoKpiCard">
         <div class="immo-kpi-card" t-att-class="props.color ? 'immo-kpi-card--' + props.color : ''"
-             t-on-click="props.onClick ? props.onClick : () => {}">
+             t-on-click="() => props.onClick?.()">
             <div class="immo-kpi-icon">
                 <i t-attf-class="fa #{props.icon}"/>
             </div>
