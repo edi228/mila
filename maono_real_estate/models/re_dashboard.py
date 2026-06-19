@@ -82,7 +82,7 @@ class ReDashboard(models.Model):
                 'priority': svc.priority,
                 'state': svc.state,
                 'planned_date': str(svc.planned_date) if svc.planned_date else '',
-                'contractor': svc.contractor_id.name if svc.contractor_id else '',
+                'contractor': svc.provider_id.name if svc.provider_id else '',
             })
 
         # --- Alertes ---
