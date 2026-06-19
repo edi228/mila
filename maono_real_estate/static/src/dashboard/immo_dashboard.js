@@ -124,6 +124,51 @@ export class ImmoDashboard extends Component {
         });
     }
 
+    // ── KPI navigation (tuiles cliquables) ──
+    openAllProperties() {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            res_model: "re.property",
+            views: [[false, "list"], [false, "form"]],
+            name: "Biens immobiliers",
+        });
+    }
+
+    openOccupiedProperties() {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            res_model: "re.property",
+            views: [[false, "list"], [false, "form"]],
+            domain: [["state", "=", "occupied"]],
+            name: "Biens occupés",
+        });
+    }
+
+    openUnpaidInvoices() {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            res_model: "account.move",
+            views: [[false, "list"], [false, "form"]],
+            domain: [
+                ["move_type", "=", "out_invoice"],
+                ["state", "=", "posted"],
+                ["payment_state", "not in", ["paid", "in_payment"]],
+                ["invoice_date_due", "<", new Date().toISOString().split("T")[0]],
+            ],
+            name: "Factures impayées",
+        });
+    }
+
+    openAllPenalties() {
+        this.action.doAction({
+            type: "ir.actions.act_window",
+            res_model: "re.penalty",
+            views: [[false, "list"], [false, "form"]],
+            domain: [["state", "not in", ["cancelled", "invoiced"]]],
+            name: "Pénalités actives",
+        });
+    }
+
     openAllLeases() {
         this.action.doAction({
             type: "ir.actions.act_window",
