@@ -1,44 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!-- Vue formulaire améliorée du calendrier de pénalités -->
     <record id="view_re_lease_penalty_schedule_form" model="ir.ui.view">
         <field name="name">re.lease.penalty.schedule.form</field>
         <field name="model">re.lease.penalty.schedule</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Nom du palier…"/></h1>
+                    </div>
+                    <div class="alert alert-info" role="alert">
+                        <i class="fa fa-info-circle"/> Ce palier définit quand et comment une pénalité de retard est générée
+                        automatiquement. Il s'applique lorsque le loyer n'est pas réglé dans le délai imparti.
+                    </div>
                     <group>
                         <group string="Déclencheur">
-                            <field name="name"/>
-                            <field name="trigger_days" string="Jours après échéance"/>
-                            <field name="is_active"/>
-                            <field name="auto_generate"/>
+                            <field name="trigger_days" string="Jours après l'échéance"
+                                   help="Nombre de jours de retard avant que ce palier se déclenche"/>
+                            <field name="is_active" widget="boolean_toggle"/>
+                            <field name="auto_generate" widget="boolean_toggle"
+                                   help="Si activé, la pénalité est créée automatiquement lors du calcul des retards"/>
                         </group>
-                        <group string="Calcul">
-                            <field name="mode"/>
-                            <field name="value"/>
-                            <field name="base"/>
+                        <group string="Mode de calcul">
+                            <field name="mode" widget="radio"/>
+                            <field name="value" string="Taux (%) / Montant fixe"
+                                   help="Pourcentage de la base ou montant fixe selon le mode choisi"/>
+                            <field name="base" string="Assiette de calcul"/>
                         </group>
                     </group>
-                    <field name="note" string="Conditions"/>
+                    <notebook>
+                        <page string="Conditions et notes" name="conditions">
+                            <field name="note" string="" placeholder="Décrivez les conditions d'application de ce palier…"/>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
     </record>
 
+    <!-- Vue liste améliorée du calendrier de pénalités -->
     <record id="view_re_lease_penalty_schedule_list" model="ir.ui.view">
         <field name="name">re.lease.penalty.schedule.list</field>
         <field name="model">re.lease.penalty.schedule</field>
         <field name="arch" type="xml">
-            <list editable="bottom">
+            <list editable="bottom" default_order="sequence">
                 <field name="sequence" widget="handle"/>
-                <field name="name"/>
-                <field name="trigger_days"/>
-                <field name="mode"/>
-                <field name="value"/>
-                <field name="base"/>
-                <field name="auto_generate"/>
-                <field name="is_active"/>
+                <field name="name" string="Palier"/>
+                <field name="trigger_days" string="Déclenchement (j.)"/>
+                <field name="mode" string="Mode"/>
+                <field name="value" string="Taux / Montant"/>
+                <field name="base" string="Assiette"/>
+                <field name="auto_generate" string="Auto" widget="boolean_toggle"/>
+                <field name="is_active" string="Actif" widget="boolean_toggle"
+                       decoration-danger="not is_active"/>
             </list>
         </field>
     </record>

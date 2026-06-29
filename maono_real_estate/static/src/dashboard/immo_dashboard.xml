@@ -12,6 +12,11 @@
                 <div class="immo-kpi-value"><t t-esc="props.value"/></div>
                 <div class="immo-kpi-label"><t t-esc="props.label"/></div>
                 <div t-if="props.subtitle" class="immo-kpi-subtitle"><t t-esc="props.subtitle"/></div>
+                <div t-if="props.progressMax" class="immo-kpi-progress">
+                    <div class="immo-kpi-progress-bar"
+                         t-att-style="'width:' + Math.round((props.progressValue / props.progressMax) * 100) + '%'">
+                    </div>
+                </div>
             </div>
         </div>
     </t>
@@ -23,6 +28,146 @@
             <i t-attf-class="fa #{props.alert.icon} immo-alert-icon"/>
             <span class="immo-alert-msg"><t t-esc="props.alert.message"/></span>
             <i class="fa fa-chevron-right immo-alert-arrow"/>
+        </div>
+    </t>
+
+    <!-- ── Property Table ───────────────────────────────────────────────── -->
+    <t t-name="maono_real_estate.ImmoPropertyTable">
+        <div class="immo-prop-table-wrap">
+            <!-- Filtres + recherche -->
+            <div class="immo-prop-filters">
+                <div class="immo-prop-filter-btns">
+                    <button t-att-class="state.filter === 'all' ? 'immo-filter-btn active' : 'immo-filter-btn'"
+                            t-on-click="() => setFilter('all')">Tous</button>
+                    <button t-att-class="state.filter === 'occupied' ? 'immo-filter-btn immo-filter-btn--occupied active' : 'immo-filter-btn immo-filter-btn--occupied'"
+                            t-on-click="() => setFilter('occupied')">
+                        <i class="fa fa-check-circle"/> Occupés
+                    </button>
+                    <button t-att-class="state.filter === 'available' ? 'immo-filter-btn immo-filter-btn--available active' : 'immo-filter-btn immo-filter-btn--available'"
+                            t-on-click="() => setFilter('available')">
+                        <i class="fa fa-circle-o"/> Disponibles
+                    </button>
+                    <button t-att-class="state.filter === 'works' ? 'immo-filter-btn immo-filter-btn--works active' : 'immo-filter-btn immo-filter-btn--works'"
+                            t-on-click="() => setFilter('works')">
+                        <i class="fa fa-wrench"/> Travaux
+                    </button>
+                </div>
+                <input class="immo-prop-search" type="text"
+                       placeholder="Rechercher un bien, locataire, immeuble…"
+                       t-on-input="onSearchInput"/>
+            </div>
+
+            <!-- Tableau -->
+            <t t-if="filteredProperties.length === 0">
+                <div class="immo-empty">Aucun bien correspondant au filtre</div>
+            </t>
+            <table t-if="filteredProperties.length > 0" class="immo-table immo-prop-table">
+                <thead>
+                    <tr>
+                        <th t-on-click="() => setSort('name')" class="sortable">
+                            Bien <i t-attf-class="fa #{getSortIcon('name')}"/>
+                        </th>
+                        <th t-on-click="() => setSort('building_name')" class="sortable">
+                            Immeuble <i t-attf-class="fa #{getSortIcon('building_name')}"/>
+                        </th>
+                        <th t-on-click="() => setSort('type')" class="sortable">
+                            Type <i t-attf-class="fa #{getSortIcon('type')}"/>
+                        </th>
+                        <th t-on-click="() => setSort('state')" class="sortable">
+                            Statut <i t-attf-class="fa #{getSortIcon('state')}"/>
+                        </th>
+                        <th t-on-click="() => setSort('tenant_name')" class="sortable">
+                            Locataire <i t-attf-class="fa #{getSortIcon('tenant_name')}"/>
+                        </th>
+                        <th t-on-click="() => setSort('rent_amount')" class="sortable">
+                            Loyer <i t-attf-class="fa #{getSortIcon('rent_amount')}"/>
+                        </th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="filteredProperties" t-as="prop" t-key="prop.id">
+                        <tr class="immo-table-row" t-on-click="() => props.onOpenProperty(prop.id)">
+                            <td>
+                                <span class="immo-property-name"><t t-esc="prop.name"/></span>
+                                <span t-if="prop.ref" class="immo-prop-ref"><t t-esc="prop.ref"/></span>
+                            </td>
+                            <td>
+                                <t t-if="prop.building_name">
+                                    <i class="fa fa-building-o"/> <t t-esc="prop.building_name"/>
+                                </t>
+                                <t t-else=""><span class="text-muted">—</span></t>
+                            </td>
+                            <td><t t-esc="getTypeLabel(prop.type)"/></td>
+                            <td>
+                                <span t-att-class="getStateBadgeClass(prop.state)">
+                                    <t t-esc="getStateLabel(prop.state)"/>
+                                </span>
+                            </td>
+                            <td>
+                                <t t-if="prop.tenant_name">
+                                    <i class="fa fa-user-o"/> <t t-esc="prop.tenant_name"/>
+                                </t>
+                                <t t-else=""><span class="text-muted">—</span></t>
+                            </td>
+                            <td class="immo-td-amount">
+                                <t t-esc="formatAmount(prop.rent_amount)"/>
+                            </td>
+                            <td>
+                                <button class="btn btn-xs btn-outline-primary"
+                                        t-on-click.stop="() => props.onOpenProperty(prop.id)">
+                                    <i class="fa fa-eye"/> Voir
+                                </button>
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </table>
+            <div class="immo-prop-count">
+                <t t-esc="filteredProperties.length"/> bien(s) affiché(s)
+            </div>
+        </div>
+    </t>
+
+    <!-- ── Building Grid ─────────────────────────────────────────────────── -->
+    <t t-name="maono_real_estate.ImmoBuildingGrid">
+        <div class="immo-building-grid">
+            <t t-if="props.buildings.length === 0">
+                <div class="immo-empty">Aucun immeuble</div>
+            </t>
+            <t t-foreach="props.buildings" t-as="building" t-key="building.id">
+                <div class="immo-building-card">
+                    <div class="immo-building-header">
+                        <span class="immo-building-name">
+                            <i class="fa fa-building"/> <t t-esc="building.name"/>
+                        </span>
+                        <span class="immo-building-rate"
+                              t-att-class="building.occupation_rate >= 80 ? 'text-success' : building.occupation_rate >= 50 ? 'text-warning' : 'text-danger'">
+                            <t t-esc="Math.round(building.occupation_rate)"/>%
+                        </span>
+                    </div>
+                    <div class="immo-building-occ-bar">
+                        <div class="immo-occ-bar-inner"
+                             t-att-class="getOccupationBarClass(building.occupation_rate)"
+                             t-att-style="'width:' + Math.min(100, Math.round(building.occupation_rate)) + '%'">
+                        </div>
+                    </div>
+                    <div class="immo-building-stats">
+                        <span><i class="fa fa-home"/> <t t-esc="building.property_count"/> biens</span>
+                        <span class="text-success"><i class="fa fa-check"/> <t t-esc="building.occupied_count"/> occupés</span>
+                        <span class="text-info"><i class="fa fa-circle-o"/> <t t-esc="building.available_count"/> libres</span>
+                    </div>
+                    <div class="immo-building-badges">
+                        <t t-foreach="building.properties" t-as="prop" t-key="prop.id">
+                            <span t-att-class="getBadgeClass(prop.state)"
+                                  t-att-title="getTooltip(prop)"
+                                  t-on-click="() => props.onOpenProperty(prop.id)">
+                                <t t-esc="prop.name"/>
+                            </span>
+                        </t>
+                    </div>
+                </div>
+            </t>
         </div>
     </t>
 
@@ -60,10 +205,12 @@
                 <div class="immo-kpi-row">
                     <ImmoKpiCard
                         icon="'fa-building'"
-                        label="'Biens totaux'"
-                        value="state.data.kpis.total_properties"
-                        subtitle="state.data.kpis.available + ' disponibles / ' + state.data.kpis.in_works + ' en travaux'"
+                        label="'Biens occupés / total'"
+                        value="getOccupancyLabel(state.data.kpis)"
+                        subtitle="state.data.kpis.available + ' disponibles · ' + state.data.kpis.in_works + ' en travaux'"
                         color="'blue'"
+                        progressValue="state.data.kpis.occupied"
+                        progressMax="state.data.kpis.total_properties"
                         onClick="kpiCallbacks.allProperties"
                     />
                     <ImmoKpiCard
@@ -100,131 +247,186 @@
                     />
                 </div>
 
-                <!-- ── Main Grid ── -->
-                <div class="immo-main-grid">
+                <!-- ── Tab Navigation ── -->
+                <div class="immo-tab-nav">
+                    <button t-att-class="state.activeTab === 'leases' ? 'immo-tab active' : 'immo-tab'"
+                            t-on-click="() => setTab('leases')">
+                        <i class="fa fa-file-text-o"/> Baux actifs
+                    </button>
+                    <button t-att-class="state.activeTab === 'properties' ? 'immo-tab active' : 'immo-tab'"
+                            t-on-click="() => setTab('properties')">
+                        <i class="fa fa-list"/> Tous les biens
+                        <span class="immo-tab-count"><t t-esc="state.data.kpis.total_properties"/></span>
+                    </button>
+                    <button t-att-class="state.activeTab === 'buildings' ? 'immo-tab active' : 'immo-tab'"
+                            t-on-click="() => setTab('buildings')">
+                        <i class="fa fa-building"/> Par immeuble
+                        <span class="immo-tab-count"><t t-esc="state.data.buildings_data.length"/></span>
+                    </button>
+                </div>
 
-                    <!-- Colonne gauche : Baux actifs -->
-                    <div class="immo-panel immo-panel--leases">
-                        <div class="immo-panel-header">
-                            <span><i class="fa fa-file-text-o"/> Baux actifs</span>
-                            <button class="btn btn-link btn-sm" t-on-click="openAllLeases">
-                                Voir tout →
-                            </button>
-                        </div>
-                        <div class="immo-panel-body">
-                            <t t-if="state.data.leases.length === 0">
-                                <div class="immo-empty">Aucun bail actif</div>
-                            </t>
-                            <table t-if="state.data.leases.length > 0" class="immo-table">
-                                <thead>
-                                    <tr>
-                                        <th>Bien</th>
-                                        <th>Locataire</th>
-                                        <th>Loyer/mois</th>
-                                        <th>Prochaine éch.</th>
-                                        <th>Échéance bail</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <t t-foreach="state.data.leases" t-as="lease" t-key="lease.id">
-                                        <tr class="immo-table-row" t-on-click="() => openLease(lease.id)">
-                                            <td class="immo-td-property">
-                                                <span class="immo-property-name"
-                                                      t-on-click.stop="() => openProperty(lease.property_id)">
-                                                    <t t-esc="lease.property"/>
-                                                </span>
-                                            </td>
-                                            <td><t t-esc="lease.tenant"/></td>
-                                            <td class="immo-td-amount">
-                                                <t t-esc="formatAmount(lease.rent)"/>
-                                            </td>
-                                            <td>
-                                                <span t-if="lease.next_invoice"
-                                                      class="immo-badge immo-badge--info">
-                                                    <t t-esc="lease.next_invoice"/>
-                                                </span>
-                                                <span t-else="">—</span>
-                                            </td>
-                                            <td>
-                                                <span t-if="lease.days_remaining !== null"
-                                                      t-att-class="'immo-badge immo-days--' + lease.days_color">
-                                                    <t t-esc="getDaysLabel(lease.days_remaining)"/>
-                                                </span>
-                                                <span t-else="" class="immo-badge immo-badge--muted">Sans échéance</span>
-                                            </td>
-                                        </tr>
-                                    </t>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                <!-- ── Tab : Baux + Alertes/Interventions ── -->
+                <t t-if="state.activeTab === 'leases'">
+                    <div class="immo-main-grid">
 
-                    <!-- Colonne droite : Alertes + Interventions -->
-                    <div class="immo-right-col">
-
-                        <!-- Alertes -->
-                        <div class="immo-panel immo-panel--alerts">
+                        <!-- Colonne gauche : Baux actifs -->
+                        <div class="immo-panel immo-panel--leases">
                             <div class="immo-panel-header">
-                                <span><i class="fa fa-bell"/> Alertes &amp; Rappels</span>
-                                <span class="immo-badge immo-badge--danger" t-if="state.data.alerts.length > 0">
-                                    <t t-esc="state.data.alerts.length"/>
-                                </span>
-                            </div>
-                            <div class="immo-panel-body">
-                                <t t-if="state.data.alerts.length === 0">
-                                    <div class="immo-empty immo-empty--success">
-                                        <i class="fa fa-check-circle"/> Aucune alerte
-                                    </div>
-                                </t>
-                                <t t-foreach="state.data.alerts" t-as="alert" t-key="alert_index">
-                                    <ImmoAlertItem alert="alert" onNavigate="(a) => navigateAlert(a)"/>
-                                </t>
-                            </div>
-                        </div>
-
-                        <!-- Interventions -->
-                        <div class="immo-panel immo-panel--services">
-                            <div class="immo-panel-header">
-                                <span><i class="fa fa-wrench"/> Interventions en cours</span>
-                                <button class="btn btn-link btn-sm" t-on-click="openAllServices">
+                                <span><i class="fa fa-file-text-o"/> Baux actifs</span>
+                                <button class="btn btn-link btn-sm" t-on-click="openAllLeases">
                                     Voir tout →
                                 </button>
                             </div>
                             <div class="immo-panel-body">
-                                <t t-if="state.data.services.length === 0">
-                                    <div class="immo-empty">Aucune intervention en cours</div>
+                                <t t-if="state.data.leases.length === 0">
+                                    <div class="immo-empty">Aucun bail actif</div>
                                 </t>
-                                <t t-foreach="state.data.services" t-as="svc" t-key="svc.id">
-                                    <div class="immo-service-card" t-on-click="() => openService(svc.id)">
-                                        <div class="immo-service-header">
-                                            <span class="immo-service-name"><t t-esc="svc.name"/></span>
-                                            <span class="immo-priority">
-                                                <t t-esc="getPriorityStars(svc.priority)"/>
-                                            </span>
-                                        </div>
-                                        <div class="immo-service-meta">
-                                            <span class="immo-service-property">
-                                                <i class="fa fa-map-marker"/> <t t-esc="svc.property"/>
-                                            </span>
-                                            <span t-att-class="'immo-badge immo-state--' + svc.state">
-                                                <t t-esc="getServiceStateLabel(svc.state)"/>
-                                            </span>
-                                        </div>
-                                        <div t-if="svc.planned_date or svc.contractor" class="immo-service-footer">
-                                            <span t-if="svc.planned_date">
-                                                <i class="fa fa-calendar"/> <t t-esc="svc.planned_date"/>
-                                            </span>
-                                            <span t-if="svc.contractor">
-                                                <i class="fa fa-user"/> <t t-esc="svc.contractor"/>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </t>
+                                <table t-if="state.data.leases.length > 0" class="immo-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Bien</th>
+                                            <th>Locataire</th>
+                                            <th>Loyer/mois</th>
+                                            <th>Prochaine éch.</th>
+                                            <th>Échéance bail</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.data.leases" t-as="lease" t-key="lease.id">
+                                            <tr class="immo-table-row" t-on-click="() => openLease(lease.id)">
+                                                <td class="immo-td-property">
+                                                    <span class="immo-property-name"
+                                                          t-on-click.stop="() => openProperty(lease.property_id)">
+                                                        <t t-esc="lease.property"/>
+                                                    </span>
+                                                </td>
+                                                <td><t t-esc="lease.tenant"/></td>
+                                                <td class="immo-td-amount">
+                                                    <t t-esc="formatAmount(lease.rent)"/>
+                                                </td>
+                                                <td>
+                                                    <span t-if="lease.next_invoice"
+                                                          class="immo-badge immo-badge--info">
+                                                        <t t-esc="lease.next_invoice"/>
+                                                    </span>
+                                                    <span t-else="">—</span>
+                                                </td>
+                                                <td>
+                                                    <span t-if="lease.days_remaining !== null"
+                                                          t-att-class="'immo-badge immo-days--' + lease.days_color">
+                                                        <t t-esc="getDaysLabel(lease.days_remaining)"/>
+                                                    </span>
+                                                    <span t-else="" class="immo-badge immo-badge--muted">Sans échéance</span>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
 
+                        <!-- Colonne droite : Alertes + Interventions -->
+                        <div class="immo-right-col">
+
+                            <!-- Alertes -->
+                            <div class="immo-panel immo-panel--alerts">
+                                <div class="immo-panel-header">
+                                    <span><i class="fa fa-bell"/> Alertes &amp; Rappels</span>
+                                    <span class="immo-badge immo-badge--danger" t-if="state.data.alerts.length > 0">
+                                        <t t-esc="state.data.alerts.length"/>
+                                    </span>
+                                </div>
+                                <div class="immo-panel-body">
+                                    <t t-if="state.data.alerts.length === 0">
+                                        <div class="immo-empty immo-empty--success">
+                                            <i class="fa fa-check-circle"/> Aucune alerte
+                                        </div>
+                                    </t>
+                                    <t t-foreach="state.data.alerts" t-as="alert" t-key="alert_index">
+                                        <ImmoAlertItem alert="alert" onNavigate="(a) => navigateAlert(a)"/>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- Interventions -->
+                            <div class="immo-panel immo-panel--services">
+                                <div class="immo-panel-header">
+                                    <span><i class="fa fa-wrench"/> Interventions en cours</span>
+                                    <button class="btn btn-link btn-sm" t-on-click="openAllServices">
+                                        Voir tout →
+                                    </button>
+                                </div>
+                                <div class="immo-panel-body">
+                                    <t t-if="state.data.services.length === 0">
+                                        <div class="immo-empty">Aucune intervention en cours</div>
+                                    </t>
+                                    <t t-foreach="state.data.services" t-as="svc" t-key="svc.id">
+                                        <div class="immo-service-card" t-on-click="() => openService(svc.id)">
+                                            <div class="immo-service-header">
+                                                <span class="immo-service-name"><t t-esc="svc.name"/></span>
+                                                <span class="immo-priority">
+                                                    <t t-esc="getPriorityStars(svc.priority)"/>
+                                                </span>
+                                            </div>
+                                            <div class="immo-service-meta">
+                                                <span class="immo-service-property">
+                                                    <i class="fa fa-map-marker"/> <t t-esc="svc.property"/>
+                                                </span>
+                                                <span t-att-class="'immo-badge immo-state--' + svc.state">
+                                                    <t t-esc="getServiceStateLabel(svc.state)"/>
+                                                </span>
+                                            </div>
+                                            <div t-if="svc.planned_date or svc.contractor" class="immo-service-footer">
+                                                <span t-if="svc.planned_date">
+                                                    <i class="fa fa-calendar"/> <t t-esc="svc.planned_date"/>
+                                                </span>
+                                                <span t-if="svc.contractor">
+                                                    <i class="fa fa-user"/> <t t-esc="svc.contractor"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+
+                        </div>
                     </div>
-                </div>
+                </t>
+
+                <!-- ── Tab : Tableau de tous les biens ── -->
+                <t t-if="state.activeTab === 'properties'">
+                    <div class="immo-panel">
+                        <div class="immo-panel-header">
+                            <span><i class="fa fa-list"/> Inventaire complet des biens</span>
+                            <button class="btn btn-link btn-sm" t-on-click="kpiCallbacks.allProperties">
+                                Ouvrir dans Odoo →
+                            </button>
+                        </div>
+                        <div class="immo-panel-body" style="max-height: none;">
+                            <ImmoPropertyTable
+                                properties="state.data.properties_data"
+                                currencySymbol="state.data.currency_symbol"
+                                onOpenProperty="(id) => openProperty(id)"
+                            />
+                        </div>
+                    </div>
+                </t>
+
+                <!-- ── Tab : Grille par immeuble ── -->
+                <t t-if="state.activeTab === 'buildings'">
+                    <div class="immo-panel">
+                        <div class="immo-panel-header">
+                            <span><i class="fa fa-building"/> Vue par immeuble</span>
+                        </div>
+                        <div class="immo-panel-body" style="max-height: none; padding: 16px;">
+                            <ImmoBuildingGrid
+                                buildings="state.data.buildings_data"
+                                currencySymbol="state.data.currency_symbol"
+                                onOpenProperty="(id) => openProperty(id)"
+                            />
+                        </div>
+                    </div>
+                </t>
 
                 <!-- Footer refresh info -->
                 <div class="immo-dashboard-footer">

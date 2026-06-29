@@ -133,6 +133,50 @@ class ReDashboard(models.Model):
                 'link_id': pen.id,
             })
 
+        # --- Biens immobiliers (pour tableau interactif) ---
+        all_properties = PropertyModel.search([], order='name asc')
+        currency_symbol = self.env.company.currency_id.symbol
+        properties_data = []
+        for prop in all_properties:
+            properties_data.append({
+                'id': prop.id,
+                'name': prop.name,
+                'ref': prop.ref,
+                'type': prop.type,
+                'building_id': prop.building_id.id if prop.building_id else False,
+                'building_name': prop.building_id.name if prop.building_id else '',
+                'state': prop.state,
+                'rent_amount': prop.rent_amount,
+                'tenant_name': prop.current_tenant_id.name if prop.current_tenant_id else '',
+                'tenant_id': prop.current_tenant_id.id if prop.current_tenant_id else False,
+                'next_invoice': '',
+                'currency': currency_symbol,
+            })
+
+        # --- Immeubles avec biens imbriqués (pour grille bâtiments) ---
+        BuildingModel = self.env['re.building']
+        all_buildings = BuildingModel.search([], order='name asc')
+        buildings_data = []
+        for building in all_buildings:
+            buildings_data.append({
+                'id': building.id,
+                'name': building.name,
+                'property_count': building.property_count,
+                'occupied_count': building.occupied_count,
+                'available_count': building.available_count,
+                'occupation_rate': building.occupation_rate,
+                'properties': [
+                    {
+                        'id': p.id,
+                        'name': p.name,
+                        'state': p.state,
+                        'tenant_name': p.current_tenant_id.name if p.current_tenant_id else '',
+                        'rent_amount': p.rent_amount,
+                    }
+                    for p in building.property_ids
+                ],
+            })
+
         # --- Paramètre de refresh ---
         refresh_interval = int(self.env['ir.config_parameter'].sudo().get_param(
             're.dashboard.refresh_interval', default='60'
@@ -156,7 +200,9 @@ class ReDashboard(models.Model):
             'services': services_data,
             'alerts': alerts,
             'refresh_interval': refresh_interval,
-            'currency_symbol': self.env.company.currency_id.symbol,
+            'currency_symbol': currency_symbol,
+            'properties_data': properties_data,
+            'buildings_data': buildings_data,
         }
 
     @api.model

@@ -48,23 +48,71 @@
         </field>
     </record>
 
+    <!-- Vue liste améliorée -->
     <record id="view_re_penalty_list" model="ir.ui.view">
         <field name="name">re.penalty.list</field>
         <field name="model">re.penalty</field>
         <field name="arch" type="xml">
-            <list decoration-danger="state=='confirmed'" decoration-muted="state=='cancelled'">
-                <field name="name"/>
-                <field name="lease_id"/>
-                <field name="invoice_id"/>
-                <field name="due_date"/>
-                <field name="days_late"/>
-                <field name="penalty_amount"/>
+            <list
+                decoration-danger="days_late > 30"
+                decoration-warning="days_late > 15 and days_late &lt;= 30"
+                decoration-muted="state == 'cancelled'">
+                <field name="name" string="Réf."/>
+                <field name="lease_id" string="Bail"/>
+                <field name="lease_id" column_invisible="1"/>
+                <!-- Locataire via relation lease_id → tenant_id -->
+                <field name="lease_id.tenant_id" string="Locataire" optional="show"/>
+                <field name="invoice_id" string="Quittance"/>
+                <field name="days_late" string="Retard (j.)"
+                       decoration-danger="days_late > 30"
+                       decoration-warning="days_late > 15 and days_late &lt;= 30"/>
+                <field name="penalty_amount" string="Montant"/>
+                <field name="currency_id" column_invisible="1"/>
                 <field name="state" widget="badge"
-                       decoration-warning="state=='draft'"
-                       decoration-danger="state=='confirmed'"
-                       decoration-success="state=='invoiced'"
-                       decoration-muted="state=='cancelled'"/>
+                       decoration-secondary="state == 'draft'"
+                       decoration-warning="state == 'draft'"
+                       decoration-success="state == 'invoiced'"
+                       decoration-info="state == 'confirmed'"
+                       decoration-muted="state == 'cancelled'"
+                       string="Statut"/>
+                <!-- Boutons inline sans ouvrir la fiche -->
+                <button name="action_confirm" string="Confirmer" type="object"
+                        icon="fa-check" title="Confirmer cette pénalité"
+                        invisible="state != 'draft'"/>
+                <button name="action_create_invoice" string="Facturer" type="object"
+                        icon="fa-file-text-o" title="Créer la facture de pénalité"
+                        invisible="state != 'confirmed'"/>
+                <button name="action_cancel" string="Annuler" type="object"
+                        icon="fa-times" title="Annuler cette pénalité"
+                        invisible="state in ('invoiced', 'cancelled')"/>
             </list>
+        </field>
+    </record>
+
+    <!-- Vue recherche avancée -->
+    <record id="view_re_penalty_search" model="ir.ui.view">
+        <field name="name">re.penalty.search</field>
+        <field name="model">re.penalty</field>
+        <field name="arch" type="xml">
+            <search string="Recherche pénalités">
+                <field name="name" string="Référence"/>
+                <field name="lease_id" string="Bail"/>
+                <field name="invoice_id" string="Quittance"/>
+                <!-- Filtres rapides -->
+                <filter name="pending" string="En attente" domain="[('state', '=', 'draft')]"/>
+                <filter name="confirmed" string="Confirmées" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="to_invoice" string="À facturer" domain="[('state', '=', 'confirmed')]"/>
+                <filter name="cancelled" string="Annulées" domain="[('state', '=', 'cancelled')]"/>
+                <separator/>
+                <filter name="overdue_30" string="Retard &gt; 30 j." domain="[('days_late', '&gt;', 30)]"/>
+                <filter name="overdue_15" string="Retard &gt; 15 j." domain="[('days_late', '&gt;', 15)]"/>
+                <separator/>
+                <!-- GroupBy -->
+                <group expand="0" string="Regrouper par">
+                    <filter name="group_by_lease" string="Bail" context="{'group_by': 'lease_id'}"/>
+                    <filter name="group_by_state" string="Statut" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
         </field>
     </record>
 
@@ -72,6 +120,8 @@
         <field name="name">Pénalités</field>
         <field name="res_model">re.penalty</field>
         <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_re_penalty_search"/>
+        <field name="context">{'search_default_pending': 1}</field>
     </record>
 
     <!-- Pénalités depuis un bail -->
@@ -79,6 +129,7 @@
         <field name="name">Pénalités</field>
         <field name="res_model">re.penalty</field>
         <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_re_penalty_search"/>
         <field name="domain">[('lease_id', '=', active_id)]</field>
         <field name="context">{'default_lease_id': active_id}</field>
     </record>
