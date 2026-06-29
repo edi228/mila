@@ -60,8 +60,8 @@
                 <field name="name" string="Réf."/>
                 <field name="lease_id" string="Bail"/>
                 <field name="lease_id" column_invisible="1"/>
-                <!-- Locataire via relation lease_id → tenant_id -->
-                <field name="lease_id.tenant_id" string="Locataire" optional="show"/>
+                <!-- Locataire via champ related tenant_id -->
+                <field name="tenant_id" string="Locataire" optional="show"/>
                 <field name="invoice_id" string="Quittance"/>
                 <field name="days_late" string="Retard (j.)"
                        decoration-danger="days_late > 30"

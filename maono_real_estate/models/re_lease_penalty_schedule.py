@@ -48,6 +48,8 @@ class RePenalty(models.Model):
     rate_or_amount = fields.Float(related='schedule_id.value', string="Valeur appliquée")
     penalty_amount = fields.Monetary(string="Montant de la pénalité", compute='_compute_cumulative_base', store=True, currency_field='currency_id', tracking=True)
     currency_id = fields.Many2one('res.currency', related='lease_id.currency_id')
+    tenant_id   = fields.Many2one('res.partner', related='lease_id.tenant_id', string="Locataire", store=True)
+
     
     state = fields.Selection([
         ('draft', 'Brouillon'),
@@ -60,7 +62,8 @@ class RePenalty(models.Model):
     
     due_date = fields.Date(related='invoice_id.invoice_date_due', string="Échéance quittance")
     detection_date = fields.Date(string="Date détection", default=fields.Date.context_today)
-    days_late = fields.Integer(string="Jours de retard", compute='_compute_days_late')
+    days_late = fields.Integer(string="Jours de retard", compute='_compute_days_late', store=True)
+
     
     note = fields.Text(string="Justification")
 
