@@ -54,22 +54,18 @@
         <field name="model">re.penalty</field>
         <field name="arch" type="xml">
             <list
-                decoration-danger="days_late > 30"
-                decoration-warning="days_late > 15 and days_late &lt;= 30"
+                decoration-danger="days_late &gt; 30"
+                decoration-warning="days_late &gt; 15 and days_late &lt;= 30"
                 decoration-muted="state == 'cancelled'">
                 <field name="name" string="Réf."/>
                 <field name="lease_id" string="Bail"/>
-                <field name="lease_id" column_invisible="1"/>
-                <!-- Locataire via champ related tenant_id -->
-                <field name="tenant_id" string="Locataire" optional="show"/>
                 <field name="invoice_id" string="Quittance"/>
                 <field name="days_late" string="Retard (j.)"
-                       decoration-danger="days_late > 30"
-                       decoration-warning="days_late > 15 and days_late &lt;= 30"/>
+                       decoration-danger="days_late &gt; 30"
+                       decoration-warning="days_late &gt; 15 and days_late &lt;= 30"/>
                 <field name="penalty_amount" string="Montant"/>
                 <field name="currency_id" column_invisible="1"/>
                 <field name="state" widget="badge"
-                       decoration-secondary="state == 'draft'"
                        decoration-warning="state == 'draft'"
                        decoration-success="state == 'invoiced'"
                        decoration-info="state == 'confirmed'"
@@ -103,9 +99,6 @@
                 <filter name="confirmed" string="Confirmées" domain="[('state', '=', 'confirmed')]"/>
                 <filter name="to_invoice" string="À facturer" domain="[('state', '=', 'confirmed')]"/>
                 <filter name="cancelled" string="Annulées" domain="[('state', '=', 'cancelled')]"/>
-                <separator/>
-                <filter name="overdue_30" string="Retard &gt; 30 j." domain="[('days_late', '&gt;', 30)]"/>
-                <filter name="overdue_15" string="Retard &gt; 15 j." domain="[('days_late', '&gt;', 15)]"/>
                 <separator/>
                 <!-- GroupBy -->
                 <group expand="0" string="Regrouper par">
