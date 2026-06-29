@@ -85,26 +85,19 @@
         </field>
     </record>
 
-    <!-- Vue recherche avancée -->
+    <!-- Vue recherche -->
     <record id="view_re_penalty_search" model="ir.ui.view">
         <field name="name">re.penalty.search</field>
         <field name="model">re.penalty</field>
         <field name="arch" type="xml">
-            <search string="Recherche pénalités">
+            <search string="Pénalités">
                 <field name="name" string="Référence"/>
                 <field name="lease_id" string="Bail"/>
                 <field name="invoice_id" string="Quittance"/>
-                <!-- Filtres rapides -->
-                <filter name="pending" string="En attente" domain="[('state', '=', 'draft')]"/>
-                <filter name="confirmed" string="Confirmées" domain="[('state', '=', 'confirmed')]"/>
-                <filter name="to_invoice" string="À facturer" domain="[('state', '=', 'confirmed')]"/>
-                <filter name="cancelled" string="Annulées" domain="[('state', '=', 'cancelled')]"/>
-                <separator/>
-                <!-- GroupBy -->
-                <group expand="0" string="Regrouper par">
-                    <filter name="group_by_lease" string="Bail" context="{'group_by': 'lease_id'}"/>
-                    <filter name="group_by_state" string="Statut" context="{'group_by': 'state'}"/>
-                </group>
+                <filter name="pending"   string="En attente" domain="[('state','=','draft')]"/>
+                <filter name="confirmed" string="Confirmées" domain="[('state','=','confirmed')]"/>
+                <filter name="invoiced"  string="Facturées"  domain="[('state','=','invoiced')]"/>
+                <filter name="cancelled" string="Annulées"   domain="[('state','=','cancelled')]"/>
             </search>
         </field>
     </record>
@@ -113,8 +106,6 @@
         <field name="name">Pénalités</field>
         <field name="res_model">re.penalty</field>
         <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_re_penalty_search"/>
-        <field name="context">{'search_default_pending': 1}</field>
     </record>
 
     <!-- Pénalités depuis un bail -->
@@ -122,7 +113,6 @@
         <field name="name">Pénalités</field>
         <field name="res_model">re.penalty</field>
         <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_re_penalty_search"/>
         <field name="domain">[('lease_id', '=', active_id)]</field>
         <field name="context">{'default_lease_id': active_id}</field>
     </record>
