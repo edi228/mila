@@ -41,10 +41,10 @@ class ReLease(models.Model):
     advance_months = fields.Integer(string="Mois d'avance", default=0, tracking=True)
     advance_amount = fields.Monetary(string="Total avance", compute='_compute_signature_total', store=True)
     
-    deposit_amount = fields.Monetary(string="Dépôt de garantie", tracking=True)
-    deposit_paid = fields.Boolean(string="Dépôt encaissé", tracking=True)
+    deposit_amount = fields.Monetary(string="Caution", tracking=True)
+    deposit_paid = fields.Boolean(string="Caution encaissée", tracking=True)
     deposit_paid_date = fields.Date(string="Date d'encaissement")
-    deposit_returned = fields.Boolean(string="Dépôt restitué", tracking=True)
+    deposit_returned = fields.Boolean(string="Caution restituée", tracking=True)
     deposit_return_date = fields.Date(string="Date de restitution")
     deposit_deductions = fields.Monetary(string="Déductions sur caution")
     deposit_deduction_note = fields.Text(string="Justification déductions")
@@ -109,6 +109,28 @@ class ReLease(models.Model):
     penalty_ids = fields.One2many('re.penalty', 'lease_id', string="Pénalités générées")
     penalty_count = fields.Integer(string="Pénalités", compute='_compute_penalty_count')
     identity_ids = fields.One2many('re.lease.identity', 'lease_id', string="Pièces d'identité")
+
+    # ── Champs inline Locataire (related pour édition directe depuis le bail) ──
+    tenant_phone = fields.Char(related='tenant_id.phone', string="Téléphone", readonly=False)
+    tenant_mobile = fields.Char(related='tenant_id.mobile', string="Mobile", readonly=False)
+    tenant_email = fields.Char(related='tenant_id.email', string="Email", readonly=False)
+    tenant_identity_doc_type   = fields.Selection(related='tenant_id.identity_doc_type', string="Type pièce", readonly=False)
+    tenant_identity_doc_number = fields.Char(related='tenant_id.identity_doc_number', string="Numéro pièce", readonly=False)
+    tenant_identity_doc_expiry = fields.Date(related='tenant_id.identity_doc_expiry', string="Expiration pièce", readonly=False)
+    tenant_identity_expired    = fields.Boolean(related='tenant_id.identity_doc_expired', string="Pièce expirée")
+    tenant_identity_doc_scan   = fields.Binary(related='tenant_id.identity_doc_scan', string="Scan recto", readonly=False, attachment=True)
+    tenant_identity_doc_scan_name = fields.Char(related='tenant_id.identity_doc_scan_name', readonly=False)
+    tenant_identity_doc_scan_back = fields.Binary(related='tenant_id.identity_doc_scan_back', string="Scan verso", readonly=False, attachment=True)
+    tenant_identity_doc_scan_back_name = fields.Char(related='tenant_id.identity_doc_scan_back_name', readonly=False)
+
+    # ── Champs inline Garant ──────────────────────────────────────────────
+    guarantor_phone = fields.Char(related='guarantor_id.phone', string="Téléphone garant", readonly=False)
+    guarantor_email = fields.Char(related='guarantor_id.email', string="Email garant", readonly=False)
+    guarantor_identity_doc_type   = fields.Selection(related='guarantor_id.identity_doc_type', string="Type pièce (garant)", readonly=False)
+    guarantor_identity_doc_number = fields.Char(related='guarantor_id.identity_doc_number', string="Numéro (garant)", readonly=False)
+    guarantor_identity_doc_expiry = fields.Date(related='guarantor_id.identity_doc_expiry', string="Expiration (garant)", readonly=False)
+
+
 
     # État des lieux (Entrée / Sortie)
     checkin_image_ids = fields.Many2many('ir.attachment', relation='re_lease_checkin_rel', string="Photos EDLE")

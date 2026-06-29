@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- ─────────────────────────────────────────────────────────────
+         FORMULAIRE PRINCIPAL DU BAIL
+    ───────────────────────────────────────────────────────────────── -->
     <record id="view_re_lease_form" model="ir.ui.view">
         <field name="name">re.lease.form</field>
         <field name="model">re.lease</field>
@@ -36,18 +39,66 @@
                             <field name="start_date"/>
                             <field name="end_date"/>
                         </group>
-                        <group string="Financier">
+                        <group string="Conditions financières">
                             <field name="rent_amount"/>
                             <field name="currency_id" invisible="1"/>
                             <field name="advance_months"/>
-                            <field name="advance_amount"/>
+                            <field name="advance_amount" readonly="1"/>
                             <field name="deposit_amount"/>
-                            <field name="signature_total"/>
+                            <field name="deposit_paid"/>
+                            <field name="deposit_paid_date" invisible="not deposit_paid"/>
+                            <field name="deposit_returned"/>
+                            <field name="deposit_return_date" invisible="not deposit_returned"/>
+                            <field name="signature_total" readonly="1"/>
                             <field name="next_invoice_date"/>
                         </group>
                     </group>
+
                     <notebook>
-                        <page string="Facturation">
+                        <!-- ── ONGLET LOCATAIRE (inline, sans navigation) ── -->
+                        <page string="👤 Locataire" name="tenant_tab">
+                            <group>
+                                <group string="Coordonnées">
+                                    <field name="tenant_id" string="Locataire"
+                                           options="{'no_open': True}"/>
+                                    <field name="tenant_ref_snapshot" string="Réf. locataire" readonly="1"/>
+                                    <!-- Champs related du partenaire locataire -->
+                                    <field name="tenant_phone" string="Téléphone"/>
+                                    <field name="tenant_mobile" string="Mobile"/>
+                                    <field name="tenant_email" string="Email"/>
+                                </group>
+                                <group string="Pièce d'identité">
+                                    <field name="tenant_identity_doc_type" string="Type de pièce"/>
+                                    <field name="tenant_identity_doc_number" string="Numéro"/>
+                                    <field name="tenant_identity_doc_expiry" string="Expiration"/>
+                                    <field name="tenant_identity_expired" string="⚠️ Expirée"
+                                           readonly="1" invisible="not tenant_identity_expired"/>
+                                </group>
+                            </group>
+                            <group string="Scan de la pièce d'identité">
+                                <field name="tenant_identity_doc_scan" string="Recto"
+                                       widget="binary" filename="tenant_identity_doc_scan_name"/>
+                                <field name="tenant_identity_doc_scan_name" invisible="1"/>
+                                <field name="tenant_identity_doc_scan_back" string="Verso"
+                                       widget="binary" filename="tenant_identity_doc_scan_back_name"/>
+                                <field name="tenant_identity_doc_scan_back_name" invisible="1"/>
+                            </group>
+                            <group string="Garant" invisible="not guarantor_id">
+                                <field name="guarantor_id" string="Garant" options="{'no_open': True}"/>
+                                <field name="guarantor_phone" string="Téléphone garant"/>
+                                <field name="guarantor_email" string="Email garant"/>
+                                <field name="guarantor_identity_doc_type" string="Type pièce (garant)"/>
+                                <field name="guarantor_identity_doc_number" string="Numéro (garant)"/>
+                                <field name="guarantor_identity_doc_expiry" string="Expiration (garant)"/>
+                            </group>
+                            <group string="Co-locataires" invisible="not co_tenant_ids">
+                                <field name="co_tenant_ids" string="Co-locataires"
+                                       widget="many2many_tags" options="{'no_open': True}"/>
+                            </group>
+                        </page>
+
+                        <!-- ── ONGLET FACTURATION ── -->
+                        <page string="💰 Facturation" name="billing_tab">
                             <group string="Loyer de base (généré automatiquement)">
                                 <field name="line_ids" nolabel="1" domain="[('is_rent_line', '=', True)]">
                                     <list create="0" delete="0">
@@ -74,7 +125,9 @@
                                 </field>
                             </group>
                         </page>
-                        <page string="Taxes &amp; Épargne">
+
+                        <!-- ── ONGLET TAXES & ÉPARGNE ── -->
+                        <page string="📊 Taxes &amp; Épargne" name="taxes_saving_tab">
                             <group string="Taxes applicables">
                                 <field name="tax_line_ids" nolabel="1">
                                     <list editable="bottom">
@@ -86,24 +139,102 @@
                                 </field>
                             </group>
                             <group string="Règles d'épargne provisionnée">
+                                <p class="text-muted" style="margin-bottom:8px;">
+                                    L'épargne est automatiquement calculée et enregistrée lors de chaque quittance de loyer.
+                                    Vous pouvez annuler une ligne d'épargne sur la quittance concernée.
+                                </p>
                                 <field name="saving_rule_ids" nolabel="1">
                                     <list editable="bottom">
                                         <field name="name"/>
                                         <field name="mode"/>
                                         <field name="value"/>
                                         <field name="base"/>
+                                        <field name="target_account_id"
+                                               options="{'no_create': True}"
+                                               domain="[('account_type', 'not in', ['asset_cash','liability_payable'])]"/>
                                         <field name="is_active"/>
                                     </list>
                                 </field>
                             </group>
                         </page>
-                        <page string="Docs &amp; Signatures">
-                            <group>
-                                <field name="signature_tenant" widget="signature"/>
-                                <field name="signature_owner" widget="signature"/>
-                                <field name="is_fully_signed"/>
-                                <field name="contract_pdf_id"/>
+
+                        <!-- ── ONGLET PÉNALITÉS ── -->
+                        <page string="⚠️ Pénalités" name="penalties_tab">
+                            <group string="Calendrier des pénalités">
+                                <p class="text-muted" style="margin-bottom:8px;">
+                                    Définissez ici les paliers de pénalités applicables aux loyers impayés.
+                                    Les pénalités sont calculées automatiquement par le système.
+                                </p>
+                                <field name="schedule_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name"/>
+                                        <field name="trigger_days" string="Délai (jours)"/>
+                                        <field name="mode"/>
+                                        <field name="value"/>
+                                        <field name="base"/>
+                                        <field name="is_active"/>
+                                        <field name="auto_generate"/>
+                                    </list>
+                                </field>
                             </group>
+                            <group string="Pénalités générées">
+                                <field name="penalty_ids" nolabel="1">
+                                    <list decoration-danger="days_late &gt; 30" decoration-warning="days_late &gt; 15">
+                                        <field name="name" readonly="1"/>
+                                        <field name="invoice_id" string="Quittance"/>
+                                        <field name="days_late" string="Retard (j)"/>
+                                        <field name="penalty_amount" string="Montant"/>
+                                        <field name="state" widget="badge"
+                                               decoration-warning="state=='draft'"
+                                               decoration-success="state=='invoiced'"
+                                               decoration-danger="state=='cancelled'"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+
+                        <!-- ── ONGLET ÉTAT DES LIEUX ── -->
+                        <page string="🏠 État des lieux" name="checkin_tab">
+                            <group string="Entrée dans les lieux">
+                                <field name="checkin_done"/>
+                                <field name="checkin_date"/>
+                                <field name="checkin_note" widget="html"/>
+                                <field name="checkin_image_ids" widget="many2many_binary"/>
+                            </group>
+                            <group string="Sortie des lieux">
+                                <field name="checkout_done"/>
+                                <field name="checkout_date"/>
+                                <field name="checkout_note" widget="html"/>
+                                <field name="deposit_deductions" string="Déductions sur caution"/>
+                                <field name="deposit_deduction_note"/>
+                                <field name="checkout_image_ids" widget="many2many_binary"/>
+                            </group>
+                        </page>
+
+                        <!-- ── ONGLET SIGNATURES ── -->
+                        <page string="✍️ Signatures" name="signatures_tab">
+                            <group>
+                                <group string="Signature Locataire">
+                                    <field name="signature_tenant" widget="signature"/>
+                                    <field name="signature_tenant_date"/>
+                                    <field name="signature_tenant_name"/>
+                                </group>
+                                <group string="Signature Propriétaire">
+                                    <field name="signature_owner" widget="signature"/>
+                                    <field name="signature_owner_date"/>
+                                    <field name="signature_owner_name"/>
+                                </group>
+                            </group>
+                            <group>
+                                <field name="is_fully_signed" readonly="1"/>
+                                <field name="contract_pdf_id" string="Contrat PDF signé"/>
+                            </group>
+                        </page>
+
+                        <!-- ── ONGLET NOTES INTERNES ── -->
+                        <page string="📝 Notes" name="notes_tab">
+                            <field name="internal_note" widget="html"/>
                         </page>
                     </notebook>
                 </sheet>
@@ -112,6 +243,9 @@
         </field>
     </record>
 
+    <!-- ─────────────────────────────────────────────────────────────
+         VUE LISTE DES BAUX
+    ───────────────────────────────────────────────────────────────── -->
     <record id="view_re_lease_tree" model="ir.ui.view">
         <field name="name">re.lease.tree</field>
         <field name="model">re.lease</field>
@@ -121,12 +255,21 @@
                 <field name="property_id"/>
                 <field name="tenant_id"/>
                 <field name="start_date"/>
+                <field name="end_date"/>
                 <field name="rent_amount"/>
-                <field name="lease_state" widget="badge" decoration-success="lease_state=='3_progress'"/>
+                <field name="deposit_amount" string="Caution"/>
+                <field name="lmr" string="LMR"/>
+                <field name="lease_state" widget="badge"
+                       decoration-success="lease_state=='3_progress'"
+                       decoration-warning="lease_state=='4_paused'"
+                       decoration-info="lease_state=='1_draft'"/>
             </list>
         </field>
     </record>
 
+    <!-- ─────────────────────────────────────────────────────────────
+         ACTIONS
+    ───────────────────────────────────────────────────────────────── -->
     <record id="action_re_lease_all" model="ir.actions.act_window">
         <field name="name">Tous les baux</field>
         <field name="res_model">re.lease</field>
@@ -139,10 +282,46 @@
         <field name="view_mode">list,form</field>
         <field name="domain">[('lease_state', '=', '3_progress')]</field>
     </record>
-    
+
     <record id="action_re_building" model="ir.actions.act_window">
         <field name="name">Immeubles</field>
         <field name="res_model">re.building</field>
         <field name="view_mode">list,form</field>
     </record>
+
+    <!-- Actions finances (quittances + paiements) -->
+    <record id="action_re_lease_invoices" model="ir.actions.act_window">
+        <field name="name">Quittances de loyer</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', '=', 'out_invoice')]</field>
+        <field name="context">{'default_move_type': 'out_invoice', 'search_default_posted': 1}</field>
+    </record>
+
+    <record id="action_re_lease_payments" model="ir.actions.act_window">
+        <field name="name">Reçus de paiement</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('payment_type', '=', 'inbound')]</field>
+        <field name="context">{'default_payment_type': 'inbound'}</field>
+    </record>
+
+    <!-- Action Locataires -->
+    <record id="action_re_tenants" model="ir.actions.act_window">
+        <field name="name">Locataires</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('is_tenant', '=', True)]</field>
+        <field name="context">{'default_is_tenant': True, 'default_re_contact_type': 'tenant'}</field>
+    </record>
+
+    <!-- Action Propriétaires -->
+    <record id="action_re_owners" model="ir.actions.act_window">
+        <field name="name">Propriétaires</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('is_property_owner', '=', True)]</field>
+        <field name="context">{'default_is_property_owner': True, 'default_re_contact_type': 'owner'}</field>
+    </record>
+
 </odoo>

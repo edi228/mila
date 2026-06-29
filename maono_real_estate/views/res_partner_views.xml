@@ -1,31 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Extension de la fiche contact pour le rôle immobilier -->
+    <!-- ─────────────────────────────────────────────────────────────
+         EXTENSION DE LA FICHE CONTACT (res.partner)
+         Ajoute : smart buttons, rôle immobilier, pièce d'identité
+    ───────────────────────────────────────────────────────────────── -->
     <record id="view_res_partner_re_form" model="ir.ui.view">
         <field name="name">res.partner.re.form</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <!-- Smart buttons -->
+
+            <!-- ── Smart buttons ── -->
             <xpath expr="//div[@name='button_box']" position="inside">
-                <button name="action_view_re_properties" type="object" class="oe_stat_button"
-                        icon="fa-home" invisible="owner_property_count == 0">
+                <button name="action_view_re_properties" type="object"
+                        class="oe_stat_button" icon="fa-home"
+                        invisible="owner_property_count == 0">
                     <field name="owner_property_count" widget="statinfo" string="Biens"/>
                 </button>
-                <button name="action_view_re_leases" type="object" class="oe_stat_button"
-                        icon="fa-file-text-o" invisible="lease_count == 0">
+                <button name="action_view_re_leases" type="object"
+                        class="oe_stat_button" icon="fa-file-text-o"
+                        invisible="lease_count == 0">
                     <field name="lease_count" widget="statinfo" string="Baux"/>
                 </button>
+                <button name="action_view_guarantor_leases" type="object"
+                        class="oe_stat_button" icon="fa-shield"
+                        invisible="not is_guarantor">
+                    <span class="o_stat_text">Garant</span>
+                </button>
             </xpath>
-            <!-- Champs rôle immobilier — après le champ company_type -->
+
+            <!-- ── Rôle principal + booléens juste après le nom ── -->
             <xpath expr="//field[@name='name']" position="after">
-                <group string="Rôle Immobilier" col="2">
-                    <field name="is_property_owner"/>
-                    <field name="is_tenant"/>
-                    <field name="is_guarantor"/>
-                    <field name="tenant_ref" readonly="1" invisible="not is_tenant"/>
+                <group string="Rôle dans l'immobilier" col="4">
+                    <field name="re_contact_type" string="Rôle principal"/>
+                    <field name="is_tenant" string="Locataire"/>
+                    <field name="is_property_owner" string="Propriétaire"/>
+                    <field name="is_guarantor" string="Garant"/>
+                    <field name="tenant_ref" readonly="1"
+                           string="Réf. locataire"
+                           invisible="not is_tenant"/>
+                    <field name="total_lmr" readonly="1"
+                           string="LMR total actuel"
+                           invisible="not is_tenant or total_lmr == 0"/>
                 </group>
+            </xpath>
+
+            <!-- ── Onglet Immobilier (pièce d'identité + stats) ── -->
+            <xpath expr="//notebook" position="inside">
+                <page string="🏠 Immobilier" name="re_immobilier_tab">
+                    <group string="Pièce d'identité" col="2">
+                        <field name="identity_doc_type" string="Type de pièce"/>
+                        <field name="identity_doc_number" string="Numéro"/>
+                        <field name="identity_doc_expiry" string="Date d'expiration"/>
+                        <field name="identity_doc_expired"
+                               string="⚠️ Pièce expirée"
+                               readonly="1"
+                               invisible="not identity_doc_expired"/>
+                    </group>
+                    <group string="Scans">
+                        <field name="identity_doc_scan"
+                               string="Recto (PDF/image)"
+                               widget="binary"
+                               filename="identity_doc_scan_name"/>
+                        <field name="identity_doc_scan_name" invisible="1"/>
+                        <field name="identity_doc_scan_back"
+                               string="Verso"
+                               widget="binary"
+                               filename="identity_doc_scan_back_name"/>
+                        <field name="identity_doc_scan_back_name" invisible="1"/>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         VUE LISTE ÉTENDUE DES CONTACTS (pour menu Locataires / Propriétaires)
+    ───────────────────────────────────────────────────────────────── -->
+    <record id="view_res_partner_re_tree" model="ir.ui.view">
+        <field name="name">res.partner.re.tree</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//list" position="attributes">
+                <attribute name="decoration-warning">identity_doc_expired == True</attribute>
+            </xpath>
+            <xpath expr="//field[@name='email']" position="after">
+                <field name="re_contact_type" string="Rôle" optional="show"/>
+                <field name="tenant_ref" string="Réf. locataire" optional="show"/>
+                <field name="active_lease_count" string="Baux actifs" optional="show"/>
+                <field name="identity_doc_type" string="Pièce" optional="show"/>
+                <field name="identity_doc_expiry" string="Expiration" optional="show"/>
+                <field name="identity_doc_expired" string="Expirée" optional="show"/>
             </xpath>
         </field>
     </record>

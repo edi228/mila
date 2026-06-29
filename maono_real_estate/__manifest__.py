@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Module de Gestion Immobilière',
-    'version': '3.3',
+    'version': '4.0',
     'category': 'Real Estate',
     'summary': 'Gestion immobilière locative complète : patrimoine, baux, quittances, interventions, taxes, pénalités, épargne, dashboard OWL.',
     'description': """
 Module de Gestion Immobilière — Odoo 19
 =======================================
-Auteur : AFRO IT | Version 3.3
+Auteur : AFRO IT | Version 4.0
     """,
     'author': 'AFRO IT',
     'depends': ['sale', 'account', 'mail', 'payment', 'portal', 'rating'],

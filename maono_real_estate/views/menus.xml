@@ -1,78 +1,264 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- ─────────────────────────────────────────────────────────────
+         ACTIONS FENÊTRE
+    ───────────────────────────────────────────────────────────────── -->
+
+    <!-- Patrimoine -->
     <record id="action_re_property" model="ir.actions.act_window">
         <field name="name">Biens immobiliers</field>
         <field name="res_model">re.property</field>
         <field name="view_mode">list,form,kanban</field>
     </record>
-    <record id="action_re_dashboard_dummy" model="ir.actions.act_window">
-        <field name="name">Dashboard</field>
-        <field name="res_model">re.property</field>
-        <field name="view_mode">kanban,list</field>
-    </record>
+
     <record id="action_re_building" model="ir.actions.act_window">
         <field name="name">Immeubles</field>
         <field name="res_model">re.building</field>
         <field name="view_mode">list,form</field>
     </record>
+
+    <!-- Dashboard -->
+    <record id="action_re_dashboard_dummy" model="ir.actions.act_window">
+        <field name="name">Dashboard</field>
+        <field name="res_model">re.property</field>
+        <field name="view_mode">kanban,list</field>
+    </record>
+
+    <!-- Locations -->
     <record id="action_re_lease_all" model="ir.actions.act_window">
         <field name="name">Tous les baux</field>
         <field name="res_model">re.lease</field>
         <field name="view_mode">list,form</field>
     </record>
+
     <record id="action_re_lease_active" model="ir.actions.act_window">
         <field name="name">Baux Actifs</field>
         <field name="res_model">re.lease</field>
         <field name="view_mode">list,form</field>
+        <field name="domain">[('lease_state', '=', '3_progress')]</field>
     </record>
+
+    <!-- Locataires (res.partner filtré) -->
+    <record id="action_re_tenants" model="ir.actions.act_window">
+        <field name="name">Locataires</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('is_tenant', '=', True)]</field>
+        <field name="context">{'default_is_tenant': True, 'default_re_contact_type': 'tenant'}</field>
+    </record>
+
+    <!-- Propriétaires (res.partner filtré) -->
+    <record id="action_re_owners" model="ir.actions.act_window">
+        <field name="name">Propriétaires</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="domain">[('is_property_owner', '=', True)]</field>
+        <field name="context">{'default_is_property_owner': True, 'default_re_contact_type': 'owner'}</field>
+    </record>
+
+    <!-- Pénalités -->
     <record id="action_re_penalty" model="ir.actions.act_window">
         <field name="name">Pénalités</field>
         <field name="res_model">re.penalty</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('state', '!=', 'cancelled')]</field>
     </record>
+
+    <!-- Interventions -->
     <record id="action_re_property_service" model="ir.actions.act_window">
-        <field name="name">Services</field>
+        <field name="name">Services &amp; Travaux</field>
         <field name="res_model">re.property.service</field>
         <field name="view_mode">list,form</field>
     </record>
+
+    <!-- Finances : Quittances de loyer -->
+    <record id="action_re_lease_invoices" model="ir.actions.act_window">
+        <field name="name">Quittances de loyer</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('move_type', '=', 'out_invoice')]</field>
+        <field name="context">{'default_move_type': 'out_invoice', 'search_default_posted': 1}</field>
+    </record>
+
+    <!-- Finances : Reçus de paiement -->
+    <record id="action_re_lease_payments" model="ir.actions.act_window">
+        <field name="name">Reçus de paiement</field>
+        <field name="res_model">account.payment</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('payment_type', '=', 'inbound')]</field>
+        <field name="context">{'default_payment_type': 'inbound'}</field>
+    </record>
+
+    <!-- Configuration -->
     <record id="action_re_lease_plan" model="ir.actions.act_window">
-        <field name="name">Plans</field>
+        <field name="name">Plans de périodicité</field>
         <field name="res_model">re.lease.plan</field>
         <field name="view_mode">list,form</field>
     </record>
-    <record id="action_re_tax_real_estate" model="ir.actions.act_window">
-        <field name="name">Taxes</field>
-        <field name="res_model">account.tax</field>
+
+    <record id="action_re_lease_close_reason" model="ir.actions.act_window">
+        <field name="name">Motifs de résiliation</field>
+        <field name="res_model">re.lease.close.reason</field>
         <field name="view_mode">list,form</field>
     </record>
 
-    <!-- Root Menu -->
-    <menuitem id="menu_re_root" name="Immobilier" web_icon="maono_real_estate,static/description/icon.png" sequence="10"/>
+    <record id="action_re_tax_real_estate" model="ir.actions.act_window">
+        <field name="name">Taxes immobilières</field>
+        <field name="res_model">account.tax</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('is_real_estate_tax', '=', True)]</field>
+    </record>
 
-    <!-- Level 1 -->
-    <menuitem id="menu_re_dashboard" name="Tableau de bord" parent="menu_re_root" sequence="10" action="action_re_dashboard_owl"/>
-    <menuitem id="menu_re_patrimoine" name="Patrimoine" parent="menu_re_root" sequence="20"/>
-    <menuitem id="menu_re_locations" name="Locations" parent="menu_re_root" sequence="30"/>
-    <menuitem id="menu_re_facturation" name="Facturation" parent="menu_re_root" sequence="40"/>
-    <menuitem id="menu_re_interventions" name="Interventions" parent="menu_re_root" sequence="50"/>
-    <menuitem id="menu_re_reporting" name="Reporting" parent="menu_re_root" sequence="80"/>
-    <menuitem id="menu_re_config" name="Configuration" parent="menu_re_root" sequence="100"/>
+    <record id="action_re_lease_template" model="ir.actions.act_window">
+        <field name="name">Modèles de bail</field>
+        <field name="res_model">re.lease.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
 
-    <!-- Level 2: Patrimoine -->
-    <menuitem id="menu_re_building" name="Immeubles" parent="menu_re_patrimoine" sequence="10" action="action_re_building"/>
-    <menuitem id="menu_re_property" name="Biens" parent="menu_re_patrimoine" sequence="20" action="action_re_property"/>
+    <!-- ─────────────────────────────────────────────────────────────
+         MENU RACINE
+    ───────────────────────────────────────────────────────────────── -->
+    <menuitem id="menu_re_root"
+              name="Immobilier"
+              web_icon="maono_real_estate,static/description/icon.png"
+              sequence="10"/>
 
-    <!-- Level 2: Locations -->
-    <menuitem id="menu_re_lease_active" name="Baux actifs" parent="menu_re_locations" sequence="10" action="action_re_lease_active"/>
-    <menuitem id="menu_re_lease_all" name="Tous les baux" parent="menu_re_locations" sequence="20" action="action_re_lease_all"/>
-    <menuitem id="menu_re_penalty" name="Pénalités" parent="menu_re_locations" sequence="30" action="action_re_penalty"/>
+    <!-- ─────────────────────────────────────────────────────────────
+         NIVEAU 1
+    ───────────────────────────────────────────────────────────────── -->
+    <menuitem id="menu_re_dashboard"
+              name="📊 Tableau de bord"
+              parent="menu_re_root"
+              sequence="10"
+              action="action_re_dashboard_owl"/>
 
-    <!-- Level 2: Interventions -->
-    <menuitem id="menu_re_service" name="Services &amp; Travaux" parent="menu_re_interventions" sequence="10" action="action_re_property_service"/>
+    <menuitem id="menu_re_patrimoine"
+              name="🏢 Patrimoine"
+              parent="menu_re_root"
+              sequence="20"/>
 
-    <!-- Level 2: Configuration -->
-    <menuitem id="menu_re_config_plan" name="Plans de périodicité" parent="menu_re_config" sequence="10" action="action_re_lease_plan"/>
-    <menuitem id="menu_re_config_tax" name="Taxes immobilières" parent="menu_re_config" sequence="20" action="action_re_tax_real_estate"/>
+    <menuitem id="menu_re_locations"
+              name="📄 Locations"
+              parent="menu_re_root"
+              sequence="30"/>
+
+    <menuitem id="menu_re_finances"
+              name="💰 Finances"
+              parent="menu_re_root"
+              sequence="40"/>
+
+    <menuitem id="menu_re_interventions"
+              name="🔧 Interventions"
+              parent="menu_re_root"
+              sequence="50"/>
+
+    <menuitem id="menu_re_reporting"
+              name="📈 Reporting"
+              parent="menu_re_root"
+              sequence="80"/>
+
+    <menuitem id="menu_re_config"
+              name="⚙️ Configuration"
+              parent="menu_re_root"
+              sequence="100"/>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         NIVEAU 2 : Patrimoine
+    ───────────────────────────────────────────────────────────────── -->
+    <menuitem id="menu_re_building"
+              name="Immeubles"
+              parent="menu_re_patrimoine"
+              sequence="10"
+              action="action_re_building"/>
+
+    <menuitem id="menu_re_property"
+              name="Biens immobiliers"
+              parent="menu_re_patrimoine"
+              sequence="20"
+              action="action_re_property"/>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         NIVEAU 2 : Locations
+    ───────────────────────────────────────────────────────────────── -->
+    <menuitem id="menu_re_lease_active"
+              name="Baux actifs"
+              parent="menu_re_locations"
+              sequence="10"
+              action="action_re_lease_active"/>
+
+    <menuitem id="menu_re_lease_all"
+              name="Tous les baux"
+              parent="menu_re_locations"
+              sequence="20"
+              action="action_re_lease_all"/>
+
+    <menuitem id="menu_re_tenants"
+              name="Locataires"
+              parent="menu_re_locations"
+              sequence="30"
+              action="action_re_tenants"/>
+
+    <menuitem id="menu_re_owners"
+              name="Propriétaires"
+              parent="menu_re_locations"
+              sequence="40"
+              action="action_re_owners"/>
+
+    <menuitem id="menu_re_penalty"
+              name="Pénalités"
+              parent="menu_re_locations"
+              sequence="60"
+              action="action_re_penalty"/>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         NIVEAU 2 : Finances
+    ───────────────────────────────────────────────────────────────── -->
+    <menuitem id="menu_re_invoices"
+              name="Quittances de loyer"
+              parent="menu_re_finances"
+              sequence="10"
+              action="action_re_lease_invoices"/>
+
+    <menuitem id="menu_re_payments"
+              name="Reçus de paiement"
+              parent="menu_re_finances"
+              sequence="20"
+              action="action_re_lease_payments"/>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         NIVEAU 2 : Interventions
+    ───────────────────────────────────────────────────────────────── -->
+    <menuitem id="menu_re_service"
+              name="Services &amp; Travaux"
+              parent="menu_re_interventions"
+              sequence="10"
+              action="action_re_property_service"/>
+
+    <!-- ─────────────────────────────────────────────────────────────
+         NIVEAU 2 : Configuration
+    ───────────────────────────────────────────────────────────────── -->
+    <menuitem id="menu_re_config_plan"
+              name="Plans de périodicité"
+              parent="menu_re_config"
+              sequence="10"
+              action="action_re_lease_plan"/>
+
+    <menuitem id="menu_re_config_template"
+              name="Modèles de bail"
+              parent="menu_re_config"
+              sequence="20"
+              action="action_re_lease_template"/>
+
+    <menuitem id="menu_re_config_close_reason"
+              name="Motifs de résiliation"
+              parent="menu_re_config"
+              sequence="30"
+              action="action_re_lease_close_reason"/>
+
+    <menuitem id="menu_re_config_tax"
+              name="Taxes immobilières"
+              parent="menu_re_config"
+              sequence="40"
+              action="action_re_tax_real_estate"/>
 
 </odoo>
