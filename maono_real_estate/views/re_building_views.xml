@@ -11,9 +11,19 @@
             <form>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
-                        <button name="action_view_properties" type="object" class="oe_stat_button"
-                                icon="fa-home">
-                            <field name="property_count" widget="statinfo" string="Biens"/>
+                        <button name="action_view_properties" type="object"
+                                class="oe_stat_button" icon="fa-home">
+                            <div class="o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="occupied_count"/>/<field name="property_count"/>
+                                </span>
+                                <span class="o_stat_text">Occupés</span>
+                            </div>
+                        </button>
+                        <button name="action_open_maps" type="object"
+                                class="oe_stat_button" icon="fa-map-marker"
+                                invisible="not maps_url">
+                            <span class="o_stat_text">📍 Carte</span>
                         </button>
                     </div>
                     <widget name="web_ribbon" title="Archivé" bg_color="bg-danger" invisible="active"/>
@@ -24,14 +34,20 @@
                         <h3><field name="ref" readonly="1"/></h3>
                     </div>
                     <group>
-                        <group string="Propriétaire">
-                            <field name="owner_id"/>
+                        <group string="Propriété &amp; Contacts">
+                            <field name="owner_id"
+                                   options="{'no_open': False}"
+                                   context="{'default_is_property_owner': True, 'default_re_contact_type': 'owner'}"/>
+                            <field name="geo_partner_id"
+                                   string="Contact / Localisation GPS"
+                                   options="{'no_open': False}"
+                                   help="Sélectionnez un contact dont l'adresse GPS sera utilisée pour la carte"/>
                         </group>
                         <group string="Statistiques">
                             <field name="occupation_rate" widget="percentage"/>
-                            <field name="occupied_count"/>
-                            <field name="available_count"/>
-                            <field name="expected_monthly_revenue"/>
+                            <field name="occupied_count" string="Biens occupés"/>
+                            <field name="available_count" string="Biens disponibles"/>
+                            <field name="expected_monthly_revenue" string="Revenus mensuels"/>
                             <field name="currency_id" invisible="1"/>
                         </group>
                     </group>
@@ -42,14 +58,20 @@
                         <field name="zip"/>
                         <field name="country_id"/>
                     </group>
+                    <group string="Géolocalisation" invisible="not geo_partner_id and not latitude">
+                        <field name="latitude" string="Latitude"/>
+                        <field name="longitude" string="Longitude"/>
+                        <field name="maps_url" string="Lien carte" widget="url" readonly="1"/>
+                    </group>
                     <notebook>
-                        <page string="Biens">
+                        <page string="🏠 Biens">
                             <field name="property_ids" readonly="1">
                                 <list>
                                     <field name="name"/>
                                     <field name="type"/>
                                     <field name="surface"/>
                                     <field name="rent_amount"/>
+                                    <field name="current_tenant_id" string="Locataire actuel" optional="show"/>
                                     <field name="state" widget="badge"
                                            decoration-success="state=='available'"
                                            decoration-info="state=='occupied'"
@@ -58,7 +80,7 @@
                                 </list>
                             </field>
                         </page>
-                        <page string="Description">
+                        <page string="📝 Description">
                             <field name="note"/>
                         </page>
                     </notebook>
@@ -67,6 +89,7 @@
             </form>
         </field>
     </record>
+
 
     <!-- ============================================================
          IMMEUBLE — LIST

@@ -48,9 +48,15 @@ class ReProperty(models.Model):
     current_tenant_id = fields.Many2one('res.partner', string="Locataire actuel", compute='_compute_active_lease')
     next_availability = fields.Date(string="Date de disponibilité", compute='_compute_active_lease')
     
+    # ── Géolocalisation héritée de l'immeuble ──────────────────────────────
+    latitude  = fields.Float(related='building_id.latitude',  string="Latitude",  store=True, digits=(10, 7))
+    longitude = fields.Float(related='building_id.longitude', string="Longitude", store=True, digits=(10, 7))
+    maps_url  = fields.Char(related='building_id.maps_url',   string="Lien Google Maps")
+
     image_1920 = fields.Image(string="Photo principale", max_width=1920, max_height=1920)
-    image_128 = fields.Image(string="Miniature", related='image_1920', max_width=128, max_height=128, store=True)
+    image_128  = fields.Image(string="Miniature", related='image_1920', max_width=128, max_height=128, store=True)
     note = fields.Html(string="Notes")
+
 
     @api.depends('create_date')
     def _compute_ref(self):
