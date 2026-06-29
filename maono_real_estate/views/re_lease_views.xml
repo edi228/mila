@@ -62,33 +62,14 @@
                                     <field name="tenant_id" string="Locataire"
                                            options="{'no_open': True}"/>
                                     <field name="tenant_ref_snapshot" string="Réf. locataire" readonly="1"/>
-                                    <!-- Champs related du partenaire locataire -->
                                     <field name="tenant_phone" string="Téléphone"/>
                                     <field name="tenant_email" string="Email"/>
                                 </group>
-                                <group string="Pièce d'identité">
-                                    <field name="tenant_identity_doc_type" string="Type de pièce"/>
-                                    <field name="tenant_identity_doc_number" string="Numéro"/>
-                                    <field name="tenant_identity_doc_expiry" string="Expiration"/>
-                                    <field name="tenant_identity_expired" string="⚠️ Expirée"
-                                           readonly="1" invisible="not tenant_identity_expired"/>
-                                </group>
-                            </group>
-                            <group string="Scan de la pièce d'identité">
-                                <field name="tenant_identity_doc_scan" string="Recto"
-                                       widget="binary" filename="tenant_identity_doc_scan_name"/>
-                                <field name="tenant_identity_doc_scan_name" invisible="1"/>
-                                <field name="tenant_identity_doc_scan_back" string="Verso"
-                                       widget="binary" filename="tenant_identity_doc_scan_back_name"/>
-                                <field name="tenant_identity_doc_scan_back_name" invisible="1"/>
                             </group>
                             <group string="Garant" invisible="not guarantor_id">
                                 <field name="guarantor_id" string="Garant" options="{'no_open': True}"/>
                                 <field name="guarantor_phone" string="Téléphone garant"/>
                                 <field name="guarantor_email" string="Email garant"/>
-                                <field name="guarantor_identity_doc_type" string="Type pièce (garant)"/>
-                                <field name="guarantor_identity_doc_number" string="Numéro (garant)"/>
-                                <field name="guarantor_identity_doc_expiry" string="Expiration (garant)"/>
                             </group>
                             <group string="Co-locataires" invisible="not co_tenant_ids">
                                 <field name="co_tenant_ids" string="Co-locataires"

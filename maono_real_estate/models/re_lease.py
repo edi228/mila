@@ -110,25 +110,13 @@ class ReLease(models.Model):
     penalty_count = fields.Integer(string="Pénalités", compute='_compute_penalty_count')
     identity_ids = fields.One2many('re.lease.identity', 'lease_id', string="Pièces d'identité")
 
-    # ── Champs inline Locataire (related pour édition directe depuis le bail) ──
+    # ── Champs inline Locataire (related natifs res.partner uniquement) ───
     tenant_phone = fields.Char(related='tenant_id.phone', string="Téléphone", readonly=False)
     tenant_email = fields.Char(related='tenant_id.email', string="Email", readonly=False)
-    tenant_identity_doc_type   = fields.Selection(related='tenant_id.identity_doc_type', string="Type pièce", readonly=False)
-    tenant_identity_doc_number = fields.Char(related='tenant_id.identity_doc_number', string="Numéro pièce", readonly=False)
-    tenant_identity_doc_expiry = fields.Date(related='tenant_id.identity_doc_expiry', string="Expiration pièce", readonly=False)
-    tenant_identity_expired    = fields.Boolean(related='tenant_id.identity_doc_expired', string="Pièce expirée")
-    tenant_identity_doc_scan   = fields.Binary(related='tenant_id.identity_doc_scan', string="Scan recto", readonly=False, attachment=True)
-    tenant_identity_doc_scan_name = fields.Char(related='tenant_id.identity_doc_scan_name', readonly=False)
-    tenant_identity_doc_scan_back = fields.Binary(related='tenant_id.identity_doc_scan_back', string="Scan verso", readonly=False, attachment=True)
-    tenant_identity_doc_scan_back_name = fields.Char(related='tenant_id.identity_doc_scan_back_name', readonly=False)
 
     # ── Champs inline Garant ──────────────────────────────────────────────
     guarantor_phone = fields.Char(related='guarantor_id.phone', string="Téléphone garant", readonly=False)
     guarantor_email = fields.Char(related='guarantor_id.email', string="Email garant", readonly=False)
-    guarantor_identity_doc_type   = fields.Selection(related='guarantor_id.identity_doc_type', string="Type pièce (garant)", readonly=False)
-    guarantor_identity_doc_number = fields.Char(related='guarantor_id.identity_doc_number', string="Numéro (garant)", readonly=False)
-    guarantor_identity_doc_expiry = fields.Date(related='guarantor_id.identity_doc_expiry', string="Expiration (garant)", readonly=False)
-
 
 
     # État des lieux (Entrée / Sortie)

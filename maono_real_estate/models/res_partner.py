@@ -23,54 +23,53 @@ class ResPartner(models.Model):
     
     total_lmr = fields.Monetary(string="Total LMR", compute='_compute_total_lmr', currency_field='currency_id')
 
-    # ── Rôle immobilier principal ──────────────────────────────────────────
+    # ── Rôle immobilier principal (compute = pas de colonne SQL) ───────────
     re_contact_type = fields.Selection([
         ('tenant',   'Locataire'),
         ('owner',    'Propriétaire'),
         ('guarantor','Garant'),
         ('provider', 'Prestataire'),
         ('other',    'Autre'),
-    ], string="Rôle immobilier principal", tracking=True,
-       help="Rôle principal dans la gestion immobilière. Un contact peut cumuler plusieurs rôles "
-            "(cases à cocher ci-dessous); ce champ indique son rôle principal pour les filtres et listes.")
+    ], string="Rôle immobilier principal",
+       compute='_compute_re_contact_type', inverse='_inverse_re_contact_type',
+       store=False,
+       help="Rôle principal dans la gestion immobilière. Un contact peut cumuler plusieurs rôles.")
 
-    # ── Pièce d'identité ──────────────────────────────────────────────────
+    # ── Pièce d'identité (store=False — pas de colonne SQL) ───────────────
     identity_doc_type = fields.Selection([
         ('cni',       "Carte Nationale d'Identité"),
         ('passport',  'Passeport'),
         ('driver',    'Permis de conduire'),
         ('residence', 'Titre de séjour'),
         ('other',     'Autre'),
-    ], string="Type de pièce d'identité")
-    identity_doc_number      = fields.Char(string="Numéro de pièce")
-    identity_doc_scan        = fields.Binary(string="Scan recto (PDF/image)", attachment=True)
-    identity_doc_scan_name   = fields.Char(string="Nom fichier recto")
-    identity_doc_scan_back   = fields.Binary(string="Scan verso", attachment=True)
-    identity_doc_scan_back_name = fields.Char(string="Nom fichier verso")
-    identity_doc_expiry      = fields.Date(string="Date d'expiration pièce")
-    identity_doc_expired     = fields.Boolean(string="Pièce expirée", compute='_compute_identity_expired', store=True)
+    ], string="Type de pièce d'identité", store=False)
+    identity_doc_number  = fields.Char(string="Numéro de pièce", store=False)
+    identity_doc_expiry  = fields.Date(string="Date d'expiration pièce", store=False)
+    identity_doc_expired = fields.Boolean(string="Pièce expirée", compute='_compute_identity_expired')
+    identity_doc_scan_name      = fields.Char(string="Nom fichier recto", store=False)
+    identity_doc_scan_back_name = fields.Char(string="Nom fichier verso", store=False)
 
-    # ── Synchro rôle principal ↔ booléens ────────────────────────────────
-    @api.onchange('re_contact_type')
-    def _onchange_re_contact_type(self):
-        """Coche automatiquement le booléen correspondant au rôle principal."""
-        if self.re_contact_type == 'tenant':
-            self.is_tenant = True
-        elif self.re_contact_type == 'owner':
-            self.is_property_owner = True
-        elif self.re_contact_type == 'guarantor':
-            self.is_guarantor = True
+    # ── Compute du rôle principal depuis les booléens ─────────────────────
+    @api.depends('is_tenant', 'is_property_owner', 'is_guarantor')
+    def _compute_re_contact_type(self):
+        for p in self:
+            if p.is_tenant:
+                p.re_contact_type = 'tenant'
+            elif p.is_property_owner:
+                p.re_contact_type = 'owner'
+            elif p.is_guarantor:
+                p.re_contact_type = 'guarantor'
+            else:
+                p.re_contact_type = False
 
-    @api.onchange('is_tenant', 'is_property_owner', 'is_guarantor')
-    def _onchange_role_booleans(self):
-        """Met à jour le rôle principal si non encore défini."""
-        if not self.re_contact_type:
-            if self.is_tenant:
-                self.re_contact_type = 'tenant'
-            elif self.is_property_owner:
-                self.re_contact_type = 'owner'
-            elif self.is_guarantor:
-                self.re_contact_type = 'guarantor'
+    def _inverse_re_contact_type(self):
+        for p in self:
+            if p.re_contact_type == 'tenant':
+                p.is_tenant = True
+            elif p.re_contact_type == 'owner':
+                p.is_property_owner = True
+            elif p.re_contact_type == 'guarantor':
+                p.is_guarantor = True
 
     @api.depends('identity_doc_expiry')
     def _compute_identity_expired(self):
