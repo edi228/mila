@@ -3,7 +3,8 @@
 
     <!-- ─────────────────────────────────────────────────────────────
          EXTENSION DE LA FICHE CONTACT (res.partner)
-         Ajoute : smart buttons, rôle immobilier, pièce d'identité
+         Ajoute : smart buttons, rôle immobilier
+         Note: identity_doc et scan retirés temporairement (champs non-stockés)
     ───────────────────────────────────────────────────────────────── -->
     <record id="view_res_partner_re_form" model="ir.ui.view">
         <field name="name">res.partner.re.form</field>
@@ -30,7 +31,7 @@
                 </button>
             </xpath>
 
-            <!-- ── Rôle principal + booléens juste après le nom ── -->
+            <!-- ── Rôle principal + booléens ── -->
             <xpath expr="//field[@name='name']" position="after">
                 <group string="Rôle dans l'immobilier" col="4">
                     <field name="re_contact_type" string="Rôle principal"/>
@@ -46,54 +47,21 @@
                 </group>
             </xpath>
 
-            <!-- ── Onglet Immobilier (pièce d'identité + stats) ── -->
-            <xpath expr="//notebook" position="inside">
-                <page string="🏠 Immobilier" name="re_immobilier_tab">
-                    <group string="Pièce d'identité" col="2">
-                        <field name="identity_doc_type" string="Type de pièce"/>
-                        <field name="identity_doc_number" string="Numéro"/>
-                        <field name="identity_doc_expiry" string="Date d'expiration"/>
-                        <field name="identity_doc_expired"
-                               string="⚠️ Pièce expirée"
-                               readonly="1"
-                               invisible="not identity_doc_expired"/>
-                    </group>
-                    <group string="Scans">
-                        <field name="identity_doc_scan"
-                               string="Recto (PDF/image)"
-                               widget="binary"
-                               filename="identity_doc_scan_name"/>
-                        <field name="identity_doc_scan_name" invisible="1"/>
-                        <field name="identity_doc_scan_back"
-                               string="Verso"
-                               widget="binary"
-                               filename="identity_doc_scan_back_name"/>
-                        <field name="identity_doc_scan_back_name" invisible="1"/>
-                    </group>
-                </page>
-            </xpath>
-
         </field>
     </record>
 
     <!-- ─────────────────────────────────────────────────────────────
-         VUE LISTE ÉTENDUE DES CONTACTS (pour menu Locataires / Propriétaires)
+         VUE LISTE ÉTENDUE DES CONTACTS
     ───────────────────────────────────────────────────────────────── -->
     <record id="view_res_partner_re_tree" model="ir.ui.view">
         <field name="name">res.partner.re.tree</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//list" position="attributes">
-                <attribute name="decoration-warning">identity_doc_expired == True</attribute>
-            </xpath>
             <xpath expr="//field[@name='email']" position="after">
                 <field name="re_contact_type" string="Rôle" optional="show"/>
                 <field name="tenant_ref" string="Réf. locataire" optional="show"/>
                 <field name="active_lease_count" string="Baux actifs" optional="show"/>
-                <field name="identity_doc_type" string="Pièce" optional="show"/>
-                <field name="identity_doc_expiry" string="Expiration" optional="show"/>
-                <field name="identity_doc_expired" string="Expirée" optional="show"/>
             </xpath>
         </field>
     </record>
