@@ -64,7 +64,6 @@
                                     <field name="tenant_ref_snapshot" string="Réf. locataire" readonly="1"/>
                                     <!-- Champs related du partenaire locataire -->
                                     <field name="tenant_phone" string="Téléphone"/>
-                                    <field name="tenant_mobile" string="Mobile"/>
                                     <field name="tenant_email" string="Email"/>
                                 </group>
                                 <group string="Pièce d'identité">

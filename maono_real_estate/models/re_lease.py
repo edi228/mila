@@ -112,7 +112,6 @@ class ReLease(models.Model):
 
     # ── Champs inline Locataire (related pour édition directe depuis le bail) ──
     tenant_phone = fields.Char(related='tenant_id.phone', string="Téléphone", readonly=False)
-    tenant_mobile = fields.Char(related='tenant_id.mobile', string="Mobile", readonly=False)
     tenant_email = fields.Char(related='tenant_id.email', string="Email", readonly=False)
     tenant_identity_doc_type   = fields.Selection(related='tenant_id.identity_doc_type', string="Type pièce", readonly=False)
     tenant_identity_doc_number = fields.Char(related='tenant_id.identity_doc_number', string="Numéro pièce", readonly=False)
