@@ -20,11 +20,6 @@
                                 <span class="o_stat_text">Occupés</span>
                             </div>
                         </button>
-                        <button name="action_open_maps" type="object"
-                                class="oe_stat_button" icon="fa-map-marker"
-                                invisible="not maps_url">
-                            <span class="o_stat_text">📍 Carte</span>
-                        </button>
                     </div>
                     <widget name="web_ribbon" title="Archivé" bg_color="bg-danger" invisible="active"/>
                     <field name="active" invisible="1"/>
@@ -38,10 +33,6 @@
                             <field name="owner_id"
                                    options="{'no_open': False}"
                                    context="{'default_is_property_owner': True, 'default_re_contact_type': 'owner'}"/>
-                            <field name="geo_partner_id"
-                                   string="Contact / Localisation GPS"
-                                   options="{'no_open': False}"
-                                   help="Sélectionnez un contact dont l'adresse GPS sera utilisée pour la carte"/>
                         </group>
                         <group string="Statistiques">
                             <field name="occupation_rate" widget="percentage"/>
@@ -57,11 +48,6 @@
                         <field name="city"/>
                         <field name="zip"/>
                         <field name="country_id"/>
-                    </group>
-                    <group string="Géolocalisation" invisible="not geo_partner_id and not latitude">
-                        <field name="latitude" string="Latitude"/>
-                        <field name="longitude" string="Longitude"/>
-                        <field name="maps_url" string="Lien carte" widget="url" readonly="1"/>
                     </group>
                     <notebook>
                         <page string="🏠 Biens">

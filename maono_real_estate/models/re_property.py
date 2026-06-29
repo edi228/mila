@@ -49,8 +49,8 @@ class ReProperty(models.Model):
     next_availability = fields.Date(string="Date de disponibilité", compute='_compute_active_lease')
     
     # ── Géolocalisation héritée de l'immeuble ──────────────────────────────
-    latitude  = fields.Float(related='building_id.latitude',  string="Latitude",  store=True, digits=(10, 7))
-    longitude = fields.Float(related='building_id.longitude', string="Longitude", store=True, digits=(10, 7))
+    latitude  = fields.Float(related='building_id.latitude',  string="Latitude",  store=False, digits=(10, 7))
+    longitude = fields.Float(related='building_id.longitude', string="Longitude", store=False, digits=(10, 7))
     maps_url  = fields.Char(related='building_id.maps_url',   string="Lien Google Maps")
 
     image_1920 = fields.Image(string="Photo principale", max_width=1920, max_height=1920)

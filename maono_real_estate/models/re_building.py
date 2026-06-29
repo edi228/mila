@@ -23,7 +23,7 @@ class ReBuilding(models.Model):
         tracking=True,
     )
 
-    # ── Contact de géolocalisation ────────────────────────────────────────
+    # ── Contact de géolocalisation ───────────────────────────────────────────
     geo_partner_id = fields.Many2one(
         'res.partner', string="Contact / Localisation",
         help="Sélectionnez un contact dont les coordonnées GPS seront utilisées "
@@ -32,11 +32,11 @@ class ReBuilding(models.Model):
     )
     latitude  = fields.Float(
         string="Latitude", digits=(10, 7),
-        compute='_compute_geo', store=True, readonly=False,
+        compute='_compute_geo', store=False,
     )
     longitude = fields.Float(
         string="Longitude", digits=(10, 7),
-        compute='_compute_geo', store=True, readonly=False,
+        compute='_compute_geo', store=False,
     )
     maps_url = fields.Char(
         string="Lien Google Maps",
