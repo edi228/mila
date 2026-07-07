@@ -1,25 +1,36 @@
-# Tasks — MILA v4.0 Sprint 1
+# Tasks — MILA v4.1
 
-## Sprint 1 (Chantiers 1 + 2 + 4)
+## Sprint 3 Improvements & Fixes
 
-### Chantier 1 — Renommage Garantie → Caution
-- [ ] models/re_lease.py — labels deposit_amount, deposit_paid, deposit_returned, deposit_deductions
-- [ ] views/re_lease_views.xml — tous les string= "Dépôt de garantie"
-- [ ] report/re_lease_contract_report.xml — label rapport
-- [ ] report/re_lease_quittance_report.xml — label si applicable
+### 1. Bug Fixes
+- [x] Fix taux d'occupation (6666% -> 66% with progressbar/proper formatting)
+- [x] Fix dashboard tabs crash (guards in JS/XML for properties_data and buildings_data)
+- [x] Fix interventions layout & scroll clipping (CSS overflow-y settings)
+- [x] Rename 'LMR' to 'Loyer Mensuel' (no abbreviations in dashboard metrics)
 
-### Chantier 2 — Contacts & Locataires
-- [ ] models/res_partner.py — re_contact_type + identity fields (type, number, scan, expiry)
-- [ ] views/res_partner_views.xml — onglet Immobilier
-- [ ] views/re_lease_views.xml — onglet Locataire inline (téléphone, email, identité)
-- [ ] security/ir.model.access.csv — droits si nouveau champ attachment
+### 2. Geolocation & Partner Integration
+- [x] Auto-create Company contact `res.partner` for each building
+- [x] Bidirectional sync building fields <-> contact fields
+- [x] GPS coordinates support on building linked contact
+- [x] Google Maps location popup link button
+- [x] Property model GPS heritage from building
 
-### Chantier 4 — Menus restructurés
-- [ ] views/menus.xml — nouveau menu Locataires, remonter Pénalités, nouveau menu Finances
-- [ ] views/re_lease_views.xml — actions filtrées pour Quittances et Paiements
-- [ ] Nouvelle action ir.actions pour menu Locataires (res.partner filtré)
+### 3. Locataires / Propriétaires Menus
+- [x] Auto-set `is_tenant` boolean on lease creation/confirmation
+- [x] Auto-set `is_property_owner` boolean on lease creation/confirmation
 
-### Finalisation Sprint 1
-- [ ] __manifest__.py — bump version 3.3 → 4.0
-- [ ] Push GitHub + update CloudPepper
-- [ ] Tests fonctionnels
+### 4. Subscription-Style Manual Billing Button
+- [x] Implement `action_create_invoice_manual` on `re.lease`
+- [x] Next billing date auto-increment & draft invoice generation
+- [x] Period details (Start Date -> End Date), lease name and tenant details on invoice lines
+- [x] "💳 Facturer" header button on active leases
+
+### 5. Custom branded reports (MEA & FILS style)
+- [x] Payment receipt PDF report
+- [x] Property sheet PDF report
+- [x] Building sheet PDF report
+
+### 6. Deployment & Support
+- [x] Static syntax verification (Python compilation & XML verification)
+- [x] Push commits to main branch
+- [x] Update documentation guide (`DOCUMENTATION_UTILISATEUR.md`) to Version 4.1
