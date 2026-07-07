@@ -1,6 +1,6 @@
 # Guide Utilisateur — Gestion Immobilière MILA
 
-**Version 3.3** | **Juin 2026** | **[mila.afroit.net](https://mila.afroit.net)**
+**Version 4.1** | **Juillet 2026** | **[mila.afroit.net](https://mila.afroit.net)**
 
 ---
 
@@ -621,6 +621,28 @@ Chaque liste propose : **vue tableau** (colonnes triables) et **vue kanban** (ca
 
 ---
 
+## 7. Nouveautés de la Version 4.1 (Juillet 2026)
+
+### 7.1 Géolocalisation & Contacts d'immeubles
+- **Liaison dynamique automatique** : À la création de chaque immeuble, un contact `res.partner` de type "Société" est automatiquement généré en arrière-plan et lié à l'immeuble.
+- **Synchronisation automatique** : Toute modification sur le nom ou l'adresse de l'immeuble met immédiatement à jour la fiche du contact correspondant.
+- **Coordonnées GPS** : Renseignez la latitude et la longitude sur le contact ou sur l'immeuble, et utilisez le bouton **"📍 Voir sur la carte"** pour ouvrir l'adresse ou le point GPS directement dans Google Maps.
+- **Héritage automatique** : Les biens contenus dans l'immeuble héritent automatiquement de ces coordonnées de localisation.
+
+### 7.2 Bouton de Facturation Manuelle
+- Sur la fiche de n'importe quel **bail actif** (statut *En cours*), un bouton **"💳 Facturer"** est désormais disponible.
+- **Logique intelligente (type abonnement Odoo)** : Ce bouton génère une facture en **brouillon** pour la période en cours.
+- **Avancement automatique** : Une fois la facture générée, la date de "Prochaine échéance" est automatiquement avancée pour la période suivante (mensuelle, trimestrielle, etc.) selon la périodicité du bail.
+- **Détails contractuels** : La facture générée contient automatiquement toutes les informations clés : référence du bail, nom du locataire, nom du bien, et les dates exactes de la période concernée.
+
+### 7.3 Nouveaux Rapports PDF Personnalisés
+Trois nouveaux rapports professionnels aux couleurs de la charte graphique de **MEA & FILS** (bleu marine et or) sont disponibles :
+1. **Reçu de paiement de loyer** : Imprimable depuis n'importe quel paiement reçu (fiche paiement). Il reprend l'identité complète du locataire, la période, la somme en chiffres et en lettres, ainsi que la clause de retard de 10%.
+2. **Fiche descriptive du bien** : Imprimable depuis la fiche d'un bien (Patrimoine → Biens). Contient le statut, les caractéristiques (surface, étage, type), le bail en cours, et l'historique complet des locataires passés.
+3. **Fiche d'immeuble** : Imprimable depuis la fiche d'un immeuble (Patrimoine → Immeubles). Contient des compteurs de statistiques, le taux d'occupation sous forme de jauge visuelle colorée (vert/orange/rouge), et la liste détaillée de tous les appartements/locaux avec leur statut respectif.
+
+---
+
 ## Comptes de test
 
 | Rôle | Identifiant | Mot de passe |
@@ -632,4 +654,5 @@ Chaque liste propose : **vue tableau** (colonnes triables) et **vue kanban** (ca
 
 ---
 
-*MILA Gestion Immobilière v3.3 — AFRO IT — Juin 2026*
+*MILA Gestion Immobilière v4.1 — AFRO IT — Juillet 2026*
+
