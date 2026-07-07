@@ -223,9 +223,9 @@
                     />
                     <ImmoKpiCard
                         icon="'fa-money'"
-                        label="'LMR Global'"
+                        label="'Loyer mensuel global'"
                         value="formatAmount(state.data.kpis.lmr_global)"
-                        subtitle="state.data.kpis.active_leases_count + ' baux actifs'"
+                        subtitle="state.data.kpis.active_leases_count + ' baux actifs en cours'"
                         color="'green'"
                         onClick="kpiCallbacks.allLeases"
                     />
@@ -261,7 +261,7 @@
                     <button t-att-class="state.activeTab === 'buildings' ? 'immo-tab active' : 'immo-tab'"
                             t-on-click="() => setTab('buildings')">
                         <i class="fa fa-building"/> Par immeuble
-                        <span class="immo-tab-count"><t t-esc="state.data.buildings_data.length"/></span>
+                        <span class="immo-tab-count"><t t-esc="(state.data.buildings_data || []).length"/></span>
                     </button>
                 </div>
 
@@ -404,7 +404,7 @@
                         </div>
                         <div class="immo-panel-body" style="max-height: none;">
                             <ImmoPropertyTable
-                                properties="state.data.properties_data"
+                                properties="state.data.properties_data || []"
                                 currencySymbol="state.data.currency_symbol"
                                 onOpenProperty="(id) => openProperty(id)"
                             />
@@ -420,7 +420,7 @@
                         </div>
                         <div class="immo-panel-body" style="max-height: none; padding: 16px;">
                             <ImmoBuildingGrid
-                                buildings="state.data.buildings_data"
+                                buildings="state.data.buildings_data || []"
                                 currencySymbol="state.data.currency_symbol"
                                 onOpenProperty="(id) => openProperty(id)"
                             />

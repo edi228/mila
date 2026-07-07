@@ -10,7 +10,7 @@ Module de Gestion Immobilière — Odoo 19
 Auteur : AFRO IT | Version 4.0
     """,
     'author': 'AFRO IT',
-    'depends': ['sale', 'account', 'mail', 'payment', 'portal', 'rating'],
+    'depends': ['sale', 'account', 'mail', 'payment', 'portal', 'rating', 'base_geolocalize'],
     'data': [
         # Sécurité
         'security/re_security.xml',
@@ -49,6 +49,9 @@ Auteur : AFRO IT | Version 4.0
         # Rapports
         'report/re_lease_contract_report.xml',
         'report/re_lease_quittance_report.xml',
+        'report/re_payment_receipt_report.xml',
+        'report/re_property_sheet_report.xml',
+        'report/re_building_sheet_report.xml',
         # Menus (en dernier car référencent toutes les actions)
         'views/menus.xml',
     ],

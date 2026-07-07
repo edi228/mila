@@ -33,21 +33,40 @@
                             <field name="owner_id"
                                    options="{'no_open': False}"
                                    context="{'default_is_property_owner': True, 'default_re_contact_type': 'owner'}"/>
+                            <field name="partner_id" string="Contact de l'immeuble"
+                                   readonly="1"
+                                   options="{'no_open': False}"
+                                   help="Contact lié automatiquement à l'immeuble (utilisé pour la carte et la géolocalisation)"/>
                         </group>
                         <group string="Statistiques">
-                            <field name="occupation_rate" widget="percentage"/>
+                            <field name="occupation_rate" string="Taux d'occupation"
+                                   widget="progressbar"
+                                   options="{'max_value': 100, 'editable': false}"/>
                             <field name="occupied_count" string="Biens occupés"/>
                             <field name="available_count" string="Biens disponibles"/>
                             <field name="expected_monthly_revenue" string="Revenus mensuels"/>
                             <field name="currency_id" invisible="1"/>
                         </group>
                     </group>
-                    <group string="Adresse">
-                        <field name="street" placeholder="Rue"/>
-                        <field name="street2" placeholder="Complément"/>
-                        <field name="city"/>
-                        <field name="zip"/>
-                        <field name="country_id"/>
+                    <group string="Adresse &amp; Localisation">
+                        <group>
+                            <field name="street" placeholder="Rue"/>
+                            <field name="street2" placeholder="Complément"/>
+                            <field name="city"/>
+                            <field name="zip"/>
+                            <field name="country_id"/>
+                        </group>
+                        <group string="Coordonnées GPS">
+                            <field name="partner_latitude" string="Latitude"/>
+                            <field name="partner_longitude" string="Longitude"/>
+                            <div t-if="partner_latitude or partner_longitude" class="mt8">
+                                <a t-if="partner_latitude and partner_longitude"
+                                   t-att-href="'https://maps.google.com/?q=' + str(partner_latitude) + ',' + str(partner_longitude)"
+                                   target="_blank" class="btn btn-sm btn-outline-primary">
+                                    <i class="fa fa-map-marker"/> Voir sur la carte
+                                </a>
+                            </div>
+                        </group>
                     </group>
                     <notebook>
                         <page string="🏠 Biens">
@@ -89,10 +108,10 @@
                 <field name="name"/>
                 <field name="city"/>
                 <field name="owner_id"/>
-                <field name="property_count"/>
-                <field name="occupied_count"/>
-                <field name="occupation_rate" widget="percentage"/>
-                <field name="expected_monthly_revenue"/>
+                <field name="property_count" string="Total biens"/>
+                <field name="occupied_count" string="Occupés"/>
+                <field name="occupation_rate" string="Taux d'occ. (%)"/>
+                <field name="expected_monthly_revenue" string="Revenus / mois"/>
             </list>
         </field>
     </record>
@@ -120,7 +139,7 @@
                             <div class="o_kanban_record_body">
                                 <div>
                                     <i class="fa fa-home"/> <field name="property_count"/> biens —
-                                    <field name="occupation_rate" widget="percentage"/> occupés
+                                    <field name="occupation_rate"/>% occupés
                                 </div>
                                 <div class="fw-bold text-success">
                                     <field name="expected_monthly_revenue" widget="monetary"/> / mois

@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         FICHE RÉCAPITULATIVE D'UN BIEN IMMOBILIER
+         Modèle : re.property
+    ============================================================ -->
+    <record id="report_re_property_sheet" model="ir.actions.report">
+        <field name="name">Fiche du bien</field>
+        <field name="model">re.property</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">maono_real_estate.report_re_property_sheet_doc</field>
+        <field name="report_file">maono_real_estate.report_re_property_sheet_doc</field>
+        <field name="binding_model_id" ref="model_re_property"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_re_property_sheet_doc">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="prop">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <!-- ── En-tête ───────────────────────────────── -->
+                        <div style="border-bottom:3px solid #1a3c6e; padding-bottom:12px; margin-bottom:20px;">
+                            <div class="row">
+                                <div class="col-8">
+                                    <h1 style="color:#1a3c6e; font-size:20pt; margin:0;">
+                                        FICHE DE BIEN IMMOBILIER
+                                    </h1>
+                                    <h2 style="font-size:14pt; margin:4px 0 0 0;">
+                                        <t t-out="prop.name"/>
+                                    </h2>
+                                    <p style="color:#888; margin:0; font-size:9pt;">Réf. : <t t-out="prop.ref or '—'"/></p>
+                                </div>
+                                <div class="col-4" style="text-align:right;">
+                                    <t t-set="state_colors" t-value="{'occupied':'#28a745','available':'#007bff','works':'#ffc107','suspended':'#dc3545'}"/>
+                                    <t t-set="state_labels" t-value="{'occupied':'Occupé','available':'Disponible','works':'En travaux','suspended':'Suspendu'}"/>
+                                    <span style="font-size:13pt; font-weight:bold; padding:6px 14px; border-radius:20px; color:white;"
+                                          t-att-style="'font-size:13pt; font-weight:bold; padding:6px 14px; border-radius:20px; color:white; background:' + (state_colors.get(prop.state, '#888'))">
+                                        <t t-out="state_labels.get(prop.state, prop.state)"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── Infos générales ────────────────────────── -->
+                        <div class="row" style="margin-bottom:16px;">
+                            <div class="col-6">
+                                <h5 style="color:#1a3c6e; border-bottom:1px solid #ddd; padding-bottom:4px;">Informations générales</h5>
+                                <table style="width:100%; font-size:10pt;">
+                                    <tr>
+                                        <td style="width:45%; color:#666; padding:3px 0;"><strong>Immeuble</strong></td>
+                                        <td><t t-out="prop.building_id.name or '—'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#666; padding:3px 0;"><strong>Type</strong></td>
+                                        <td><t t-out="prop.type or '—'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#666; padding:3px 0;"><strong>Surface</strong></td>
+                                        <td><t t-out="str(prop.surface) + ' m²'" t-if="prop.surface"/>
+                                            <t t-else="">—</t></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#666; padding:3px 0;"><strong>Étage</strong></td>
+                                        <td><t t-out="str(prop.floor) if prop.floor else '—'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="color:#666; padding:3px 0;"><strong>Loyer mensuel</strong></td>
+                                        <td style="font-weight:bold; color:#1a3c6e;">
+                                            <t t-esc="'{:,.0f}'.format(prop.rent_amount).replace(',', ' ')"/>
+                                            <t t-out="prop.currency_id.symbol"/>
+                                        </td>
+                                    </tr>
+                                    <tr t-if="prop.deposit_amount">
+                                        <td style="color:#666; padding:3px 0;"><strong>Caution</strong></td>
+                                        <td>
+                                            <t t-esc="'{:,.0f}'.format(prop.deposit_amount).replace(',', ' ')"/>
+                                            <t t-out="prop.currency_id.symbol"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <h5 style="color:#1a3c6e; border-bottom:1px solid #ddd; padding-bottom:4px;">Localisation</h5>
+                                <table style="width:100%; font-size:10pt;">
+                                    <tr t-if="prop.building_id.street">
+                                        <td style="width:45%; color:#666; padding:3px 0;"><strong>Adresse</strong></td>
+                                        <td><t t-out="prop.building_id.street"/></td>
+                                    </tr>
+                                    <tr t-if="prop.building_id.city">
+                                        <td style="color:#666; padding:3px 0;"><strong>Ville</strong></td>
+                                        <td><t t-out="prop.building_id.city"/></td>
+                                    </tr>
+                                    <tr t-if="prop.building_id.country_id">
+                                        <td style="color:#666; padding:3px 0;"><strong>Pays</strong></td>
+                                        <td><t t-out="prop.building_id.country_id.name"/></td>
+                                    </tr>
+                                    <tr t-if="prop.building_id.owner_id">
+                                        <td style="color:#666; padding:3px 0;"><strong>Propriétaire</strong></td>
+                                        <td><t t-out="prop.building_id.owner_id.name"/></td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ── Bail en cours ──────────────────────────── -->
+                        <t t-set="active_lease" t-value="prop.lease_ids.filtered(lambda l: l.lease_state == '3_progress')[:1]"/>
+                        <t t-if="active_lease">
+                            <h5 style="color:#1a3c6e; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:16px;">Bail en cours</h5>
+                            <div style="background:#f0f7ff; border:1px solid #b8d4f0; border-radius:6px; padding:14px;">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <p style="margin:0; font-size:9pt; color:#666;">Locataire</p>
+                                        <p style="margin:0; font-weight:bold;"><t t-out="active_lease.tenant_id.name"/></p>
+                                        <p style="margin:2px 0; font-size:9pt;"><t t-out="active_lease.tenant_id.phone or ''"/></p>
+                                    </div>
+                                    <div class="col-4">
+                                        <p style="margin:0; font-size:9pt; color:#666;">Durée du bail</p>
+                                        <p style="margin:0;"><t t-out="str(active_lease.start_date)"/> →</p>
+                                        <p style="margin:0;"><t t-out="str(active_lease.end_date) if active_lease.end_date else 'Sans échéance'"/></p>
+                                    </div>
+                                    <div class="col-4">
+                                        <p style="margin:0; font-size:9pt; color:#666;">Loyer mensuel</p>
+                                        <p style="margin:0; font-weight:bold; font-size:14pt; color:#1a3c6e;">
+                                            <t t-esc="'{:,.0f}'.format(active_lease.rent_amount).replace(',', ' ')"/>
+                                            <t t-out="active_lease.currency_id.symbol"/>
+                                        </p>
+                                        <p style="margin:0; font-size:9pt; color:#666;">Réf. : <t t-out="active_lease.name"/></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- ── Historique baux ───────────────────────── -->
+                        <t t-if="len(prop.lease_ids) > 0">
+                            <h5 style="color:#1a3c6e; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:16px;">Historique des baux</h5>
+                            <table class="table table-sm" style="font-size:9pt;">
+                                <thead style="background:#1a3c6e; color:white;">
+                                    <tr>
+                                        <th>Référence</th>
+                                        <th>Locataire</th>
+                                        <th>Début</th>
+                                        <th>Fin</th>
+                                        <th>Loyer</th>
+                                        <th>Statut</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="prop.lease_ids.sorted('start_date', reverse=True)[:10]" t-as="l">
+                                        <tr>
+                                            <td><t t-out="l.name"/></td>
+                                            <td><t t-out="l.tenant_id.name"/></td>
+                                            <td><t t-out="str(l.start_date)"/></td>
+                                            <td><t t-out="str(l.end_date) if l.end_date else '—'"/></td>
+                                            <td>
+                                                <t t-esc="'{:,.0f}'.format(l.rent_amount).replace(',', ' ')"/>
+                                                <t t-out="l.currency_id.symbol"/>
+                                            </td>
+                                            <td><t t-out="dict(l._fields['lease_state'].selection).get(l.lease_state, l.lease_state)"/></td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </t>
+
+                        <!-- ── Notes ─────────────────────────────────── -->
+                        <t t-if="prop.note">
+                            <h5 style="color:#1a3c6e; border-bottom:1px solid #ddd; padding-bottom:4px; margin-top:16px;">Notes</h5>
+                            <div style="font-size:9pt; color:#444;">
+                                <t t-out="prop.note"/>
+                            </div>
+                        </t>
+
+                        <!-- ── Pied de page ───────────────────────────── -->
+                        <div style="margin-top:30px; border-top:1px solid #ddd; padding-top:8px; text-align:center; font-size:8pt; color:#999;">
+                            Document généré le <t t-out="context_today().strftime('%d/%m/%Y')"/> —
+                            <t t-out="prop.company_id.name or ''"/>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

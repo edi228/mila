@@ -262,7 +262,16 @@ export class ImmoDashboard extends Component {
         this.state.loading = true;
         try {
             const data = await this.orm.call("re.dashboard", "get_dashboard_data", []);
-            this.state.data = data;
+            this.state.data = {
+                kpis: data.kpis || {total_properties:0, occupied:0, available:0, in_works:0, occupation_rate:0, lmr_global:0, unpaid_amount:0, unpaid_count:0, penalty_amount:0, penalty_count:0, active_leases_count:0},
+                leases: data.leases || [],
+                services: data.services || [],
+                alerts: data.alerts || [],
+                refresh_interval: data.refresh_interval || 60,
+                currency_symbol: data.currency_symbol || 'F',
+                properties_data: data.properties_data || [],
+                buildings_data: data.buildings_data || [],
+            };
             this.state.refreshInterval = data.refresh_interval;
             this.state.lastRefresh = new Date().toLocaleTimeString("fr-FR");
         } catch (e) {

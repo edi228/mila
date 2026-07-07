@@ -23,24 +23,23 @@ class ReBuilding(models.Model):
         tracking=True,
     )
 
-    # ── Contact de géolocalisation ───────────────────────────────────────────
-    geo_partner_id = fields.Many2one(
-        'res.partner', string="Contact / Localisation",
-        help="Sélectionnez un contact dont les coordonnées GPS seront utilisées "
-             "pour localiser cet immeuble sur la carte.",
-        tracking=True,
+    # ── Contact lié à l'immeuble (auto-créé) ─────────────────────────────
+    # Chaque immeuble est représenté par un contact res.partner
+    # La localisation GPS (latitude/longitude) est stockée sur ce contact
+    partner_id = fields.Many2one(
+        'res.partner', string="Contact de l'immeuble",
+        readonly=True, copy=False,
+        help="Contact automatiquement lié à cet immeuble. "
+             "Utilisez ce contact pour renseigner les coordonnées GPS (via Géolocalisation).",
     )
-    latitude  = fields.Float(
-        string="Latitude", digits=(10, 7),
-        compute='_compute_geo', store=False,
+    # Coordonnées GPS — lues depuis le contact partenaire (store=False = pas de colonne SQL)
+    partner_latitude  = fields.Float(
+        related='partner_id.partner_latitude', string="Latitude",
+        digits=(10, 7), readonly=False, store=False,
     )
-    longitude = fields.Float(
-        string="Longitude", digits=(10, 7),
-        compute='_compute_geo', store=False,
-    )
-    maps_url = fields.Char(
-        string="Lien Google Maps",
-        compute='_compute_maps_url',
+    partner_longitude = fields.Float(
+        related='partner_id.partner_longitude', string="Longitude",
+        digits=(10, 7), readonly=False, store=False,
     )
 
     # ── Stats ──────────────────────────────────────────────────────────────
@@ -64,24 +63,46 @@ class ReBuilding(models.Model):
             if not record.ref:
                 record.ref = self.env['ir.sequence'].next_by_code('re.building.seq') or '/'
 
-    @api.depends('geo_partner_id.partner_latitude', 'geo_partner_id.partner_longitude')
-    def _compute_geo(self):
-        for b in self:
-            if b.geo_partner_id and (b.geo_partner_id.partner_latitude or b.geo_partner_id.partner_longitude):
-                b.latitude  = b.geo_partner_id.partner_latitude
-                b.longitude = b.geo_partner_id.partner_longitude
-            # Si coordonnées saisies manuellement (champs readonly=False), on les conserve
+    def _get_partner_vals(self):
+        """Retourne les valeurs à synchroniser vers le partenaire lié."""
+        return {
+            'name': self.name,
+            'street': self.street or False,
+            'street2': self.street2 or False,
+            'city': self.city or False,
+            'zip': self.zip or False,
+            'country_id': self.country_id.id if self.country_id else False,
+            'is_company': True,
+            'comment': 'Contact automatique — Immeuble %s' % (self.ref or self.name),
+        }
 
-    @api.depends('latitude', 'longitude')
-    def _compute_maps_url(self):
-        for b in self:
-            if b.latitude and b.longitude:
-                b.maps_url = f"https://maps.google.com/?q={b.latitude},{b.longitude}"
-            elif b.street and b.city:
-                addr = f"{b.street}, {b.city}".replace(' ', '+')
-                b.maps_url = f"https://maps.google.com/?q={addr}"
-            else:
-                b.maps_url = False
+    @api.model_create_multi
+    def create(self, vals_list):
+        records = super().create(vals_list)
+        for building in records:
+            if not building.partner_id:
+                partner = self.env['res.partner'].sudo().create(building._get_partner_vals())
+                building.sudo().partner_id = partner
+        return records
+
+    def write(self, vals):
+        result = super().write(vals)
+        sync_fields = {'name', 'street', 'street2', 'city', 'zip', 'country_id'}
+        if sync_fields.intersection(set(vals.keys())):
+            for building in self:
+                if building.partner_id:
+                    building.partner_id.sudo().write({
+                        k: v for k, v in {
+                            'name':       building.name,
+                            'street':     building.street or False,
+                            'street2':    building.street2 or False,
+                            'city':       building.city or False,
+                            'zip':        building.zip or False,
+                            'country_id': building.country_id.id if building.country_id else False,
+                        }.items()
+                        if k in sync_fields
+                    })
+        return result
 
     @api.depends('property_ids.state')
     def _compute_properties_stats(self):
@@ -111,9 +132,10 @@ class ReBuilding(models.Model):
     def action_open_maps(self):
         """Ouvre Google Maps dans un nouvel onglet."""
         self.ensure_one()
-        if self.maps_url:
+        if self.partner_latitude and self.partner_longitude:
+            url = f"https://www.google.com/maps/search/?api=1&query={self.partner_latitude},{self.partner_longitude}"
             return {
                 'type': 'ir.actions.act_url',
-                'url': self.maps_url,
+                'url': url,
                 'target': 'new',
             }

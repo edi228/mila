@@ -9,11 +9,15 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_confirm" string="Confirmer" type="object" class="oe_highlight" invisible="lease_state != '1_draft'"/>
+                    <button name="action_confirm" string="Confirmer le bail" type="object" class="oe_highlight" invisible="lease_state != '1_draft'"/>
+                    <button name="action_create_invoice_manual" string="💳 Facturer" type="object"
+                            class="oe_highlight btn-success"
+                            invisible="lease_state != '3_progress'"
+                            help="Génère une facture de loyer pour la prochaine période. La date est avancée automatiquement."/>
                     <button name="action_compute_penalties" string="Calculer pénalités" type="object" icon="fa-exclamation-triangle" invisible="lease_state != '3_progress'"/>
                     <button name="action_close_lease" string="Résilier" type="object" invisible="lease_state not in ('3_progress','4_paused')"/>
                     <button name="action_view_penalties" string="Pénalités" type="object" class="btn-danger" invisible="penalty_count == 0"/>
-                    <button name="action_create_amendment" string="📈 Avenant" type="object" invisible="lease_state != '3_progress'"/>
+                    <button name="action_create_amendment" string="Avenant" type="object" invisible="lease_state != '3_progress'"/>
                     <button name="action_renew_lease" string="Renouveler" type="object" invisible="lease_state not in ('3_progress', '4_paused')"/>
                     <button name="action_pause" string="Suspendre" type="object" invisible="lease_state != '3_progress'"/>
                     <button name="action_resume" string="Reprendre" type="object" invisible="lease_state != '4_paused'"/>

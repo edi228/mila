@@ -145,6 +145,16 @@ class ReLease(models.Model):
     is_fully_signed = fields.Boolean(string="Entièrement Signé", compute='_compute_is_fully_signed')
     contract_pdf_id = fields.Many2one('ir.attachment', string="Contrat PDF Signé")
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        leases = super().create(vals_list)
+        for lease in leases:
+            if lease.tenant_id:
+                lease.tenant_id.is_tenant = True
+            if lease.owner_id:
+                lease.owner_id.is_property_owner = True
+        return leases
+
     @api.depends('create_date')
     def _compute_name(self):
         for record in self:
@@ -200,13 +210,116 @@ class ReLease(models.Model):
                 tenant.tenant_ref = self.env['ir.sequence'].next_by_code('re.tenant.ref')
                 tenant.tenant_ref_date = fields.Date.today()
             lease.tenant_ref_snapshot = tenant.tenant_ref
+            tenant.is_tenant = True
+            if lease.owner_id:
+                lease.owner_id.is_property_owner = True
             
             if not lease.is_fully_signed:
                 # Warning logic, non-blocking as per spec
                 pass
             
             lease.lease_state = '3_progress'
+            # Init next_invoice_date on confirmation
+            if not lease.next_invoice_date:
+                lease.next_invoice_date = lease.start_date
         return True
+
+    def action_create_invoice_manual(self):
+        """Facturation manuelle — logique similaire au module abonnement.
+        
+        - Vérifie si une facture a déjà été générée pour la période courante.
+        - Si oui : génère pour la période suivante.
+        - Si non : génère pour la période courante.
+        - Crée toujours une facture en brouillon (confirmé par l'utilisateur).
+        """
+        self.ensure_one()
+        if self.lease_state != '3_progress':
+            raise UserError("Seuls les baux actifs peuvent être facturés.")
+
+        today = fields.Date.today()
+        invoice_date = self.next_invoice_date or today
+
+        # Déterminer la période de facturation
+        plan = self.plan_id
+        if plan and plan.billing_period == 'monthly':
+            period_end = invoice_date + relativedelta(months=1) - relativedelta(days=1)
+            next_date  = invoice_date + relativedelta(months=1)
+        elif plan and plan.billing_period == 'quarterly':
+            period_end = invoice_date + relativedelta(months=3) - relativedelta(days=1)
+            next_date  = invoice_date + relativedelta(months=3)
+        elif plan and plan.billing_period == 'biannual':
+            period_end = invoice_date + relativedelta(months=6) - relativedelta(days=1)
+            next_date  = invoice_date + relativedelta(months=6)
+        elif plan and plan.billing_period == 'annual':
+            period_end = invoice_date + relativedelta(years=1) - relativedelta(days=1)
+            next_date  = invoice_date + relativedelta(years=1)
+        else:  # mensuel par défaut
+            period_end = invoice_date + relativedelta(months=1) - relativedelta(days=1)
+            next_date  = invoice_date + relativedelta(months=1)
+
+        # Lignes de la facture
+        invoice_lines = []
+        for line in self.line_ids.filtered('recurring_invoice'):
+            invoice_lines.append((0, 0, {
+                'product_id':  line.product_id.id,
+                'name':        '%s — Période du %s au %s' % (
+                                   line.name or line.product_id.name,
+                                   invoice_date.strftime('%d/%m/%Y'),
+                                   period_end.strftime('%d/%m/%Y')
+                               ),
+                'quantity':    line.product_uom_qty,
+                'price_unit':  line.price_unit,
+                'tax_ids':     [(6, 0, line.tax_id.ids)],
+            }))
+
+        # Si pas de lignes, on crée une ligne loyer simple
+        if not invoice_lines:
+            invoice_lines = [(0, 0, {
+                'name':       'Loyer — Bail %s — Période du %s au %s' % (
+                                  self.name,
+                                  invoice_date.strftime('%d/%m/%Y'),
+                                  period_end.strftime('%d/%m/%Y')
+                              ),
+                'quantity':   1,
+                'price_unit': self.rent_amount,
+            })]
+
+        # Création de la facture brouillon
+        move_vals = {
+            'move_type':       'out_invoice',
+            'partner_id':      self.tenant_id.id,
+            'invoice_date':    invoice_date,
+            'invoice_date_due': next_date - relativedelta(days=1),
+            'invoice_line_ids': invoice_lines,
+            'narration': (
+                'Loyer — Bail : %s\n'
+                'Bien : %s\n'
+                'Locataire : %s\n'
+                'Période : du %s au %s'
+            ) % (
+                self.name,
+                self.property_id.name or '',
+                self.tenant_id.name or '',
+                invoice_date.strftime('%d/%m/%Y'),
+                period_end.strftime('%d/%m/%Y'),
+            ),
+            'ref': self.name,
+        }
+        invoice = self.env['account.move'].create(move_vals)
+
+        # Avancer la prochaine date de facturation
+        self.next_invoice_date = next_date
+        self.last_invoice_date = invoice_date
+
+        # Ouvrir la facture créée
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Facture — %s' % self.name,
+            'res_model': 'account.move',
+            'res_id': invoice.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
 
     def action_pause(self):
         self.write({'lease_state': '4_paused', 'user_pause_start': fields.Date.today()})

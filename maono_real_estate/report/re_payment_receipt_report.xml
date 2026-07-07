@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================
+         RAPPORT REÇU DE PAIEMENT — Style MEA & FILS
+         Modèle : account.payment (paiements entrants)
+    ============================================================ -->
+    <record id="report_re_payment_receipt" model="ir.actions.report">
+        <field name="name">Reçu de paiement de loyer</field>
+        <field name="model">account.payment</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">maono_real_estate.report_re_payment_receipt_doc</field>
+        <field name="report_file">maono_real_estate.report_re_payment_receipt_doc</field>
+        <field name="binding_model_id" ref="account.model_account_payment"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <template id="report_re_payment_receipt_doc">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="payment">
+                <t t-call="web.external_layout">
+                    <div class="page">
+
+                        <!-- ── En-tête ───────────────────────────────── -->
+                        <div style="text-align:center; border-bottom: 3px solid #1a3c6e; padding-bottom: 16px; margin-bottom: 24px;">
+                            <h1 style="color:#1a3c6e; font-size:22pt; font-weight:bold; margin:0;">
+                                REÇU DE PAIEMENT DE LOYER
+                            </h1>
+                            <p style="color:#666; margin:4px 0 0 0; font-size:10pt;">
+                                Réf. : <strong><t t-out="payment.name"/></strong>
+                                &amp;nbsp;|&amp;nbsp;
+                                Date : <strong><t t-out="payment.date"/></strong>
+                            </p>
+                        </div>
+
+                        <!-- ── Parties ───────────────────────────────── -->
+                        <div class="row" style="margin-bottom:20px;">
+                            <div class="col-6">
+                                <div style="background:#f0f4ff; border-left:4px solid #1a3c6e; padding:12px; border-radius:4px;">
+                                    <h5 style="color:#1a3c6e; margin:0 0 8px 0;">LE BAILLEUR</h5>
+                                    <strong><t t-out="payment.company_id.name"/></strong><br/>
+                                    <t t-if="payment.company_id.street">
+                                        <t t-out="payment.company_id.street"/><br/>
+                                    </t>
+                                    <t t-if="payment.company_id.city">
+                                        <t t-out="payment.company_id.city"/>
+                                    </t>
+                                    <t t-if="payment.company_id.phone">
+                                        <br/>Tél : <t t-out="payment.company_id.phone"/>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div style="background:#fff8f0; border-left:4px solid #e8a020; padding:12px; border-radius:4px;">
+                                    <h5 style="color:#e8a020; margin:0 0 8px 0;">LE LOCATAIRE</h5>
+                                    <strong><t t-out="payment.partner_id.name"/></strong><br/>
+                                    <t t-if="payment.partner_id.phone">
+                                        Tél : +228 <t t-out="payment.partner_id.phone"/><br/>
+                                    </t>
+                                    <t t-if="payment.partner_id.street">
+                                        <t t-out="payment.partner_id.street"/>
+                                    </t>
+                                    <t t-if="payment.partner_id.city">
+                                        — <t t-out="payment.partner_id.city"/>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ── Corps principal ───────────────────────── -->
+                        <div style="border:2px solid #1a3c6e; border-radius:6px; padding:20px; margin-bottom:20px; text-align:center;">
+                            <p style="font-size:12pt; margin:0 0 8px 0;">
+                                Je soussigné(e), propriétaire / gestionnaire, déclare avoir reçu de
+                                <strong><t t-out="payment.partner_id.name"/></strong>
+                                la somme de :
+                            </p>
+                            <h2 style="color:#1a3c6e; font-size:24pt; margin:12px 0;">
+                                <t t-esc="'{:,.0f}'.format(payment.amount).replace(',', ' ')"/>
+                                <t t-out="payment.currency_id.symbol"/>
+                            </h2>
+                            <p style="color:#666; font-size:10pt; margin:0;">
+                                à titre de loyer — Paiement par :
+                                <strong><t t-out="payment.payment_method_id.name or 'Non précisé'"/></strong>
+                            </p>
+                        </div>
+
+                        <!-- ── Détail ─────────────────────────────────── -->
+                        <table class="table table-bordered" style="margin-bottom:20px; font-size:10pt;">
+                            <tbody>
+                                <tr>
+                                    <td style="width:40%; background:#f7f7f7;"><strong>Référence du paiement</strong></td>
+                                    <td><t t-out="payment.name"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="background:#f7f7f7;"><strong>Date du paiement</strong></td>
+                                    <td><t t-out="payment.date"/></td>
+                                </tr>
+                                <tr>
+                                    <td style="background:#f7f7f7;"><strong>Montant reçu</strong></td>
+                                    <td>
+                                        <strong>
+                                            <t t-esc="'{:,.0f}'.format(payment.amount).replace(',', ' ')"/>
+                                            <t t-out="payment.currency_id.symbol"/>
+                                        </strong>
+                                    </td>
+                                </tr>
+                                <tr t-if="payment.memo">
+                                    <td style="background:#f7f7f7;"><strong>Communication</strong></td>
+                                    <td><t t-out="payment.memo"/></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- ── Clause pénalité ────────────────────────── -->
+                        <div style="background:#fff3cd; border:1px solid #ffc107; border-radius:4px; padding:12px; margin-bottom:24px; font-size:9pt;">
+                            <strong>CLAUSE DE RETARD DE PAIEMENT :</strong>
+                            Conformément aux conditions du bail, tout retard dans le paiement du loyer entraîne l'application
+                            d'une pénalité de retard égale à 10% du montant du loyer mensuel, par mois de retard commencé.
+                        </div>
+
+                        <!-- ── Signatures ─────────────────────────────── -->
+                        <div class="row" style="margin-top:30px;">
+                            <div class="col-6" style="text-align:center;">
+                                <p style="border-top:1px solid #333; padding-top:8px; margin:0;">
+                                    Signature du Responsable<br/>
+                                    <small style="color:#666;">Lomé, le <t t-out="payment.date"/></small>
+                                </p>
+                            </div>
+                            <div class="col-6" style="text-align:center;">
+                                <p style="border-top:1px solid #333; padding-top:8px; margin:0;">
+                                    Signature du Locataire<br/>
+                                    <small style="color:#666;"><t t-out="payment.partner_id.name"/></small>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>

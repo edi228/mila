@@ -133,6 +133,8 @@
     display: flex;
     flex-direction: column;
     gap: 14px;
+    min-height: 0;
+    overflow: visible;
 }
 
 /* ── Panel ───────────────────────────────────────── */
@@ -159,6 +161,16 @@
 .immo-panel-body {
     padding: 0;
     max-height: 420px;
+    overflow-y: auto;
+}
+
+.immo-panel--alerts .immo-panel-body {
+    max-height: 280px;
+    overflow-y: auto;
+}
+
+.immo-panel--services .immo-panel-body {
+    max-height: 320px;
     overflow-y: auto;
 }
 
