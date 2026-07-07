@@ -32,7 +32,7 @@ La barre de navigation donne accès à 5 sections :
 
 ## 1. Tableau de bord
 
-![Tableau de bord — Données réelles](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/01_dashboard.png)
+![Tableau de bord — Données réelles](./screenshots/01_dashboard.png)
 
 Le tableau de bord se rafraîchit automatiquement (60 secondes par défaut) et dispose d'un bouton **Actualiser** en haut à droite.
 
@@ -72,7 +72,7 @@ Les immeubles regroupent les biens. Notre parc actuel :
 
 > **Patrimoine → Biens immobiliers**
 
-![Liste des biens immobiliers](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/02_properties_list.png)
+![Liste des biens immobiliers](./screenshots/02_properties_list.png)
 
 **Notre parc actuel :**
 
@@ -89,7 +89,7 @@ Le statut se met à jour automatiquement à la confirmation/résiliation d'un ba
 
 ### Fiche d'un bien
 
-![Fiche Appartement 3A](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/03_property_form.png)
+![Fiche Appartement 3A](./screenshots/03_property_form.png)
 
 Contenu : statut (barre), bouton **"X Baux"** (accès rapide), surface, loyer de référence, équipements, chatter (historique).
 
@@ -101,7 +101,7 @@ Contenu : statut (barre), bouton **"X Baux"** (accès rapide), surface, loyer de
 
 > **Locations → Baux Actifs**
 
-![Liste des 4 baux actifs](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/04_leases_list.png)
+![Liste des 4 baux actifs](./screenshots/04_leases_list.png)
 
 **Baux actifs actuels :**
 
@@ -114,7 +114,7 @@ Contenu : statut (barre), bouton **"X Baux"** (accès rapide), surface, loyer de
 
 ### Fiche d'un bail
 
-![Fiche BAIL/2026/0001 — Kofi Mensah](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/05_lease_form.png)
+![Fiche BAIL/2026/0001 — Kofi Mensah](./screenshots/05_lease_form.png)
 
 **Barre de statut :**
 ```
@@ -200,7 +200,7 @@ Devis de bail  →  En cours (Actif)  →  Suspendu  →  Résilié
 
 **Scénario :** Suite à la révision annuelle, le loyer de Kofi Mensah (Appartement 3A) passe de 150 000 à 165 000 CFA au 1er juillet 2026.
 
-![Dialog Avenant de bail](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/09_avenant_dialog.png)
+![Dialog Avenant de bail](./screenshots/09_avenant_dialog.png)
 
 **Étapes :**
 1. Ouvrir **BAIL/2026/0001**
@@ -256,7 +256,7 @@ Devis de bail  →  En cours (Actif)  →  Suspendu  →  Résilié
 
 **Scénario :** BAIL/2026/0001 (Kofi Mensah) expire fin décembre. Il souhaite rester 1 an de plus.
 
-![Dialog Renouveler le bail](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/11_renouveler_dialog.png)
+![Dialog Renouveler le bail](./screenshots/11_renouveler_dialog.png)
 
 **Étapes :**
 1. Ouvrir **BAIL/2026/0001**
@@ -307,7 +307,7 @@ Devis de bail  →  En cours (Actif)  →  Suspendu  →  Résilié
 
 **Scénario :** Kofi Mensah quitte l'Appartement 3A à l'expiration prévue.
 
-![Dialog Résilier le bail](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/12_resilier_dialog.png)
+![Dialog Résilier le bail](./screenshots/12_resilier_dialog.png)
 
 **Étapes :**
 1. Ouvrir **BAIL/2026/0001**
@@ -386,7 +386,7 @@ Devis de bail  →  En cours (Actif)  →  Suspendu  →  Résilié
 
 **Scénario :** Kofi Mensah n'a pas payé son loyer de Janvier 2025 (150 000 CFA, dû le 01/02/2025). Retard de 148 jours. Pénalité appliquée : 10%.
 
-![Liste des pénalités — PEN/2025/0001 liée à INV/2025/00001](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/08_penalties_list.png)
+![Liste des pénalités — PEN/2025/0001 liée à INV/2025/00001](./screenshots/08_penalties_list.png)
 
 **Étapes :**
 1. Ouvrir **BAIL/2026/0001**
@@ -437,7 +437,7 @@ Devis de bail  →  En cours (Actif)  →  Suspendu  →  Résilié
 
 **Scénario :** La porte d'entrée du Magasin RDC est cassée — une réparation urgente est requise.
 
-![Liste des interventions avec priorités](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/06_interventions_list.png)
+![Liste des interventions avec priorités](./screenshots/06_interventions_list.png)
 
 **Étapes :**
 1. **Interventions → Services → Nouveau**
@@ -461,7 +461,7 @@ Devis de bail  →  En cours (Actif)  →  Suspendu  →  Résilié
 
 **Scénario :** Révision annuelle de la climatisation du Bureau B1.
 
-![Fiche intervention — Réparation plomberie Appartement 3A](/Users/edouard/.gemini/antigravity/brain/bb343a61-cee8-45a8-9ef3-e5a36d2da282/screenshots/07_intervention_form.png)
+![Fiche intervention — Réparation plomberie Appartement 3A](./screenshots/07_intervention_form.png)
 
 **Étapes :**
 1. **Interventions → Services → Nouveau**
