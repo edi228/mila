@@ -38,17 +38,17 @@
             <div class="immo-prop-filters">
                 <div class="immo-prop-filter-btns">
                     <button t-att-class="state.filter === 'all' ? 'immo-filter-btn active' : 'immo-filter-btn'"
-                            t-on-click="() => setFilter('all')">Tous</button>
+                            t-on-click="() => this.setFilter('all')">Tous</button>
                     <button t-att-class="state.filter === 'occupied' ? 'immo-filter-btn immo-filter-btn--occupied active' : 'immo-filter-btn immo-filter-btn--occupied'"
-                            t-on-click="() => setFilter('occupied')">
+                            t-on-click="() => this.setFilter('occupied')">
                         <i class="fa fa-check-circle"/> Occupés
                     </button>
                     <button t-att-class="state.filter === 'available' ? 'immo-filter-btn immo-filter-btn--available active' : 'immo-filter-btn immo-filter-btn--available'"
-                            t-on-click="() => setFilter('available')">
+                            t-on-click="() => this.setFilter('available')">
                         <i class="fa fa-circle-o"/> Disponibles
                     </button>
                     <button t-att-class="state.filter === 'works' ? 'immo-filter-btn immo-filter-btn--works active' : 'immo-filter-btn immo-filter-btn--works'"
-                            t-on-click="() => setFilter('works')">
+                            t-on-click="() => this.setFilter('works')">
                         <i class="fa fa-wrench"/> Travaux
                     </button>
                 </div>
@@ -64,22 +64,22 @@
             <table t-if="filteredProperties.length > 0" class="immo-table immo-prop-table">
                 <thead>
                     <tr>
-                        <th t-on-click="() => setSort('name')" class="sortable">
+                        <th t-on-click="() => this.setSort('name')" class="sortable">
                             Bien <i t-attf-class="fa #{getSortIcon('name')}"/>
                         </th>
-                        <th t-on-click="() => setSort('building_name')" class="sortable">
+                        <th t-on-click="() => this.setSort('building_name')" class="sortable">
                             Immeuble <i t-attf-class="fa #{getSortIcon('building_name')}"/>
                         </th>
-                        <th t-on-click="() => setSort('type')" class="sortable">
+                        <th t-on-click="() => this.setSort('type')" class="sortable">
                             Type <i t-attf-class="fa #{getSortIcon('type')}"/>
                         </th>
-                        <th t-on-click="() => setSort('state')" class="sortable">
+                        <th t-on-click="() => this.setSort('state')" class="sortable">
                             Statut <i t-attf-class="fa #{getSortIcon('state')}"/>
                         </th>
-                        <th t-on-click="() => setSort('tenant_name')" class="sortable">
+                        <th t-on-click="() => this.setSort('tenant_name')" class="sortable">
                             Locataire <i t-attf-class="fa #{getSortIcon('tenant_name')}"/>
                         </th>
-                        <th t-on-click="() => setSort('rent_amount')" class="sortable">
+                        <th t-on-click="() => this.setSort('rent_amount')" class="sortable">
                             Loyer <i t-attf-class="fa #{getSortIcon('rent_amount')}"/>
                         </th>
                         <th>Actions</th>
@@ -250,16 +250,16 @@
                 <!-- ── Tab Navigation ── -->
                 <div class="immo-tab-nav">
                     <button t-att-class="state.activeTab === 'leases' ? 'immo-tab active' : 'immo-tab'"
-                            t-on-click="() => setTab('leases')">
+                            t-on-click="() => this.setTab('leases')">
                         <i class="fa fa-file-text-o"/> Baux actifs
                     </button>
                     <button t-att-class="state.activeTab === 'properties' ? 'immo-tab active' : 'immo-tab'"
-                            t-on-click="() => setTab('properties')">
+                            t-on-click="() => this.setTab('properties')">
                         <i class="fa fa-list"/> Tous les biens
                         <span class="immo-tab-count"><t t-esc="state.data.kpis.total_properties"/></span>
                     </button>
                     <button t-att-class="state.activeTab === 'buildings' ? 'immo-tab active' : 'immo-tab'"
-                            t-on-click="() => setTab('buildings')">
+                            t-on-click="() => this.setTab('buildings')">
                         <i class="fa fa-building"/> Par immeuble
                         <span class="immo-tab-count"><t t-esc="(state.data.buildings_data || []).length"/></span>
                     </button>
@@ -293,10 +293,10 @@
                                     </thead>
                                     <tbody>
                                         <t t-foreach="state.data.leases" t-as="lease" t-key="lease.id">
-                                            <tr class="immo-table-row" t-on-click="() => openLease(lease.id)">
+                                            <tr class="immo-table-row" t-on-click="() => this.openLease(lease.id)">
                                                 <td class="immo-td-property">
                                                     <span class="immo-property-name"
-                                                          t-on-click.stop="() => openProperty(lease.property_id)">
+                                                          t-on-click.stop="() => this.openProperty(lease.property_id)">
                                                         <t t-esc="lease.property"/>
                                                     </span>
                                                 </td>
@@ -361,7 +361,7 @@
                                         <div class="immo-empty">Aucune intervention en cours</div>
                                     </t>
                                     <t t-foreach="state.data.services" t-as="svc" t-key="svc.id">
-                                        <div class="immo-service-card" t-on-click="() => openService(svc.id)">
+                                        <div class="immo-service-card" t-on-click="() => this.openService(svc.id)">
                                             <div class="immo-service-header">
                                                 <span class="immo-service-name"><t t-esc="svc.name"/></span>
                                                 <span class="immo-priority">
