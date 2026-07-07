@@ -59,13 +59,9 @@
                         <group string="Coordonnées GPS">
                             <field name="partner_latitude" string="Latitude"/>
                             <field name="partner_longitude" string="Longitude"/>
-                            <div t-if="partner_latitude or partner_longitude" class="mt8">
-                                <a t-if="partner_latitude and partner_longitude"
-                                   t-att-href="'https://maps.google.com/?q=' + str(partner_latitude) + ',' + str(partner_longitude)"
-                                   target="_blank" class="btn btn-sm btn-outline-primary">
-                                    <i class="fa fa-map-marker"/> Voir sur la carte
-                                </a>
-                            </div>
+                            <button name="action_open_maps" string="Voir sur la carte" type="object"
+                                    class="btn-outline-primary" icon="fa-map-marker"
+                                    invisible="not partner_latitude or not partner_longitude"/>
                         </group>
                     </group>
                     <notebook>
