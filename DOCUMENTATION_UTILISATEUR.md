@@ -4,7 +4,21 @@
 
 ---
 
-## Accès à la plateforme
+## Accès aux plateformes
+
+### 💻 Environnement de Test (Staging) — Pour effectuer vos tests
+Utilisez cette adresse pour tester les nouvelles fonctionnalités en toute sécurité (les données sont des copies de test).
+
+| | |
+|--|--|
+| **Adresse** | https://staging-mila.afroit.net |
+| **Identifiant** | `admin` |
+| **Mot de passe** | `capelini` |
+
+---
+
+### 🚀 Environnement de Production — Pour l'usage quotidien
+Utilisez cette adresse pour l'exploitation réelle une fois les tests validés.
 
 | | |
 |--|--|
@@ -12,7 +26,7 @@
 | **Identifiant** | `client` |
 | **Mot de passe** | `client123` |
 
-> Utilisez **Google Chrome** ou **Firefox**. Une fois connecté, cliquez sur **Immobilier** sur l'écran d'accueil.
+> Utilisez **Google Chrome** ou **Firefox**. Une fois connecté, cliquez sur le menu **Immobilier** sur l'écran d'accueil pour commencer.
 
 ---
 
@@ -643,16 +657,50 @@ Trois nouveaux rapports professionnels aux couleurs de la charte graphique de **
 
 ---
 
-## Comptes de test
+## 8. Scénarios de Test Recommandés (Version 4.1)
 
-| Rôle | Identifiant | Mot de passe |
-|------|-------------|--------------|
-| Administrateur | `admin` | `admin` |
-| Client (accès limité) | `client` | `client123` |
+Pour valider l'ensemble des nouveautés de cette version, nous suggérons à la cliente de suivre ces 4 scénarios de test pas-à-pas sur l'environnement de staging.
 
-**Support AFRO IT :** contact@afroit.net | afroit.net
+### Scénario 1 : Validation du Tableau de Bord
+1. Connectez-vous sur **https://staging-mila.afroit.net** avec les identifiants de test (`admin` / `capelini`).
+2. Ouvrez le module **Immobilier** via l'écran d'accueil.
+3. Vérifiez le nouveau visuel du tableau de bord :
+   - Le KPI **"Loyer mensuel global"** (anciennement LMR) affiche le montant total cumulé de vos baux actifs.
+   - Le **Taux d'occupation** affiche un pourcentage exact (ex. `57.1 %`) cohérent avec le nombre de biens loués.
+   - Les onglets **"Tous les biens"** et **"Par immeuble"** s'affichent correctement lors du clic.
+   - La liste **"Interventions en cours"** à droite présente un défilement propre.
+
+### Scénario 2 : Liaison Géolocalisation automatique
+1. Allez dans **Patrimoine → Immeubles** et cliquez sur un immeuble (ex. "Immeuble Palmeraie").
+2. Dans la fiche, observez le champ **"Contact de l'immeuble"** : un partenaire Odoo a été créé et lié automatiquement en arrière-plan.
+3. Modifiez l'adresse ou le nom de l'immeuble, enregistrez et vérifiez que le contact associé a été synchronisé de la même manière.
+4. Renseignez des coordonnées dans la section **"Coordonnées GPS"** (Latitude et Longitude), puis cliquez sur le bouton **"Voir sur la carte"** : Google Maps doit s'ouvrir dans un nouvel onglet à l'emplacement exact.
+5. Allez dans **Patrimoine → Biens immobiliers** et ouvrez un appartement faisant partie de cet immeuble : vérifiez qu'il hérite automatiquement des coordonnées GPS.
+
+### Scénario 3 : Test de la facturation manuelle
+1. Allez dans **Locations → Baux actifs** et ouvrez un contrat (ex. Appartement 2B).
+2. Cliquez sur le bouton **"💳 Facturer"** situé dans la barre d'action supérieure.
+3. Odoo va automatiquement générer une facture en **brouillon** pour la période concernée et l'ouvrir à l'écran. Vérifiez les lignes de facturation (locataire, désignation du bien, période).
+4. Retournez sur la fiche du bail : la date de **"Prochaine échéance"** a automatiquement été repoussée à la période suivante.
+
+### Scénario 4 : Impression des Rapports MEA & FILS
+1. **Reçu de paiement** : Allez dans **Finances → Reçus de paiement**, ouvrez un règlement enregistré et cliquez sur **Imprimer → Reçu de paiement (MEA & FILS)**. Vérifiez la mise en page bleu marine & or, le montant en lettres et la mention des pénalités.
+2. **Fiche descriptive du bien** : Allez sur la fiche d'un bien (ex. Appartement 3A), puis cliquez sur **Imprimer → Fiche descriptive du bien**.
+3. **Fiche d'immeuble** : Allez sur la fiche d'un immeuble et cliquez sur **Imprimer → Fiche d'immeuble** pour voir la liste des appartements et la jauge d'occupation.
+
+---
+
+## Comptes d'accès pour les tests
+
+| Rôle / Environnement | Adresse | Identifiant | Mot de passe |
+|------|-------------|--------------|-----|
+| **Staging (Tests)** | https://staging-mila.afroit.net | `admin` | `capelini` |
+| **Production (Réel)** | https://mila.afroit.net | `client` | `client123` |
+
+**Support technique AFRO IT :** contact@afroit.net | afroit.net
 
 ---
 
 *MILA Gestion Immobilière v4.1 — AFRO IT — Juillet 2026*
+
 
