@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Guide Utilisateur — MILA Gestion Immobilière</title>
+    <style>
+        
+    body {
+        font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        color: #333333;
+        background-color: #ffffff;
+        line-height: 1.6;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 40px 20px;
+    }
+    
+    h1, h2, h3, h4, h5, h6 {
+        color: #0f2a4a;
+        font-weight: bold;
+        margin-top: 1.5em;
+        margin-bottom: 0.5em;
+    }
+    
+    h1 {
+        font-size: 28pt;
+        border-bottom: 3px solid #c5a059;
+        padding-bottom: 10px;
+        margin-top: 0;
+        text-transform: uppercase;
+    }
+    
+    h2 {
+        font-size: 18pt;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 8px;
+        margin-top: 1.8em;
+    }
+    
+    h3 {
+        font-size: 14pt;
+        margin-top: 1.5em;
+    }
+    
+    p {
+        margin-bottom: 1.2em;
+    }
+    
+    a {
+        color: #c5a059;
+        text-decoration: none;
+        font-weight: bold;
+    }
+    
+    ul, ol {
+        margin-bottom: 1.5em;
+        padding-left: 20px;
+    }
+    
+    li {
+        margin-bottom: 0.5em;
+    }
+    
+    /* Tables styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 25px 0;
+        font-size: 10pt;
+        border: 1px solid #e9ecef;
+    }
+    
+    th {
+        background-color: #0f2a4a;
+        color: #ffffff;
+        text-align: left;
+        font-weight: bold;
+        padding: 10px;
+    }
+    
+    td {
+        padding: 10px;
+        border-bottom: 1px solid #e9ecef;
+    }
+    
+    tr:nth-of-type(even) {
+        background-color: #f8f9fa;
+    }
+    
+    /* Code and pre blocks */
+    code {
+        font-family: monospace;
+        background-color: #f8f9fa;
+        color: #d63384;
+        padding: 2px 4px;
+        font-size: 9pt;
+    }
+    
+    pre {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        padding: 12px;
+        margin-bottom: 1.5em;
+    }
+    
+    pre code {
+        background-color: transparent;
+        color: #333333;
+        padding: 0;
+        font-size: 9pt;
+    }
+    
+    /* Blockquotes (Alerts) */
+    blockquote {
+        background-color: #eef3f7;
+        border-left: 5px solid #0f2a4a;
+        margin: 20px 0;
+        padding: 12px 15px;
+    }
+    
+    blockquote p {
+        margin: 0;
+        font-weight: bold;
+    }
+    
+    /* Image styling */
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 25px auto;
+        border: 1px solid #e9ecef;
+    }
+    
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="guide-utilisateur-gestion-immobiliere-mila">Guide Utilisateur — Gestion Immobilière MILA</h1>
+<p><strong>Version 4.1</strong> | <strong>Juillet 2026</strong> | <strong><a href="https://mila.afroit.net">mila.afroit.net</a></strong></p>
+<hr />
+<h2 id="acces-aux-plateformes">Accès aux plateformes</h2>
+<h3 id="environnement-de-test-staging-pour-effectuer-vos-tests">💻 Environnement de Test (Staging) — Pour effectuer vos tests</h3>
+<p>Utilisez cette adresse pour tester les nouvelles fonctionnalités en toute sécurité (les données sont des copies de test).</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Adresse</strong></td>
+<td>https://staging-mila.afroit.net</td>
+</tr>
+<tr>
+<td><strong>Identifiant</strong></td>
+<td><code>admin</code></td>
+</tr>
+<tr>
+<td><strong>Mot de passe</strong></td>
+<td><code>capelini</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h3 id="environnement-de-production-pour-lusage-quotidien">🚀 Environnement de Production — Pour l'usage quotidien</h3>
+<p>Utilisez cette adresse pour l'exploitation réelle une fois les tests validés.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Adresse</strong></td>
+<td>https://mila.afroit.net</td>
+</tr>
+<tr>
+<td><strong>Identifiant</strong></td>
+<td><code>client</code></td>
+</tr>
+<tr>
+<td><strong>Mot de passe</strong></td>
+<td><code>client123</code></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>Utilisez <strong>Google Chrome</strong> ou <strong>Firefox</strong>. Une fois connecté, cliquez sur le menu <strong>Immobilier</strong> sur l'écran d'accueil pour commencer.</p>
+</blockquote>
+<hr />
+<h2 id="vue-densemble-du-module">Vue d'ensemble du module</h2>
+<p>La barre de navigation donne accès à 5 sections :</p>
+<table>
+<thead>
+<tr>
+<th>Section</th>
+<th>Contenu</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>📊 <strong>Tableau de bord</strong></td>
+<td>Résumé en temps réel : KPIs, baux, alertes, interventions</td>
+</tr>
+<tr>
+<td>🏢 <strong>Patrimoine</strong></td>
+<td>Immeubles et biens immobiliers</td>
+</tr>
+<tr>
+<td>📄 <strong>Locations</strong></td>
+<td>Baux, modèles, pénalités</td>
+</tr>
+<tr>
+<td>🔧 <strong>Interventions</strong></td>
+<td>Travaux et services</td>
+</tr>
+<tr>
+<td>⚙️ <strong>Configuration</strong></td>
+<td>Plans de facturation, motifs, paramètres</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="1-tableau-de-bord">1. Tableau de bord</h2>
+<p><img alt="Tableau de bord — Données réelles" src="./screenshots/01_dashboard.png" /></p>
+<p>Le tableau de bord se rafraîchit automatiquement (60 secondes par défaut) et dispose d'un bouton <strong>Actualiser</strong> en haut à droite.</p>
+<h3 id="les-5-tuiles-kpi-cliquables">Les 5 tuiles KPI — cliquables</h3>
+<p>Chaque tuile est <strong>cliquable</strong> et affiche une liste filtrée des enregistrements concernés :</p>
+<table>
+<thead>
+<tr>
+<th>Tuile</th>
+<th>Valeur actuelle</th>
+<th>Cliquer ouvre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Biens totaux</strong></td>
+<td>6 biens (0 dispo / 1 en travaux)</td>
+<td>Liste de tous les biens</td>
+</tr>
+<tr>
+<td><strong>Taux d'occupation</strong></td>
+<td>83,3 %</td>
+<td>Liste des biens occupés</td>
+</tr>
+<tr>
+<td><strong>LMR Global</strong></td>
+<td>425 000 CFA</td>
+<td>Liste des baux actifs</td>
+</tr>
+<tr>
+<td><strong>Impayés</strong></td>
+<td>150 000 CFA</td>
+<td>Factures impayées en retard</td>
+</tr>
+<tr>
+<td><strong>Pénalités actives</strong></td>
+<td>15 000 CFA</td>
+<td>Pénalités confirmées non facturées</td>
+</tr>
+</tbody>
+</table>
+<h3 id="tableau-central-baux-actifs">Tableau central — Baux actifs</h3>
+<p>Chaque ligne liste : <strong>bien</strong>, <strong>locataire</strong>, <strong>loyer</strong>, <strong>prochaine date de facturation</strong>, <strong>jours avant expiration</strong> (rouge si &lt; 30 jours, vert si ok). Cliquer sur une ligne ouvre la fiche du bail ; cliquer sur le nom du bien ouvre la fiche du bien.</p>
+<h3 id="panneau-droit-alertes-interventions">Panneau droit — Alertes &amp; interventions</h3>
+<ul>
+<li><strong>Alertes</strong> : baux expirant bientôt, factures en retard, pénalités — toutes cliquables</li>
+<li><strong>Interventions récentes</strong> : 3 dernières interventions avec priorité et statut</li>
+</ul>
+<hr />
+<h2 id="2-patrimoine">2. Patrimoine</h2>
+<h3 id="21-immeubles">2.1 Immeubles</h3>
+<blockquote>
+<p><strong>Patrimoine → Immeubles</strong></p>
+</blockquote>
+<p>Les immeubles regroupent les biens. Notre parc actuel :<br />
+- <strong>Immeuble Palmeraie</strong> — Avenue de la Paix, Lomé — 6 biens</p>
+<h3 id="22-biens-immobiliers">2.2 Biens immobiliers</h3>
+<blockquote>
+<p><strong>Patrimoine → Biens immobiliers</strong></p>
+</blockquote>
+<p><img alt="Liste des biens immobiliers" src="./screenshots/02_properties_list.png" /></p>
+<p><strong>Notre parc actuel :</strong></p>
+<table>
+<thead>
+<tr>
+<th>Bien</th>
+<th>Type</th>
+<th>Loyer réf.</th>
+<th>Statut</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Appartement 3A</td>
+<td>Résidentiel</td>
+<td>150 000 CFA</td>
+<td>Occupé</td>
+</tr>
+<tr>
+<td>Bureau B1</td>
+<td>Commercial</td>
+<td>80 000 CFA</td>
+<td>Occupé</td>
+</tr>
+<tr>
+<td>Appartement 5B</td>
+<td>Résidentiel</td>
+<td>250 000 CFA</td>
+<td>En travaux</td>
+</tr>
+<tr>
+<td>Appartement 2B</td>
+<td>Résidentiel</td>
+<td>120 000 CFA</td>
+<td>Occupé</td>
+</tr>
+<tr>
+<td>Studio 1A</td>
+<td>Résidentiel</td>
+<td>75 000 CFA</td>
+<td>Occupé</td>
+</tr>
+<tr>
+<td>Magasin RDC</td>
+<td>Commercial</td>
+<td>200 000 CFA</td>
+<td>Disponible</td>
+</tr>
+</tbody>
+</table>
+<p>Le statut se met à jour automatiquement à la confirmation/résiliation d'un bail.</p>
+<h3 id="fiche-dun-bien">Fiche d'un bien</h3>
+<p><img alt="Fiche Appartement 3A" src="./screenshots/03_property_form.png" /></p>
+<p>Contenu : statut (barre), bouton <strong>"X Baux"</strong> (accès rapide), surface, loyer de référence, équipements, chatter (historique).</p>
+<hr />
+<h2 id="3-baux-locations">3. Baux (Locations)</h2>
+<h3 id="liste-des-baux">Liste des baux</h3>
+<blockquote>
+<p><strong>Locations → Baux Actifs</strong></p>
+</blockquote>
+<p><img alt="Liste des 4 baux actifs" src="./screenshots/04_leases_list.png" /></p>
+<p><strong>Baux actifs actuels :</strong></p>
+<table>
+<thead>
+<tr>
+<th>Référence</th>
+<th>Bien</th>
+<th>Locataire</th>
+<th>Loyer</th>
+<th>Début</th>
+<th>Fin</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BAIL/2026/0001</td>
+<td>Appartement 3A</td>
+<td>Kofi Mensah</td>
+<td>150 000 CFA</td>
+<td>01/01/2025</td>
+<td>31/12/2025</td>
+</tr>
+<tr>
+<td>BAIL/2026/0002</td>
+<td>Bureau B1</td>
+<td>Ama Diallo</td>
+<td>80 000 CFA</td>
+<td>01/03/2026</td>
+<td>28/02/2027</td>
+</tr>
+<tr>
+<td>BAIL/2026/0003</td>
+<td>Appartement 2B</td>
+<td>Marcel Togbe</td>
+<td>120 000 CFA</td>
+<td>01/03/2026</td>
+<td>28/02/2027</td>
+</tr>
+<tr>
+<td>BAIL/2026/0004</td>
+<td>Studio 1A</td>
+<td>Fatima Ouedraogo</td>
+<td>75 000 CFA</td>
+<td>01/05/2026</td>
+<td>30/04/2027</td>
+</tr>
+</tbody>
+</table>
+<h3 id="fiche-dun-bail">Fiche d'un bail</h3>
+<p><img alt="Fiche BAIL/2026/0001 — Kofi Mensah" src="./screenshots/05_lease_form.png" /></p>
+<p><strong>Barre de statut :</strong></p>
+<pre><code>Devis de bail  →  En cours (Actif)  →  Suspendu  →  Résilié
+</code></pre>
+<p><strong>Boutons d'action :</strong></p>
+<table>
+<thead>
+<tr>
+<th>Bouton</th>
+<th>Rôle</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Calculer pénalités</strong></td>
+<td>Calcule les pénalités sur les factures en retard</td>
+</tr>
+<tr>
+<td><strong>Résilier</strong></td>
+<td>Met fin au bail avec date et motif</td>
+</tr>
+<tr>
+<td><strong>📈 Avenant</strong></td>
+<td>Modifie les termes du bail en cours (traçabilité)</td>
+</tr>
+<tr>
+<td><strong>Renouveler</strong></td>
+<td>Prépare le renouvellement à échéance</td>
+</tr>
+<tr>
+<td><strong>Suspendre</strong></td>
+<td>Suspend temporairement le bail</td>
+</tr>
+<tr>
+<td><strong>X Pénalités</strong></td>
+<td>Smart button : liste des pénalités du bail</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cas-dusage-1-creer-un-nouveau-bail">✅ CAS D'USAGE 1 — Créer un nouveau bail</h2>
+<h3 id="variante-a-bail-residentiel-mensuel-cas-standard">Variante A : Bail résidentiel mensuel (cas standard)</h3>
+<p><strong>Scénario :</strong> Marcel Togbe loue l'Appartement 2B à partir du 1er mars 2026, 120 000 CFA/mois, 2 mois de caution.</p>
+<p><strong>Étapes :</strong><br />
+1. <strong>Locations → Baux Actifs → Nouveau</strong><br />
+2. Champs à remplir :<br />
+   - <strong>Bien immobilier</strong> : Appartement 2B<br />
+   - <strong>Locataire</strong> : Marcel Togbe (recherche et sélection)<br />
+   - <strong>Type de bail</strong> : Mensuel<br />
+   - <strong>Plan de récurrence</strong> : Mensuel<br />
+   - <strong>Loyer mensuel</strong> : 120 000<br />
+   - <strong>Dépôt de garantie</strong> : 240 000 (2 mois)<br />
+   - <strong>Date de début</strong> : 01/03/2026<br />
+   - <strong>Date de fin</strong> : 28/02/2027<br />
+3. <strong>Enregistrer</strong><br />
+4. Cliquer <strong>En cours (Actif)</strong> dans la barre de statut</p>
+<p>→ Résultat : statut du bail = <strong>En cours (Actif)</strong>, statut de l'Appartement 2B = <strong>Occupé</strong></p>
+<hr />
+<h3 id="variante-b-bail-commercial-pour-une-societe">Variante B : Bail commercial pour une société</h3>
+<p><strong>Scénario :</strong> La société TechTogo SARL loue le Magasin RDC (200 000 CFA/mois, 3 mois de caution, bail de 2 ans).</p>
+<p><strong>Étapes :</strong><br />
+1. <strong>Locations → Baux Actifs → Nouveau</strong><br />
+2. Champs :<br />
+   - <strong>Bien</strong> : Magasin RDC<br />
+   - <strong>Locataire</strong> : TechTogo SARL <em>(cocher la case "Société" lors de la création du contact)</em><br />
+   - <strong>Type de bail</strong> : Commercial<br />
+   - <strong>Plan de récurrence</strong> : Mensuel<br />
+   - <strong>Loyer mensuel</strong> : 200 000<br />
+   - <strong>Dépôt de garantie</strong> : 600 000 (3 mois)<br />
+   - <strong>Date de début</strong> : 01/07/2026<br />
+   - <strong>Date de fin</strong> : 30/06/2028<br />
+3. <strong>Enregistrer → En cours (Actif)</strong></p>
+<p>→ Le Magasin RDC passe de <strong>Disponible</strong> à <strong>Occupé</strong>. LMR Global sur le dashboard : <strong>625 000 CFA</strong>.</p>
+<hr />
+<h3 id="variante-c-bail-trimestriel-avec-modele-predefini">Variante C : Bail trimestriel avec modèle prédéfini</h3>
+<p><strong>Scénario :</strong> Un bien avec facturation trimestrielle — utiliser un modèle de bail existant pour accélérer la saisie.</p>
+<p><strong>Étapes :</strong><br />
+1. <strong>Locations → Baux Actifs → Nouveau</strong><br />
+2. Dans le champ <strong>Modèle de bail</strong>, sélectionner "Bail trimestriel standard"<br />
+3. Les champs se pré-remplissent automatiquement (plan = Trimestriel, mois d'avance, etc.)<br />
+4. Adapter : bien, locataire, dates, loyer<br />
+5. <strong>Enregistrer → En cours (Actif)</strong></p>
+<blockquote>
+<p><strong>Astuce</strong> : Créez vos modèles via <strong>Configuration → Modèles de bail</strong> pour standardiser vos contrats.</p>
+</blockquote>
+<hr />
+<h2 id="cas-dusage-2-modifier-un-bail-via-avenant">✅ CAS D'USAGE 2 — Modifier un bail via Avenant</h2>
+<h3 id="variante-a-revision-du-loyer">Variante A : Révision du loyer</h3>
+<p><strong>Scénario :</strong> Suite à la révision annuelle, le loyer de Kofi Mensah (Appartement 3A) passe de 150 000 à 165 000 CFA au 1er juillet 2026.</p>
+<p><img alt="Dialog Avenant de bail" src="./screenshots/09_avenant_dialog.png" /></p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir <strong>BAIL/2026/0001</strong><br />
+2. Cliquer <strong>📈 Avenant</strong><br />
+3. Dans le dialog :<br />
+   - <strong>Type d'avenant</strong> : Révision de loyer<br />
+   - <strong>Date d'effet</strong> : 01/07/2026<br />
+   - <strong>Nouveau loyer mensuel</strong> : 165 000<br />
+   - <strong>Note</strong> : Révision annuelle +10% — indice CIF Togo<br />
+4. <strong>Appliquer l'avenant</strong></p>
+<p>→ Le bail est mis à jour. L'historique (chatter) trace la modification avec date et auteur.</p>
+<hr />
+<h3 id="variante-b-changement-de-locataire-cession-de-bail">Variante B : Changement de locataire (cession de bail)</h3>
+<p><strong>Scénario :</strong> Ama Diallo quitte le Bureau B1 et cède son bail à TechTogo SARL à mi-terme.</p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir <strong>BAIL/2026/0002</strong><br />
+2. Cliquer <strong>📈 Avenant</strong><br />
+3. <strong>Type d'avenant</strong> : Changement de locataire<br />
+4. <strong>Nouveau locataire</strong> : TechTogo SARL<br />
+5. <strong>Date d'effet</strong> : 01/08/2026<br />
+6. <strong>Note</strong> : Cession de bail — accord tripartite signé<br />
+7. <strong>Appliquer l'avenant</strong></p>
+<p>→ Le bail reste actif, seul le locataire change. La traçabilité conserve l'historique complet.</p>
+<hr />
+<h3 id="variante-c-changement-de-bien-demenagement-interne">Variante C : Changement de bien (déménagement interne)</h3>
+<p><strong>Scénario :</strong> Fatima Ouedraogo souhaite passer du Studio 1A (75 000 CFA) à l'Appartement 5B (250 000 CFA) dès sa disponibilité.</p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir <strong>BAIL/2026/0004</strong><br />
+2. Cliquer <strong>📈 Avenant</strong><br />
+3. <strong>Type d'avenant</strong> : Changement de bien<br />
+4. <strong>Nouveau bien</strong> : Appartement 5B<br />
+5. <strong>Nouveau loyer</strong> : 250 000<br />
+6. <strong>Date d'effet</strong> : 01/09/2026<br />
+7. <strong>Appliquer</strong></p>
+<p>→ Studio 1A passe en <strong>Disponible</strong>, Appartement 5B passe en <strong>Occupé</strong> automatiquement.</p>
+<hr />
+<h2 id="cas-dusage-3-renouveler-un-bail">✅ CAS D'USAGE 3 — Renouveler un bail</h2>
+<h3 id="variante-a-renouvellement-simple-memes-conditions">Variante A : Renouvellement simple (mêmes conditions)</h3>
+<p><strong>Scénario :</strong> BAIL/2026/0001 (Kofi Mensah) expire fin décembre. Il souhaite rester 1 an de plus.</p>
+<p><img alt="Dialog Renouveler le bail" src="./screenshots/11_renouveler_dialog.png" /></p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir <strong>BAIL/2026/0001</strong><br />
+2. Cliquer <strong>Renouveler</strong><br />
+3. Dans le dialog :<br />
+   - <strong>Durée</strong> : 12 mois<br />
+   - <strong>Nouvelle date de fin</strong> : 31/12/2027<br />
+   - <strong>Conditions</strong> : inchangées<br />
+4. <strong>Confirmer le renouvellement</strong></p>
+<p>→ Le bail est prolongé jusqu'au 31/12/2027. L'alerte "expire bientôt" disparaît du tableau de bord.</p>
+<hr />
+<h3 id="variante-b-renouvellement-avec-augmentation-de-loyer">Variante B : Renouvellement avec augmentation de loyer</h3>
+<p><strong>Scénario :</strong> Marcel Togbe renouvelle l'Appartement 2B (BAIL/2026/0003), mais le loyer augmente à 130 000 CFA.</p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir <strong>BAIL/2026/0003</strong><br />
+2. Cliquer <strong>Renouveler</strong><br />
+3. Dans le dialog :<br />
+   - <strong>Durée</strong> : 12 mois<br />
+   - <strong>Nouveau loyer</strong> : 130 000<br />
+   - <strong>Note</strong> : Renouvellement avec révision loyer +8,3%<br />
+4. <strong>Confirmer</strong></p>
+<p>→ Le bail continue avec le nouveau tarif. Les futures factures utilisent 130 000 CFA.</p>
+<hr />
+<h3 id="variante-c-non-renouvellement-preavis-de-depart">Variante C : Non-renouvellement (préavis de départ)</h3>
+<p><strong>Scénario :</strong> Fatima Ouedraogo ne renouvelle pas son bail. Elle donne son préavis 2 mois avant.</p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir <strong>BAIL/2026/0004</strong><br />
+2. Ne pas cliquer Renouveler<br />
+3. Ajouter une <strong>Note interne</strong> (chatter) : "Mme Ouedraogo ne renouvelle pas — préavis reçu le 01/03/2027. Bien disponible au 01/05/2027."<br />
+4. Planifier une <strong>Activité</strong> : "Préparer état des lieux de sortie" — échéance 30/04/2027<br />
+5. À la date d'expiration, cliquer <strong>Résilier</strong> avec motif "Fin de bail"</p>
+<hr />
+<h2 id="cas-dusage-4-resilier-un-bail">✅ CAS D'USAGE 4 — Résilier un bail</h2>
+<h3 id="variante-a-resiliation-a-la-date-de-fin-normale">Variante A : Résiliation à la date de fin normale</h3>
+<p><strong>Scénario :</strong> Kofi Mensah quitte l'Appartement 3A à l'expiration prévue.</p>
+<p><img alt="Dialog Résilier le bail" src="./screenshots/12_resilier_dialog.png" /></p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir <strong>BAIL/2026/0001</strong><br />
+2. Cliquer <strong>Résilier</strong><br />
+3. Dans le dialog :<br />
+   - <strong>Date de résiliation</strong> : 31/12/2025<br />
+   - <strong>Motif</strong> : Fin de bail<br />
+4. <strong>Confirmer</strong></p>
+<p>→ Bail = <strong>Résilié</strong>, Appartement 3A = <strong>Disponible</strong>, dashboard mis à jour.</p>
+<hr />
+<h3 id="variante-b-resiliation-anticipee-pour-impayes">Variante B : Résiliation anticipée pour impayés</h3>
+<p><strong>Scénario :</strong> Un locataire accumule 3 mois d'impayés. Résiliation pour cause d'impayés.</p>
+<p><strong>Étapes :</strong><br />
+1. Vérifier les factures impayées via le smart button <strong>"X Factures"</strong> du bail<br />
+2. Cliquer <strong>Résilier</strong><br />
+3. Dans le dialog :<br />
+   - <strong>Date de résiliation</strong> : date d'aujourd'hui<br />
+   - <strong>Motif</strong> : Impayés persistants<br />
+   - <strong>Note</strong> : 3 loyers impayés (Jan, Fév, Mar 2026) — Mise en demeure envoyée le XX/XX<br />
+4. <strong>Confirmer</strong></p>
+<blockquote>
+<p>⚠️ Les factures impayées restent dues même après résiliation. Elles continuent à apparaître dans les "Impayés" du tableau de bord jusqu'à leur règlement.</p>
+</blockquote>
+<hr />
+<h3 id="variante-c-resiliation-amiable-avec-remboursement-de-caution">Variante C : Résiliation amiable avec remboursement de caution</h3>
+<p><strong>Scénario :</strong> Ama Diallo résilie à l'amiable 2 mois avant terme. Restitution de la caution.</p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir <strong>BAIL/2026/0002</strong><br />
+2. Cliquer <strong>Résilier</strong><br />
+3. <strong>Motif</strong> : Départ volontaire anticipé — <strong>Date</strong> : 30/04/2027<br />
+4. <strong>Confirmer</strong><br />
+5. Dans le chatter, ajouter une <strong>Note interne</strong> : "Caution restituée : 160 000 CFA — virement le XX/XX"</p>
+<hr />
+<h2 id="cas-dusage-5-suspendre-et-reactiver-un-bail">✅ CAS D'USAGE 5 — Suspendre et réactiver un bail</h2>
+<h3 id="variante-a-suspension-pour-travaux-durgence">Variante A : Suspension pour travaux d'urgence</h3>
+<p><strong>Scénario :</strong> Une inondation oblige Kofi Mensah à quitter temporairement l'Appartement 3A. Le bail est suspendu le temps des travaux.</p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir <strong>BAIL/2026/0001</strong><br />
+2. Cliquer <strong>Suspendre</strong><br />
+3. Le statut passe à <strong>Suspendu</strong> — le bien peut être mis en <strong>"En travaux"</strong> manuellement</p>
+<p><strong>Réactivation (après travaux) :</strong><br />
+1. Ouvrir le bail suspendu<br />
+2. Cliquer <strong>En cours (Actif)</strong> dans la barre de statut<br />
+3. Remettre le bien en <strong>Occupé</strong></p>
+<hr />
+<h3 id="variante-b-suspension-administrative-litige">Variante B : Suspension administrative (litige)</h3>
+<p><strong>Scénario :</strong> Un litige est en cours avec TechTogo SARL. Le bail est suspendu en attendant la décision judiciaire.</p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir le bail concerné → Cliquer <strong>Suspendre</strong><br />
+2. Ajouter une <strong>Note interne</strong> : "Bail suspendu — litige au Tribunal de Lomé (dossier n°XXX). Reprise prévue après jugement."<br />
+3. Planifier une <strong>Activité</strong> de suivi : "Vérifier décision tribunal" — 3 mois</p>
+<hr />
+<h2 id="cas-dusage-6-gerer-les-impayes-et-penalites">✅ CAS D'USAGE 6 — Gérer les impayés et pénalités</h2>
+<h3 id="variante-a-calculer-et-creer-une-penalite">Variante A : Calculer et créer une pénalité</h3>
+<p><strong>Scénario :</strong> Kofi Mensah n'a pas payé son loyer de Janvier 2025 (150 000 CFA, dû le 01/02/2025). Retard de 148 jours. Pénalité appliquée : 10%.</p>
+<p><img alt="Liste des pénalités — PEN/2025/0001 liée à INV/2025/00001" src="./screenshots/08_penalties_list.png" /></p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir <strong>BAIL/2026/0001</strong><br />
+2. Cliquer <strong>Calculer pénalités</strong><br />
+3. Le wizard affiche toutes les factures impayées du bail et calcule :<br />
+   - Facture : INV/2025/00001 — 150 000 CFA<br />
+   - Retard : 148 jours<br />
+   - Pénalité (10%) : <strong>15 000 CFA</strong><br />
+4. Valider les pénalités proposées</p>
+<p>→ <strong>PEN/2025/0001</strong> créée : 15 000 CFA, état <strong>Confirmée</strong>, liée à INV/2025/00001.</p>
+<hr />
+<h3 id="variante-b-penalite-montant-fixe-clause-contractuelle">Variante B : Pénalité montant fixe (clause contractuelle)</h3>
+<p><strong>Scénario :</strong> Le bail prévoit une pénalité fixe de 5 000 CFA par mois de retard (pas de pourcentage).</p>
+<p><strong>Étapes :</strong><br />
+1. <strong>Locations → Pénalités → Nouveau</strong><br />
+2. Champs :<br />
+   - <strong>Bail</strong> : BAIL/2026/0003<br />
+   - <strong>Facture impayée</strong> : sélectionner la facture en retard<br />
+   - <strong>Mode de calcul</strong> : Montant fixe<br />
+   - <strong>Montant</strong> : 5 000<br />
+3. <strong>Enregistrer → Confirmer</strong></p>
+<hr />
+<h3 id="variante-c-suivre-et-facturer-une-penalite">Variante C : Suivre et facturer une pénalité</h3>
+<p><strong>Scénario :</strong> La pénalité PEN/2025/0001 est confirmée. On doit la facturer au locataire.</p>
+<p><strong>Étapes depuis la fiche pénalité :</strong><br />
+1. <strong>Locations → Pénalités</strong> → ouvrir <strong>PEN/2025/0001</strong><br />
+2. Vérifier le montant : 15 000 CFA, état <strong>Confirmée</strong><br />
+3. Cliquer <strong>Facturer la pénalité</strong><br />
+4. Une facture est créée : montant 15 000 CFA, liée au locataire Kofi Mensah<br />
+5. Valider et envoyer la facture</p>
+<p>→ La pénalité passe en état <strong>Facturée</strong>. Elle disparaît du compteur "Pénalités actives" du dashboard.</p>
+<hr />
+<h2 id="cas-dusage-7-gerer-les-interventions">✅ CAS D'USAGE 7 — Gérer les interventions</h2>
+<h3 id="variante-a-declaration-dune-urgence-panne-critique">Variante A : Déclaration d'une urgence (panne critique)</h3>
+<p><strong>Scénario :</strong> La porte d'entrée du Magasin RDC est cassée — une réparation urgente est requise.</p>
+<p><img alt="Liste des interventions avec priorités" src="./screenshots/06_interventions_list.png" /></p>
+<p><strong>Étapes :</strong><br />
+1. <strong>Interventions → Services → Nouveau</strong><br />
+2. Remplir :<br />
+   - <strong>Intitulé</strong> : Réparation porte d'entrée cassée<br />
+   - <strong>Bien</strong> : Magasin RDC<br />
+   - <strong>Type</strong> : Réparation<br />
+   - <strong>Priorité</strong> : ★★★ (Critique)<br />
+   - <strong>Date demandée</strong> : aujourd'hui<br />
+   - <strong>Date planifiée</strong> : demain matin<br />
+   - <strong>Coût estimé</strong> : 50 000 CFA<br />
+   - <strong>Description</strong> : "Serrure et mécanisme cassés suite à effraction tentée. Bien sécurisé par locataire avec cadenas provisoire."<br />
+3. <strong>Enregistrer</strong><br />
+4. <strong>Soumettre → Approuver</strong></p>
+<p>→ L'intervention apparaît immédiatement en rouge sur le tableau de bord.</p>
+<hr />
+<h3 id="variante-b-maintenance-preventive-planifiee">Variante B : Maintenance préventive planifiée</h3>
+<p><strong>Scénario :</strong> Révision annuelle de la climatisation du Bureau B1.</p>
+<p><img alt="Fiche intervention — Réparation plomberie Appartement 3A" src="./screenshots/07_intervention_form.png" /></p>
+<p><strong>Étapes :</strong><br />
+1. <strong>Interventions → Services → Nouveau</strong><br />
+2. Remplir :<br />
+   - <strong>Intitulé</strong> : Maintenance annuelle climatisation<br />
+   - <strong>Bien</strong> : Bureau B1<br />
+   - <strong>Type</strong> : Maintenance<br />
+   - <strong>Priorité</strong> : ★☆☆ (Normal)<br />
+   - <strong>Date planifiée</strong> : 15/07/2026 (heure creuse)<br />
+   - <strong>Coût estimé</strong> : 35 000 CFA<br />
+3. <strong>Enregistrer → Soumettre</strong></p>
+<hr />
+<h3 id="variante-c-suivi-complet-dune-intervention-du-debut-a-la-cloture">Variante C : Suivi complet d'une intervention (du début à la clôture)</h3>
+<p><strong>Scénario :</strong> Suivi de la réparation de la fuite robinet (Appartement 3A).</p>
+<p><strong>Cycle de vie complet :</strong></p>
+<pre><code>Demande  →  Soumise  →  Approuvée  →  En cours  →  Validation  →  Validée  →  Facturée  →  Clôturée
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>Étape</th>
+<th>Action</th>
+<th>Qui</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Demande</td>
+<td>Intervention créée</td>
+<td>Gestionnaire</td>
+</tr>
+<tr>
+<td>2. Soumettre</td>
+<td>Cliquer "Soumettre"</td>
+<td>Gestionnaire</td>
+</tr>
+<tr>
+<td>3. Approuver</td>
+<td>Cliquer "Approuver" + valider le coût</td>
+<td>Responsable</td>
+</tr>
+<tr>
+<td>4. Démarrer</td>
+<td>Cliquer "Démarrer" quand technicien intervient</td>
+<td>Responsable</td>
+</tr>
+<tr>
+<td>5. Valider</td>
+<td>Cliquer "Valider" — travaux terminés</td>
+<td>Responsable</td>
+</tr>
+<tr>
+<td>6. Facturer</td>
+<td>Cliquer "Facturer" si refacturation au locataire</td>
+<td>Comptable</td>
+</tr>
+<tr>
+<td>7. Clôturer</td>
+<td>Cliquer "Clôturer" — archivage</td>
+<td>Gestionnaire</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="cas-dusage-8-communications-et-suivi">✅ CAS D'USAGE 8 — Communications et suivi</h2>
+<h3 id="variante-a-envoyer-un-message-a-un-collaborateur">Variante A : Envoyer un message à un collaborateur</h3>
+<p><strong>Scénario :</strong> Signaler à la comptable qu'une facture de pénalité doit être envoyée.</p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir la fiche pénalité (PEN/2025/0001)<br />
+2. Dans le chatter, cliquer <strong>Envoyer message</strong><br />
+3. Taper <code>@</code> puis le nom de la comptable pour la notifier<br />
+4. Message : "@Marie-Claire — PEN/2025/0001 confirmée (15 000 CFA). Merci de facturer et envoyer à Kofi Mensah."<br />
+5. <strong>Envoyer</strong></p>
+<p>→ Marie-Claire reçoit une <strong>notification Odoo</strong> et un <strong>email automatique</strong>.</p>
+<hr />
+<h3 id="variante-b-planifier-une-relance-locataire">Variante B : Planifier une relance locataire</h3>
+<p><strong>Scénario :</strong> Relancer Kofi Mensah pour le loyer impayé dans 3 jours.</p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir <strong>BAIL/2026/0001</strong><br />
+2. Dans le chatter, cliquer <strong>Activité</strong><br />
+3. Remplir :<br />
+   - <strong>Type</strong> : Appel téléphonique<br />
+   - <strong>Date d'échéance</strong> : dans 3 jours<br />
+   - <strong>Note</strong> : "Relancer Kofi Mensah au +228 90 XX XX XX pour INV/2025/00001 (150 000 CFA en retard)"<br />
+   - <strong>Assigner à</strong> : moi-même (ou un collaborateur)<br />
+4. <strong>Programmer</strong></p>
+<p>→ L'activité apparaît dans le calendrier Odoo. Un rappel est envoyé à l'échéance.</p>
+<hr />
+<h3 id="variante-c-ajouter-une-note-interne-sans-notifier">Variante C : Ajouter une note interne (sans notifier)</h3>
+<p><strong>Scénario :</strong> Consigner une conversation téléphonique pour le dossier.</p>
+<p><strong>Étapes :</strong><br />
+1. Ouvrir la fiche du bail ou de la pénalité<br />
+2. Cliquer <strong>Note</strong> (pas "Envoyer message")<br />
+3. Taper la note : "Appel Kofi Mensah le 19/06/2026 à 14h30. Il indique difficultés financières passagères. Promesse de paiement avant le 30/06/2026."<br />
+4. <strong>Ajouter</strong></p>
+<p>→ La note est visible par tous les utilisateurs Odoo mais <strong>n'est pas envoyée</strong> au locataire.</p>
+<hr />
+<h2 id="4-configuration">4. Configuration</h2>
+<blockquote>
+<p><strong>Configuration</strong> (menu en haut)</p>
+</blockquote>
+<h3 id="plans-de-recurrence-facturation">Plans de récurrence (Facturation)</h3>
+<p>Définit les fréquences de loyer disponibles :<br />
+- Mensuel · Trimestriel · Semestriel · Annuel</p>
+<h3 id="modeles-de-bail">Modèles de bail</h3>
+<p>Prédéfinissez des contrats types pour accélérer la saisie. Chaque modèle peut prédéfinir : type de bail, plan, mois d'avance, caution par défaut, clauses standard.</p>
+<h3 id="motifs-de-resiliation">Motifs de résiliation</h3>
+<p>Personnalisez les motifs : Fin de bail, Impayés, Départ volontaire, Force majeure, etc.</p>
+<h3 id="frequence-de-rafraichissement-du-dashboard">Fréquence de rafraîchissement du dashboard</h3>
+<p>Configurable dans les paramètres système. Valeur par défaut : 60 secondes.</p>
+<hr />
+<h2 id="5-conseils-pratiques">5. Conseils pratiques</h2>
+<h3 id="filtres-et-recherche-rapide">Filtres et recherche rapide</h3>
+<p>Sur chaque liste, utilisez la barre de recherche et le bouton <strong>▼ Filtres</strong> :<br />
+- <strong>Baux</strong> : Actifs / Suspendu / Résilié / Expire bientôt<br />
+- <strong>Biens</strong> : Disponible / Occupé / En travaux<br />
+- <strong>Interventions</strong> : En cours / Urgentes / Par bien / Par statut<br />
+- <strong>Pénalités</strong> : Confirmées / Facturées / Par bail</p>
+<h3 id="vues-disponibles">Vues disponibles</h3>
+<p>Chaque liste propose : <strong>vue tableau</strong> (colonnes triables) et <strong>vue kanban</strong> (cartes visuelles).</p>
+<h3 id="navigation-rapide-depuis-le-tableau-de-bord">Navigation rapide depuis le tableau de bord</h3>
+<table>
+<thead>
+<tr>
+<th>Cliquer sur</th>
+<th>Ouvre</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tuile KPI</td>
+<td>Liste filtrée des enregistrements</td>
+</tr>
+<tr>
+<td>Ligne d'un bail</td>
+<td>Fiche du bail</td>
+</tr>
+<tr>
+<td>Nom d'un bien dans un bail</td>
+<td>Fiche du bien</td>
+</tr>
+<tr>
+<td>Carte d'une intervention</td>
+<td>Fiche de l'intervention</td>
+</tr>
+<tr>
+<td>Alerte du panneau droit</td>
+<td>L'enregistrement concerné</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-questions-frequentes">6. Questions fréquentes</h2>
+<p><strong>Q : Le bien reste en "Disponible" après création du bail ?</strong></p>
+<blockquote>
+<p>Le bail doit être <strong>confirmé</strong>. Cliquer sur <strong>"En cours (Actif)"</strong> dans la barre de statut du bail.</p>
+</blockquote>
+<p><strong>Q : Les tuiles KPI n'affichent rien ou affichent 0 pour les impayés ?</strong></p>
+<blockquote>
+<p>Les impayés comptés sont les factures <strong>validées, non payées, en retard</strong>. Les loyers non encore facturés ne sont pas inclus.</p>
+</blockquote>
+<p><strong>Q : Comment voir toutes les modifications sur un bail ?</strong></p>
+<blockquote>
+<p>Le <strong>chatter</strong> (panneau droit de la fiche bail) trace toutes les modifications avec date et auteur.</p>
+</blockquote>
+<p><strong>Q : Comment augmenter le loyer sans créer un nouveau bail ?</strong></p>
+<blockquote>
+<p>Utilisez le bouton <strong>📈 Avenant</strong> → Type "Révision de loyer". Aucun nouveau bail n'est créé.</p>
+</blockquote>
+<p><strong>Q : La pénalité n'apparaît pas sur le dashboard ?</strong></p>
+<blockquote>
+<p>Les pénalités comptées sont celles en état <strong>Confirmée</strong> ou <strong>Brouillon</strong> (pas Annulée, pas Facturée).</p>
+</blockquote>
+<p><strong>Q : Comment calculer une pénalité sur une facture spécifique ?</strong></p>
+<blockquote>
+<p>Depuis la fiche du bail → <strong>Calculer pénalités</strong>. Le wizard liste toutes les factures en retard et propose les pénalités à créer.</p>
+</blockquote>
+<p><strong>Q : Comment savoir quel bien est disponible pour une nouvelle location ?</strong></p>
+<blockquote>
+<p>Aller dans <strong>Patrimoine → Biens immobiliers</strong> → Filtre <strong>"Disponible"</strong>. Ou cliquer la tuile "Biens totaux" et filtrer par statut "Disponible".</p>
+</blockquote>
+<hr />
+<h2 id="7-nouveautes-de-la-version-41-juillet-2026">7. Nouveautés de la Version 4.1 (Juillet 2026)</h2>
+<h3 id="71-geolocalisation-contacts-dimmeubles">7.1 Géolocalisation &amp; Contacts d'immeubles</h3>
+<ul>
+<li><strong>Liaison dynamique automatique</strong> : À la création de chaque immeuble, un contact <code>res.partner</code> de type "Société" est automatiquement généré en arrière-plan et lié à l'immeuble.</li>
+<li><strong>Synchronisation automatique</strong> : Toute modification sur le nom ou l'adresse de l'immeuble met immédiatement à jour la fiche du contact correspondant.</li>
+<li><strong>Coordonnées GPS</strong> : Renseignez la latitude et la longitude sur le contact ou sur l'immeuble, et utilisez le bouton <strong>"📍 Voir sur la carte"</strong> pour ouvrir l'adresse ou le point GPS directement dans Google Maps.</li>
+<li><strong>Héritage automatique</strong> : Les biens contenus dans l'immeuble héritent automatiquement de ces coordonnées de localisation.</li>
+</ul>
+<h3 id="72-bouton-de-facturation-manuelle">7.2 Bouton de Facturation Manuelle</h3>
+<ul>
+<li>Sur la fiche de n'importe quel <strong>bail actif</strong> (statut <em>En cours</em>), un bouton <strong>"💳 Facturer"</strong> est désormais disponible.</li>
+<li><strong>Logique intelligente (type abonnement Odoo)</strong> : Ce bouton génère une facture en <strong>brouillon</strong> pour la période en cours.</li>
+<li><strong>Avancement automatique</strong> : Une fois la facture générée, la date de "Prochaine échéance" est automatiquement avancée pour la période suivante (mensuelle, trimestrielle, etc.) selon la périodicité du bail.</li>
+<li><strong>Détails contractuels</strong> : La facture générée contient automatiquement toutes les informations clés : référence du bail, nom du locataire, nom du bien, et les dates exactes de la période concernée.</li>
+</ul>
+<h3 id="73-nouveaux-rapports-pdf-personnalises">7.3 Nouveaux Rapports PDF Personnalisés</h3>
+<p>Trois nouveaux rapports professionnels aux couleurs de la charte graphique de <strong>MEA &amp; FILS</strong> (bleu marine et or) sont disponibles :<br />
+1. <strong>Reçu de paiement de loyer</strong> : Imprimable depuis n'importe quel paiement reçu (fiche paiement). Il reprend l'identité complète du locataire, la période, la somme en chiffres et en lettres, ainsi que la clause de retard de 10%.<br />
+2. <strong>Fiche descriptive du bien</strong> : Imprimable depuis la fiche d'un bien (Patrimoine → Biens). Contient le statut, les caractéristiques (surface, étage, type), le bail en cours, et l'historique complet des locataires passés.<br />
+3. <strong>Fiche d'immeuble</strong> : Imprimable depuis la fiche d'un immeuble (Patrimoine → Immeubles). Contient des compteurs de statistiques, le taux d'occupation sous forme de jauge visuelle colorée (vert/orange/rouge), et la liste détaillée de tous les appartements/locaux avec leur statut respectif.</p>
+<hr />
+<h2 id="8-scenarios-de-test-recommandes-version-41">8. Scénarios de Test Recommandés (Version 4.1)</h2>
+<p>Pour valider l'ensemble des nouveautés de cette version, nous suggérons à la cliente de suivre ces 4 scénarios de test pas-à-pas sur l'environnement de staging.</p>
+<h3 id="scenario-1-validation-du-tableau-de-bord">Scénario 1 : Validation du Tableau de Bord</h3>
+<ol>
+<li>Connectez-vous sur <strong>https://staging-mila.afroit.net</strong> avec les identifiants de test (<code>admin</code> / <code>capelini</code>).</li>
+<li>Ouvrez le module <strong>Immobilier</strong> via l'écran d'accueil.</li>
+<li>Vérifiez le nouveau visuel du tableau de bord :</li>
+<li>Le KPI <strong>"Loyer mensuel global"</strong> (anciennement LMR) affiche le montant total cumulé de vos baux actifs.</li>
+<li>Le <strong>Taux d'occupation</strong> affiche un pourcentage exact (ex. <code>57.1 %</code>) cohérent avec le nombre de biens loués.</li>
+<li>Les onglets <strong>"Tous les biens"</strong> et <strong>"Par immeuble"</strong> s'affichent correctement lors du clic.</li>
+<li>La liste <strong>"Interventions en cours"</strong> à droite présente un défilement propre.</li>
+</ol>
+<h3 id="scenario-2-liaison-geolocalisation-automatique">Scénario 2 : Liaison Géolocalisation automatique</h3>
+<ol>
+<li>Allez dans <strong>Patrimoine → Immeubles</strong> et cliquez sur un immeuble (ex. "Immeuble Palmeraie").</li>
+<li>Dans la fiche, observez le champ <strong>"Contact de l'immeuble"</strong> : un partenaire Odoo a été créé et lié automatiquement en arrière-plan.</li>
+<li>Modifiez l'adresse ou le nom de l'immeuble, enregistrez et vérifiez que le contact associé a été synchronisé de la même manière.</li>
+<li>Renseignez des coordonnées dans la section <strong>"Coordonnées GPS"</strong> (Latitude et Longitude), puis cliquez sur le bouton <strong>"Voir sur la carte"</strong> : Google Maps doit s'ouvrir dans un nouvel onglet à l'emplacement exact.</li>
+<li>Allez dans <strong>Patrimoine → Biens immobiliers</strong> et ouvrez un appartement faisant partie de cet immeuble : vérifiez qu'il hérite automatiquement des coordonnées GPS.</li>
+</ol>
+<h3 id="scenario-3-test-de-la-facturation-manuelle">Scénario 3 : Test de la facturation manuelle</h3>
+<ol>
+<li>Allez dans <strong>Locations → Baux actifs</strong> et ouvrez un contrat (ex. Appartement 2B).</li>
+<li>Cliquez sur le bouton <strong>"💳 Facturer"</strong> situé dans la barre d'action supérieure.</li>
+<li>Odoo va automatiquement générer une facture en <strong>brouillon</strong> pour la période concernée et l'ouvrir à l'écran. Vérifiez les lignes de facturation (locataire, désignation du bien, période).</li>
+<li>Retournez sur la fiche du bail : la date de <strong>"Prochaine échéance"</strong> a automatiquement été repoussée à la période suivante.</li>
+</ol>
+<h3 id="scenario-4-impression-des-rapports-mea-fils">Scénario 4 : Impression des Rapports MEA &amp; FILS</h3>
+<ol>
+<li><strong>Reçu de paiement</strong> : Allez dans <strong>Finances → Reçus de paiement</strong>, ouvrez un règlement enregistré et cliquez sur <strong>Imprimer → Reçu de paiement (MEA &amp; FILS)</strong>. Vérifiez la mise en page bleu marine &amp; or, le montant en lettres et la mention des pénalités.</li>
+<li><strong>Fiche descriptive du bien</strong> : Allez sur la fiche d'un bien (ex. Appartement 3A), puis cliquez sur <strong>Imprimer → Fiche descriptive du bien</strong>.</li>
+<li><strong>Fiche d'immeuble</strong> : Allez sur la fiche d'un immeuble et cliquez sur <strong>Imprimer → Fiche d'immeuble</strong> pour voir la liste des appartements et la jauge d'occupation.</li>
+</ol>
+<hr />
+<h2 id="comptes-dacces-pour-les-tests">Comptes d'accès pour les tests</h2>
+<table>
+<thead>
+<tr>
+<th>Rôle / Environnement</th>
+<th>Adresse</th>
+<th>Identifiant</th>
+<th>Mot de passe</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Staging (Tests)</strong></td>
+<td>https://staging-mila.afroit.net</td>
+<td><code>admin</code></td>
+<td><code>capelini</code></td>
+</tr>
+<tr>
+<td><strong>Production (Réel)</strong></td>
+<td>https://mila.afroit.net</td>
+<td><code>client</code></td>
+<td><code>client123</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Support technique AFRO IT :</strong> contact@afroit.net | afroit.net</p>
+<hr />
+<p><em>MILA Gestion Immobilière v4.1 — AFRO IT — Juillet 2026</em></p>
+    </div>
+</body>
+</html>
