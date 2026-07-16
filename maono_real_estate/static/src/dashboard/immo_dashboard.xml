@@ -343,7 +343,7 @@
                                         </div>
                                     </t>
                                     <t t-foreach="state.data.alerts" t-as="alert" t-key="alert_index">
-                                        <ImmoAlertItem alert="alert" onNavigate="(a) => navigateAlert(a)"/>
+                                        <ImmoAlertItem alert="alert" onNavigate="(a) => this.navigateAlert(a)"/>
                                     </t>
                                 </div>
                             </div>
@@ -406,7 +406,7 @@
                             <ImmoPropertyTable
                                 properties="state.data.properties_data || []"
                                 currencySymbol="state.data.currency_symbol"
-                                onOpenProperty="(id) => openProperty(id)"
+                                onOpenProperty="(id) => this.openProperty(id)"
                             />
                         </div>
                     </div>
@@ -422,7 +422,7 @@
                             <ImmoBuildingGrid
                                 buildings="state.data.buildings_data || []"
                                 currencySymbol="state.data.currency_symbol"
-                                onOpenProperty="(id) => openProperty(id)"
+                                onOpenProperty="(id) => this.openProperty(id)"
                             />
                         </div>
                     </div>
