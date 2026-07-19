@@ -205,6 +205,12 @@ export class ImmoDashboard extends Component {
             activeTab: "leases", // leases | properties | buildings
         });
 
+        // Pre-bind callbacks to prevent 'this' context loss
+        this.openProperty = this.openProperty.bind(this);
+        this.openLease = this.openLease.bind(this);
+        this.openService = this.openService.bind(this);
+        this.navigateAlert = this.navigateAlert.bind(this);
+
         this._refreshTimer = null;
 
         // Pre-bind KPI navigation callbacks

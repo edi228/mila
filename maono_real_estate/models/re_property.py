@@ -50,6 +50,7 @@ class ReProperty(models.Model):
     
     # ── Géolocalisation héritée de l'immeuble ──────────────────────────────
     # La latitude/longitude du bien est celle de son immeuble (via le contact de l'immeuble)
+    partner_id = fields.Many2one('res.partner', related='building_id.partner_id', string="Contact de l'immeuble", store=True)
     partner_latitude  = fields.Float(related='building_id.partner_latitude',  string="Latitude",  store=False, digits=(10, 7))
     partner_longitude = fields.Float(related='building_id.partner_longitude', string="Longitude", store=False, digits=(10, 7))
 

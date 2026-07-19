@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_re_contract_template_tree" model="ir.ui.view">
+        <field name="name">re.contract.template.tree</field>
+        <field name="model">re.contract.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_re_contract_template_form" model="ir.ui.view">
+        <field name="name">re.contract.template.form</field>
+        <field name="model">re.contract.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Nom du modèle de contrat…"/></h1>
+                    </div>
+                    <group>
+                        <field name="active"/>
+                    </group>
+                    <notebook>
+                        <page string="Contenu du contrat">
+                            <field name="content" widget="html" options="{'safe': True}"/>
+                        </page>
+                        <page string="Aide aux Placeholders">
+                            <div class="alert alert-info" role="alert">
+                                <strong>Placeholders disponibles :</strong>
+                                <ul>
+                                    <li><code>${name}</code> : Référence du bail</li>
+                                    <li><code>${property_name}</code> : Nom du bien</li>
+                                    <li><code>${building_name}</code> : Nom de l'immeuble</li>
+                                    <li><code>${building_city}</code> : Ville de l'immeuble</li>
+                                    <li><code>${owner_name}</code> : Nom du propriétaire</li>
+                                    <li><code>${owner_city}</code> : Ville du propriétaire</li>
+                                    <li><code>${tenant_name}</code> : Nom du locataire principal</li>
+                                    <li><code>${tenant_city}</code> : Ville du locataire</li>
+                                    <li><code>${tenant_nationality}</code> : Nationalité (Gentilé) du locataire</li>
+                                    <li><code>${guarantor_name}</code> : Nom du garant</li>
+                                    <li><code>${rent_amount}</code> : Loyer mensuel de base</li>
+                                    <li><code>${deposit_amount}</code> : Montant de la caution</li>
+                                    <li><code>${advance_amount}</code> : Montant total de l'avance</li>
+                                    <li><code>${advance_months}</code> : Nombre de mois d'avance</li>
+                                    <li><code>${start_date}</code> : Date de début du bail</li>
+                                    <li><code>${end_date}</code> : Date de fin du bail</li>
+                                    <li><code>${signature_total}</code> : Total exigible à la signature</li>
+                                </ul>
+                            </div>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_re_contract_template" model="ir.actions.act_window">
+        <field name="name">Modèles de contrats</field>
+        <field name="res_model">re.contract.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

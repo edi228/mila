@@ -67,6 +67,8 @@ class RePenaltyComputeWizard(models.TransientModel):
 
     def action_generate_penalties(self):
         self.ensure_one()
+        if not self.preview_line_ids:
+            raise UserError(_("Aucun retard de paiement n'a été détecté pour ce bail à la date de calcul sélectionnée. Aucune pénalité ne peut être générée."))
         count = 0
         for line in self.preview_line_ids:
             self.env['re.penalty'].create({

@@ -8,13 +8,13 @@
     <record id="action_re_property" model="ir.actions.act_window">
         <field name="name">Biens immobiliers</field>
         <field name="res_model">re.property</field>
-        <field name="view_mode">list,form,kanban</field>
+        <field name="view_mode">list,kanban,form,map</field>
     </record>
 
     <record id="action_re_building" model="ir.actions.act_window">
         <field name="name">Immeubles</field>
         <field name="res_model">re.building</field>
-        <field name="view_mode">list,form</field>
+        <field name="view_mode">list,form,map</field>
     </record>
 
     <!-- Dashboard -->
@@ -248,6 +248,12 @@
               parent="menu_re_config"
               sequence="20"
               action="action_re_lease_template"/>
+
+    <menuitem id="menu_re_config_contract_template"
+              name="Modèles de contrats"
+              parent="menu_re_config"
+              sequence="25"
+              action="action_re_contract_template"/>
 
     <menuitem id="menu_re_config_close_reason"
               name="Motifs de résiliation"

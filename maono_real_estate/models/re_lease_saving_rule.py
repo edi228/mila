@@ -19,7 +19,14 @@ class ReLeaseSavingRule(models.Model):
     ], string="Base de calcul", default='rent', required=True)
     
     is_active = fields.Boolean(string="Active", default=True)
-    target_account_id = fields.Many2one('account.account', string="Compte cible (Trésorerie)")
+    target_account_id = fields.Many2one('account.account', string="Compte cible (Trésorerie)", default=lambda self: self._default_target_account())
+    
+    def _default_target_account(self):
+        account = self.env['account.account'].search([
+            ('account_type', '=', 'asset_cash'),
+            ('company_id', '=', self.env.company.id)
+        ], limit=1)
+        return account.id if account else False
     
     beneficiary = fields.Selection([
         ('owner', 'Propriétaire'),

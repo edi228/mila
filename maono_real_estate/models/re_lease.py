@@ -42,8 +42,8 @@ class ReLease(models.Model):
     advance_amount = fields.Monetary(string="Total avance", compute='_compute_signature_total', store=True)
     
     deposit_amount = fields.Monetary(string="Caution", tracking=True)
-    deposit_paid = fields.Boolean(string="Caution encaissée", tracking=True)
-    deposit_paid_date = fields.Date(string="Date d'encaissement")
+    deposit_paid = fields.Boolean(string="Caution encaissée", compute='_compute_deposit_paid', store=True, readonly=False, tracking=True)
+    deposit_paid_date = fields.Date(string="Date d'encaissement", compute='_compute_deposit_paid', store=True, readonly=False)
     deposit_returned = fields.Boolean(string="Caution restituée", tracking=True)
     deposit_return_date = fields.Date(string="Date de restitution")
     deposit_deductions = fields.Monetary(string="Déductions sur caution")
@@ -109,6 +109,18 @@ class ReLease(models.Model):
     penalty_ids = fields.One2many('re.penalty', 'lease_id', string="Pénalités générées")
     penalty_count = fields.Integer(string="Pénalités", compute='_compute_penalty_count')
     identity_ids = fields.One2many('re.lease.identity', 'lease_id', string="Pièces d'identité")
+
+    # Invoices, Overdue, Taxes & Savings, Contract template
+    invoice_ids = fields.One2many('account.move', 'lease_id', string="Quittances / Reçus")
+    invoice_count = fields.Integer(string="Factures/Reçus", compute='_compute_invoice_count')
+    is_overdue = fields.Boolean(string="Échéance dépassée", compute='_compute_is_overdue', store=False)
+    entry_invoice_paid = fields.Boolean(string="Entrée payée", compute='_compute_entry_invoice_paid', store=True)
+    
+    total_tax_collected = fields.Monetary(string="Taxes collectées", compute='_compute_totals_collected')
+    total_saving_collected = fields.Monetary(string="Épargne collectée", compute='_compute_totals_collected')
+    
+    contract_template_id = fields.Many2one('re.contract.template', string="Modèle de contrat")
+    contract_body = fields.Html(string="Corps du contrat")
 
     # ── Champs inline Locataire (related natifs res.partner uniquement) ───
     tenant_phone = fields.Char(related='tenant_id.phone', string="Téléphone", readonly=False)
@@ -359,3 +371,204 @@ class ReLease(models.Model):
     @api.model
     def _reopen_paid_churned_subscription(self):
         pass
+
+    @api.depends('next_invoice_date', 'lease_state')
+    def _compute_is_overdue(self):
+        today = fields.Date.today()
+        for lease in self:
+            if lease.lease_state == '3_progress' and lease.next_invoice_date and lease.next_invoice_date < today:
+                lease.is_overdue = True
+            else:
+                lease.is_overdue = False
+
+    @api.depends('invoice_ids.payment_state')
+    def _compute_entry_invoice_paid(self):
+        for lease in self:
+            entry_inv = lease.invoice_ids.filtered(lambda m: m.is_entry_invoice)
+            if entry_inv:
+                lease.entry_invoice_paid = all(m.payment_state in ('paid', 'in_payment') for m in entry_inv)
+            else:
+                lease.entry_invoice_paid = lease.advance_months == 0
+
+    @api.depends('invoice_ids.payment_state')
+    def _compute_deposit_paid(self):
+        for lease in self:
+            entry_inv = lease.invoice_ids.filtered(lambda m: m.is_entry_invoice)
+            if entry_inv:
+                is_paid = all(m.payment_state in ('paid', 'in_payment') for m in entry_inv)
+                lease.deposit_paid = is_paid
+                if is_paid and not lease.deposit_paid_date:
+                    lease.deposit_paid_date = fields.Date.today()
+            else:
+                if lease.deposit_amount == 0:
+                    lease.deposit_paid = True
+                    lease.deposit_paid_date = False
+
+    @api.depends('invoice_ids')
+    def _compute_invoice_count(self):
+        for rec in self:
+            rec.invoice_count = len(rec.invoice_ids)
+
+    @api.depends('invoice_ids.state', 'invoice_ids.amount_tax', 'invoice_ids.lease_saving_ids')
+    def _compute_totals_collected(self):
+        for lease in self:
+            posted_invoices = lease.invoice_ids.filtered(lambda m: m.state == 'posted')
+            lease.total_tax_collected = sum(posted_invoices.mapped('amount_tax'))
+            
+            saving_lines = posted_invoices.mapped('lease_saving_ids').filtered(lambda s: s.lease_id == lease)
+            lease.total_saving_collected = sum(saving_lines.mapped('saving_amount'))
+
+    def action_view_invoices(self):
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _('Factures / Reçus'),
+            'res_model': 'account.move',
+            'view_mode': 'list,form',
+            'domain': [('lease_id', '=', self.id)],
+            'context': {'default_lease_id': self.id, 'default_move_type': 'out_invoice'},
+        }
+
+    def action_view_collected_taxes(self):
+        self.ensure_one()
+        tax_lines = self.invoice_ids.filtered(lambda m: m.state == 'posted').mapped('line_ids').filtered(lambda l: l.tax_line_id)
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Taxes collectées — %s") % self.name,
+            'res_model': 'account.move.line',
+            'view_mode': 'list,form',
+            'domain': [('id', 'in', tax_lines.ids)],
+        }
+
+    def action_view_collected_savings(self):
+        self.ensure_one()
+        saving_lines = self.invoice_ids.filtered(lambda m: m.state == 'posted').mapped('lease_saving_ids')
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Lignes d'épargne collectées — %s") % self.name,
+            'res_model': 'account.move.saving.line',
+            'view_mode': 'list,form',
+            'domain': [('id', 'in', saving_lines.ids)],
+        }
+
+    def action_view_entry_invoice(self):
+        self.ensure_one()
+        entry_inv = self.invoice_ids.filtered(lambda m: m.is_entry_invoice)
+        if entry_inv:
+            return {
+                'type': 'ir.actions.act_window',
+                'name': _("Reçu d'entrée"),
+                'res_model': 'account.move',
+                'res_id': entry_inv[0].id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+        raise UserError(_("Aucun reçu d'entrée trouvé."))
+
+    def action_generate_entry_invoice(self):
+        self.ensure_one()
+        if self.invoice_ids.filtered(lambda m: m.is_entry_invoice):
+            raise UserError(_("Le reçu d'entrée a déjà été généré pour ce bail."))
+            
+        journal = self.env['account.journal'].search([
+            ('type', '=', 'sale'),
+            ('company_id', '=', self.env.company.id),
+        ], limit=1)
+        if not journal:
+            raise UserError(_("Aucun journal de vente trouvé pour la société."))
+
+        invoice_lines = []
+        
+        # Line 1: Caution (Deposit)
+        if self.deposit_amount > 0:
+            deposit_product = self.env.ref('maono_real_estate.product_re_deposit', raise_if_not_found=False)
+            invoice_lines.append((0, 0, {
+                'product_id': deposit_product.product_variant_id.id if deposit_product else False,
+                'name': _("Dépôt de garantie (Caution) — Bail %s") % self.name,
+                'quantity': 1.0,
+                'price_unit': self.deposit_amount,
+            }))
+            
+        # Line 2: Loyer d'avance (Advance rent)
+        if self.advance_months > 0:
+            rent_product = self.env.ref('maono_real_estate.product_re_rent', raise_if_not_found=False)
+            invoice_lines.append((0, 0, {
+                'product_id': rent_product.product_variant_id.id if rent_product else False,
+                'name': _("Avance de loyer (%s mois) — Bail %s") % (self.advance_months, self.name),
+                'quantity': 1.0,
+                'price_unit': self.advance_amount,
+            }))
+            
+        if not invoice_lines:
+            raise UserError(_("Le montant de la caution et le mois d'avance doivent être supérieurs à 0 pour générer un reçu d'entrée."))
+            
+        move = self.env['account.move'].create({
+            'move_type': 'out_invoice',
+            'partner_id': self.tenant_id.id,
+            'journal_id': journal.id,
+            'invoice_date': self.start_date,
+            'invoice_date_due': self.start_date,
+            'invoice_origin': self.name,
+            'lease_id': self.id,
+            'is_entry_invoice': True,
+            'invoice_period_start': self.start_date,
+            'invoice_period_end': self.start_date,
+            'narration': _("Reçu d'entrée (Caution & Avance) — Bail %s") % self.name,
+            'invoice_line_ids': invoice_lines,
+        })
+        
+        move.action_post()
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': _("Reçu d'entrée"),
+            'res_model': 'account.move',
+            'res_id': move.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
+
+    @api.onchange('contract_template_id')
+    def _onchange_contract_template(self):
+        if self.contract_template_id:
+            body = self.contract_template_id.content
+            placeholders = {
+                '${name}': self.name or '',
+                '${property_name}': self.property_id.name or '',
+                '${building_name}': self.property_id.building_id.name or '',
+                '${building_city}': self.property_id.building_id.city or 'Lomé',
+                '${owner_name}': self.owner_id.name or '',
+                '${owner_city}': self.owner_id.city or 'Lomé',
+                '${tenant_name}': self.tenant_id.name or '',
+                '${tenant_city}': self.tenant_id.city or 'Lomé',
+                '${tenant_nationality}': self.tenant_id.country_id.demonym or 'Togolaise',
+                '${guarantor_name}': self.guarantor_id.name or 'Néant',
+                '${rent_amount}': '{:,.0f}'.format(self.rent_amount).replace(',', ' ') if self.rent_amount else '0',
+                '${deposit_amount}': '{:,.0f}'.format(self.deposit_amount).replace(',', ' ') if self.deposit_amount else '0',
+                '${advance_amount}': '{:,.0f}'.format(self.advance_amount).replace(',', ' ') if self.advance_amount else '0',
+                '${advance_months}': str(self.advance_months),
+                '${start_date}': self.start_date.strftime('%d/%m/%Y') if self.start_date else '',
+                '${end_date}': self.end_date.strftime('%d/%m/%Y') if self.end_date else 'Indéterminée',
+                '${signature_total}': '{:,.0f}'.format(self.signature_total).replace(',', ' ') if self.signature_total else '0',
+            }
+            for key, val in placeholders.items():
+                body = body.replace(key, val)
+            self.contract_body = body
+
+    def write(self, vals):
+        if not self.env.context.get('bypass_lease_lock'):
+            locked_fields = [
+                'property_id', 'tenant_id', 'rent_amount', 'deposit_amount', 
+                'plan_id', 'start_date', 'advance_months', 'lease_type'
+            ]
+            for lease in self:
+                if lease.lease_state not in ('1_draft', '2_renewal'):
+                    modified_locked = [f for f in locked_fields if f in vals]
+                    if modified_locked:
+                        field_labels = [self._fields[f].string for f in modified_locked]
+                        raise UserError(_(
+                            "Le contrat de bail %s est déjà en cours ou clôturé. "
+                            "Vous ne pouvez pas modifier directement les éléments contractuels suivants : %s. "
+                            "Veuillez passer par un avenant ou un renouvellement."
+                        ) % (lease.name, ', '.join(field_labels)))
+        return super(ReLease, self).write(vals)

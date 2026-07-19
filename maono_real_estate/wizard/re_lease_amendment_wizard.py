@@ -36,7 +36,7 @@ class ReLeaseAmendmentWizard(models.TransientModel):
             if rent_line:
                 rent_line.price_unit = self.new_rent_amount
                 rent_line.name = 'Loyer — %s' % (lease.property_id.name or '')
-            lease.rent_amount = self.new_rent_amount
+            lease.with_context(bypass_lease_lock=True).rent_amount = self.new_rent_amount
             log_details.append('Loyer : %s → %s %s' % (old_rent, self.new_rent_amount, lease.currency_id.name))
 
         # Ajout de services

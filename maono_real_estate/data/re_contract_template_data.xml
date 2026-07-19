@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="contract_template_togo_habitation" model="re.contract.template">
+            <field name="name">Contrat de Bail d'Habitation Standard (Togo)</field>
+            <field name="content"><![CDATA[
+<h3 style="text-align: center; color: #0f2a4a; font-weight: bold;">RÉPUBLIQUE TOGOLAISE</h3>
+<p style="text-align: center; font-weight: bold; margin-bottom: 20px;">CONTRAT DE BAIL À USAGE D'HABITATION</p>
+
+<p><strong>ENTRE LES SOUSSIGNÉS :</strong></p>
+<p><strong>Le Bailleur :</strong> M./Mme <strong>${owner_name}</strong>, demeurant à <strong>${owner_city}</strong>, ci-après dénommé(e) « le BAILLEUR » d'une part,</p>
+<p><strong>ET</strong></p>
+<p><strong>Le Locataire :</strong> M./Mme <strong>${tenant_name}</strong>, de nationalité <strong>${tenant_nationality}</strong>, ci-après dénommé(e) « le PRENEUR » d'autre part.</p>
+
+<p><strong>IL A ÉTÉ CONVENU ET ARRÊTÉ CE QUI SUIT :</strong></p>
+
+<h4 style="color: #0f2a4a;">ARTICLE 1 — OBJET DU CONTRAT</h4>
+<p>Le BAILLEUR donne à bail d'habitation au PRENEUR, qui l'accepte, les locaux désignés ci-après : <strong>${property_name}</strong>, faisant partie de l'ensemble immobilier <strong>${building_name}</strong>, situé à <strong>${building_city}</strong>, Togo.</p>
+
+<h4 style="color: #0f2a4a;">ARTICLE 2 — DURÉE ET PREMIER BAIL</h4>
+<p>Le présent contrat est consenti et accepté pour une durée commençant le <strong>${start_date}</strong> et se terminant le <strong>${end_date}</strong>. À l'expiration de cette période, le bail se renouvellera par tacite reconduction aux mêmes clauses et conditions, sauf congé donné par l'une des parties par lettre recommandée avec accusé de réception ou acte d'huissier, trois (3) mois à l'avance.</p>
+
+<h4 style="color: #0f2a4a;">ARTICLE 3 — CONDITIONS FINANCIÈRES (LOYER ET CHARGES)</h4>
+<p>Le loyer mensuel est fixé d'accord parties à la somme de : <strong>${rent_amount} FCFA</strong>. Ce loyer est payable mensuellement et d'avance au plus tard le 5 de chaque mois. En aucun cas, le preneur ne pourra retarder le règlement du loyer sous aucun prétexte.</p>
+
+<h4 style="color: #0f2a4a;">ARTICLE 4 — CAUTION ET AVANCE À LA SIGNATURE</h4>
+<p>Pour garantir la bonne exécution des obligations issues du présent contrat, le PRENEUR verse ce jour au BAILLEUR la somme de <strong>${deposit_amount} FCFA</strong> au titre de dépôt de garantie (caution non productive d'intérêts), et <strong>${advance_amount} FCFA</strong> représentant <strong>${advance_months}</strong> mois d'avance de loyer. Le total versé à la signature s'élève à <strong>${signature_total} FCFA</strong>.</p>
+<p>La caution sera restituée en fin de bail après libération complète des lieux, remise des clés et état des lieux contradictoire, déduction faite de toute somme qui pourrait être due au BAILLEUR.</p>
+
+<h4 style="color: #0f2a4a;">ARTICLE 5 — OBLIGATIONS DU PRENEUR</h4>
+<p>Le PRENEUR s'engage à :
+<ul>
+    <li>User des lieux paisiblement et en bon père de famille conformément à leur destination d'habitation.</li>
+    <li>Prendre à sa charge l'entretien courant des locaux et les menues réparations locatives.</li>
+    <li>Ne faire aucune modification ni transformation dans les locaux sans l'accord écrit du BAILLEUR.</li>
+    <li>Laisser exécuter les travaux urgents et nécessaires incombant au propriétaire.</li>
+</ul>
+</p>
+
+<h4 style="color: #0f2a4a;">ARTICLE 6 — ÉLECTION DE DOMICILE ET LITIGES</h4>
+<p>Pour l'exécution des présentes et de leurs suites, les parties élisent domicile en leurs demeures respectives. En cas de contestation sur l'exécution ou l'interprétation du présent contrat, les tribunaux compétents de Lomé seront seuls compétents.</p>
+
+<p style="margin-top: 30px;">Fait à Lomé, le <strong>${start_date}</strong> en double exemplaire.</p>
+            ]]></field>
+        </record>
+    </data>
+</odoo>

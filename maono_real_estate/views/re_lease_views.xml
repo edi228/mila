@@ -10,10 +10,11 @@
             <form>
                 <header>
                     <button name="action_confirm" string="Confirmer le bail" type="object" class="oe_highlight" invisible="lease_state != '1_draft'"/>
+                    <button name="action_generate_entry_invoice" string="💵 Générer reçu d'entrée" type="object" class="oe_highlight btn-info" invisible="lease_state != '1_draft' or invoice_count &gt; 0"/>
                     <button name="action_create_invoice_manual" string="💳 Facturer" type="object"
-                            class="oe_highlight btn-success"
-                            invisible="lease_state != '3_progress'"
-                            help="Génère une facture de loyer pour la prochaine période. La date est avancée automatiquement."/>
+                             class="oe_highlight btn-success"
+                             invisible="lease_state != '3_progress'"
+                             help="Génère une facture de loyer pour la prochaine période. La date est avancée automatiquement."/>
                     <button name="action_compute_penalties" string="Calculer pénalités" type="object" icon="fa-exclamation-triangle" invisible="lease_state != '3_progress'"/>
                     <button name="action_close_lease" string="Résilier" type="object" invisible="lease_state not in ('3_progress','4_paused')"/>
                     <button name="action_view_penalties" string="Pénalités" type="object" class="btn-danger" invisible="penalty_count == 0"/>
@@ -28,33 +29,53 @@
                         <button name="action_view_penalties" type="object" class="oe_stat_button" icon="fa-warning" invisible="penalty_count == 0">
                             <field name="penalty_count" widget="statinfo" string="Pénalités"/>
                         </button>
+                        <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="invoice_count == 0">
+                            <field name="invoice_count" widget="statinfo" string="Quittances"/>
+                        </button>
+                        <button name="action_view_collected_taxes" type="object" class="oe_stat_button" icon="fa-money" invisible="total_tax_collected == 0">
+                            <field name="total_tax_collected" widget="statinfo" string="Taxes coll."/>
+                        </button>
+                        <button name="action_view_collected_savings" type="object" class="oe_stat_button" icon="fa-bank" invisible="total_saving_collected == 0">
+                            <field name="total_saving_collected" widget="statinfo" string="Épargne coll."/>
+                        </button>
                     </div>
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
                     <group>
                         <group string="Contrat">
-                            <field name="property_id"/>
-                            <field name="tenant_id"/>
+                            <field name="property_id" readonly="lease_state != '1_draft'"/>
+                            <field name="tenant_id" readonly="lease_state != '1_draft'"/>
                             <field name="tenant_ref_snapshot"/>
-                            <field name="guarantor_id"/>
-                            <field name="lease_type"/>
-                            <field name="plan_id"/>
-                            <field name="start_date"/>
-                            <field name="end_date"/>
+                            <field name="guarantor_id" readonly="lease_state != '1_draft'"/>
+                            <field name="lease_type" readonly="lease_state != '1_draft'"/>
+                            <field name="plan_id" readonly="lease_state != '1_draft'"/>
+                            <field name="contract_template_id" options="{'no_create': True}" readonly="lease_state != '1_draft'"/>
+                            <field name="start_date" readonly="lease_state != '1_draft'"/>
+                            <field name="end_date" readonly="lease_state != '1_draft'"/>
                         </group>
                         <group string="Conditions financières">
-                            <field name="rent_amount"/>
+                            <field name="rent_amount" readonly="lease_state != '1_draft'"/>
                             <field name="currency_id" invisible="1"/>
-                            <field name="advance_months"/>
+                            <field name="advance_months" readonly="lease_state != '1_draft'"/>
                             <field name="advance_amount" readonly="1"/>
-                            <field name="deposit_amount"/>
-                            <field name="deposit_paid"/>
+                            <field name="deposit_amount" readonly="lease_state != '1_draft'"/>
+                            
+                            <label for="deposit_paid"/>
+                            <div class="o_row">
+                                <field name="deposit_paid" readonly="1"/>
+                                <span class="badge text-bg-success" invisible="not deposit_paid">Déjà payée</span>
+                                <button name="action_view_entry_invoice" string="Voir le reçu" type="object" class="btn btn-link py-0" invisible="not deposit_paid"/>
+                            </div>
+                            
                             <field name="deposit_paid_date" invisible="not deposit_paid"/>
                             <field name="deposit_returned"/>
                             <field name="deposit_return_date" invisible="not deposit_returned"/>
                             <field name="signature_total" readonly="1"/>
                             <field name="next_invoice_date"/>
+                            <field name="invoice_count" invisible="1"/>
+                            <field name="total_tax_collected" invisible="1"/>
+                            <field name="total_saving_collected" invisible="1"/>
                         </group>
                     </group>
 
@@ -216,6 +237,11 @@
                             </group>
                         </page>
 
+                        <!-- ── ONGLET CONTRAT DYNAMIQUE ── -->
+                        <page string="📋 Contrat rédigé" name="contract_body_tab">
+                            <field name="contract_body" widget="html" options="{'safe': True}" placeholder="Sélectionnez un modèle de contrat pour générer le texte..."/>
+                        </page>
+
                         <!-- ── ONGLET NOTES INTERNES ── -->
                         <page string="📝 Notes" name="notes_tab">
                             <field name="internal_note" widget="html"/>
@@ -234,7 +260,7 @@
         <field name="name">re.lease.tree</field>
         <field name="model">re.lease</field>
         <field name="arch" type="xml">
-            <list decoration-info="lease_state=='1_draft'" decoration-success="lease_state=='3_progress'">
+            <list decoration-info="lease_state=='1_draft'" decoration-success="lease_state=='3_progress' and not is_overdue" decoration-danger="is_overdue">
                 <field name="name"/>
                 <field name="property_id"/>
                 <field name="tenant_id"/>
@@ -243,6 +269,7 @@
                 <field name="rent_amount"/>
                 <field name="deposit_amount" string="Caution"/>
                 <field name="lmr" string="LMR"/>
+                <field name="is_overdue" column_invisible="True"/>
                 <field name="lease_state" widget="badge"
                        decoration-success="lease_state=='3_progress'"
                        decoration-warning="lease_state=='4_paused'"
@@ -306,6 +333,18 @@
         <field name="view_mode">list,kanban,form</field>
         <field name="domain">[('is_property_owner', '=', True)]</field>
         <field name="context">{'default_is_property_owner': True, 'default_re_contact_type': 'owner'}</field>
+    </record>
+
+    <!-- Action serveur pour réinitialiser les données de test -->
+    <record id="action_server_reset_demo_data" model="ir.actions.server">
+        <field name="name">Réinitialiser les données de test</field>
+        <field name="model_id" ref="maono_real_estate.model_re_lease"/>
+        <field name="state">code</field>
+        <field name="code">
+            action = env['re.lease'].action_reset_demo_data()
+        </field>
+        <field name="binding_model_id" ref="maono_real_estate.model_re_lease"/>
+        <field name="binding_view_types">list,form</field>
     </record>
 
 </odoo>

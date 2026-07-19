@@ -65,7 +65,7 @@
     <record id="action_re_property" model="ir.actions.act_window">
         <field name="name">Biens immobiliers</field>
         <field name="res_model">re.property</field>
-        <field name="view_mode">tree,form,kanban</field>
+        <field name="view_mode">tree,kanban,form,map</field>
     </record>
     
     <record id="action_re_dashboard_dummy" model="ir.actions.act_window">
@@ -73,4 +73,20 @@
         <field name="res_model">re.property</field>
         <field name="view_mode">kanban,tree</field>
     </record>
+
+    <!-- ============================================================
+         BIEN IMMOBILIER — MAP
+    ============================================================ -->
+    <record id="view_re_property_map" model="ir.ui.view">
+        <field name="name">re.property.map</field>
+        <field name="model">re.property</field>
+        <field name="arch" type="xml">
+            <map res_partner="partner_id">
+                <field name="name"/>
+                <field name="type"/>
+                <field name="state"/>
+            </map>
+        </field>
+    </record>
+
 </odoo>

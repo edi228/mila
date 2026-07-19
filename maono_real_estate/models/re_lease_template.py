@@ -14,3 +14,11 @@ class ReLeaseTemplate(models.Model):
     deposit_months = fields.Integer(string="Mois de caution par défaut", default=1)
     
     active = fields.Boolean(default=True)
+
+class ReContractTemplate(models.Model):
+    _name = 're.contract.template'
+    _description = 'Modèles de contrats de bails'
+
+    name = fields.Char(string="Nom du modèle", required=True)
+    content = fields.Html(string="Contenu du contrat (avec placeholders)", required=True)
+    active = fields.Boolean(default=True)
