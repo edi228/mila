@@ -82,10 +82,10 @@
         <field name="model">re.property</field>
         <field name="arch" type="xml">
             <map res_partner="partner_id">
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="type"/>
-                <field name="state"/>
+                <field name="name" string="Nom"/>
+                <field name="partner_id" string="Contact"/>
+                <field name="type" string="Type"/>
+                <field name="state" string="Statut"/>
             </map>
         </field>
     </record>

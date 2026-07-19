@@ -155,9 +155,9 @@
         <field name="model">re.building</field>
         <field name="arch" type="xml">
             <map res_partner="partner_id">
-                <field name="name"/>
-                <field name="partner_id"/>
-                <field name="city"/>
+                <field name="name" string="Nom"/>
+                <field name="partner_id" string="Contact"/>
+                <field name="city" string="Ville"/>
             </map>
         </field>
     </record>
