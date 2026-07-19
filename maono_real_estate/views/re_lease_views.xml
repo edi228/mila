@@ -9,19 +9,19 @@
         <field name="arch" type="xml">
             <form>
                 <header>
-                    <button name="action_confirm" string="Confirmer le bail" type="object" class="oe_highlight" invisible="lease_state != '1_draft'"/>
+                    <button name="action_confirm" string="Confirmer" type="object" class="oe_highlight" invisible="lease_state != '1_draft'"/>
+                    <button name="action_reset_to_draft" string="Remettre en brouillon" type="object" class="btn-secondary" invisible="lease_state == '1_draft'"/>
+                    <button name="action_print_contract" string="🖨️ Imprimer contrat" type="object" class="btn-primary" invisible="not contract_template_id"/>
                     <button name="action_generate_entry_invoice" string="💵 Générer reçu d'entrée" type="object" class="oe_highlight btn-info" invisible="lease_state != '1_draft' or invoice_count &gt; 0"/>
-                    <button name="action_create_invoice_manual" string="💳 Facturer" type="object"
-                             class="oe_highlight btn-success"
-                             invisible="lease_state != '3_progress'"
-                             help="Génère une facture de loyer pour la prochaine période. La date est avancée automatiquement."/>
+                    <button name="action_create_invoice_manual" string="💳 Générer le reçu" type="object" class="oe_highlight btn-success" invisible="lease_state != '3_progress'" help="Génère un reçu de loyer pour la prochaine période. La date est avancée automatiquement."/>
+                    
                     <button name="action_compute_penalties" string="Calculer pénalités" type="object" icon="fa-exclamation-triangle" invisible="lease_state != '3_progress'"/>
-                    <button name="action_close_lease" string="Résilier" type="object" invisible="lease_state not in ('3_progress','4_paused')"/>
-                    <button name="action_view_penalties" string="Pénalités" type="object" class="btn-danger" invisible="penalty_count == 0"/>
+                    <button name="action_close_lease" string="Résilier / Clôturer" type="object" invisible="lease_state not in ('3_progress','4_paused')"/>
                     <button name="action_create_amendment" string="Avenant" type="object" invisible="lease_state != '3_progress'"/>
                     <button name="action_renew_lease" string="Renouveler" type="object" invisible="lease_state not in ('3_progress', '4_paused')"/>
                     <button name="action_pause" string="Suspendre" type="object" invisible="lease_state != '3_progress'"/>
                     <button name="action_resume" string="Reprendre" type="object" invisible="lease_state != '4_paused'"/>
+                    
                     <field name="lease_state" widget="statusbar" statusbar_visible="1_draft,3_progress,6_churn"/>
                 </header>
                 <sheet>
@@ -30,7 +30,7 @@
                             <field name="penalty_count" widget="statinfo" string="Pénalités"/>
                         </button>
                         <button name="action_view_invoices" type="object" class="oe_stat_button" icon="fa-file-text-o" invisible="invoice_count == 0">
-                            <field name="invoice_count" widget="statinfo" string="Quittances"/>
+                            <field name="invoice_count" widget="statinfo" string="Reçus"/>
                         </button>
                         <button name="action_view_collected_taxes" type="object" class="oe_stat_button" icon="fa-money" invisible="total_tax_collected == 0">
                             <field name="total_tax_collected" widget="statinfo" string="Taxes coll."/>
@@ -42,209 +42,201 @@
                     <div class="oe_title">
                         <h1><field name="name" readonly="1"/></h1>
                     </div>
-                    <group>
-                        <group string="Contrat">
-                            <field name="property_id" readonly="lease_state != '1_draft'"/>
-                            <field name="tenant_id" readonly="lease_state != '1_draft'"/>
-                            <field name="tenant_ref_snapshot"/>
-                            <field name="guarantor_id" readonly="lease_state != '1_draft'"/>
-                            <field name="lease_type" readonly="lease_state != '1_draft'"/>
-                            <field name="plan_id" readonly="lease_state != '1_draft'"/>
-                            <field name="contract_template_id" options="{'no_create': True}" readonly="lease_state != '1_draft'"/>
-                            <field name="start_date" readonly="lease_state != '1_draft'"/>
-                            <field name="end_date" readonly="lease_state != '1_draft'"/>
-                        </group>
-                        <group string="Conditions financières">
-                            <field name="rent_amount" readonly="lease_state != '1_draft'"/>
-                            <field name="currency_id" invisible="1"/>
-                            <field name="advance_months" readonly="lease_state != '1_draft'"/>
-                            <field name="advance_amount" readonly="1"/>
-                            <field name="deposit_amount" readonly="lease_state != '1_draft'"/>
-                            
-                            <label for="deposit_paid"/>
-                            <div class="o_row">
-                                <field name="deposit_paid" readonly="1"/>
-                                <span class="badge text-bg-success" invisible="not deposit_paid">Déjà payée</span>
-                                <button name="action_view_entry_invoice" string="Voir le reçu" type="object" class="btn btn-link py-0" invisible="not deposit_paid"/>
-                            </div>
-                            
-                            <field name="deposit_paid_date" invisible="not deposit_paid"/>
-                            <field name="deposit_returned"/>
-                            <field name="deposit_return_date" invisible="not deposit_returned"/>
-                            <field name="signature_total" readonly="1"/>
-                            <field name="next_invoice_date"/>
-                            <field name="invoice_count" invisible="1"/>
-                            <field name="total_tax_collected" invisible="1"/>
-                            <field name="total_saving_collected" invisible="1"/>
-                        </group>
-                    </group>
+                    <field name="is_locked" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
 
                     <notebook>
-                        <!-- ── ONGLET LOCATAIRE (inline, sans navigation) ── -->
+                        <!-- 1. ONGLET BAIL -->
+                        <page string="📄 Bail" name="lease_tab">
+                            <group>
+                                <group string="Informations contrat">
+                                    <field name="property_id" readonly="lease_state != '1_draft'"/>
+                                    <field name="lease_type" readonly="lease_state != '1_draft'"/>
+                                    <field name="plan_id" readonly="lease_state != '1_draft'"/>
+                                    <field name="contract_template_id" options="{'no_create': True}" readonly="lease_state != '1_draft'"/>
+                                </group>
+                                <group string="Dates de validité">
+                                    <field name="start_date" readonly="lease_state != '1_draft'"/>
+                                    <field name="end_date" readonly="lease_state != '1_draft'"/>
+                                    <field name="first_due_date" readonly="1"/>
+                                    <field name="next_invoice_date" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- 2. ONGLET LOCATAIRE -->
                         <page string="👤 Locataire" name="tenant_tab">
                             <group>
                                 <group string="Coordonnées">
-                                    <field name="tenant_id" string="Locataire"
-                                           options="{'no_open': True}"/>
+                                    <field name="tenant_id" string="Locataire principal" options="{'no_create': True}"/>
                                     <field name="tenant_ref_snapshot" string="Réf. locataire" readonly="1"/>
                                     <field name="tenant_phone" string="Téléphone"/>
                                     <field name="tenant_email" string="Email"/>
                                 </group>
+                                <group string="Garant &amp; Co-locataires">
+                                    <field name="guarantor_id" string="Garant" options="{'no_create': True}"/>
+                                    <field name="guarantor_phone" string="Téléphone garant"/>
+                                    <field name="guarantor_email" string="Email garant"/>
+                                    <field name="co_tenant_ids" widget="many2many_tags" placeholder="Co-locataires..." options="{'no_create': True}"/>
+                                </group>
                             </group>
-                            <group string="Garant" invisible="not guarantor_id">
-                                <field name="guarantor_id" string="Garant" options="{'no_open': True}"/>
-                                <field name="guarantor_phone" string="Téléphone garant"/>
-                                <field name="guarantor_email" string="Email garant"/>
-                            </group>
-                            <group string="Co-locataires" invisible="not co_tenant_ids">
-                                <field name="co_tenant_ids" string="Co-locataires"
-                                       widget="many2many_tags" options="{'no_open': True}"/>
-                            </group>
-                        </page>
-
-                        <!-- ── ONGLET FACTURATION ── -->
-                        <page string="💰 Facturation" name="billing_tab">
-                            <group string="Loyer de base (généré automatiquement)">
-                                <field name="line_ids" nolabel="1" domain="[('is_rent_line', '=', True)]">
-                                    <list create="0" delete="0">
-                                        <field name="name" readonly="1"/>
-                                        <field name="price_unit"/>
-                                        <field name="quantity" readonly="1"/>
-                                        <field name="price_subtotal" readonly="1"/>
-                                        <field name="recurring_invoice" readonly="1"/>
-                                    </list>
-                                </field>
-                            </group>
-                            <group string="Services complémentaires">
-                                <field name="line_ids" nolabel="1" domain="[('is_rent_line', '=', False)]" context="{'default_is_rent_line': False, 'default_recurring_invoice': True}">
-                                    <list editable="bottom" create="1" delete="1">
-                                        <field name="sequence" widget="handle"/>
-                                        <field name="product_id" domain="[('is_rental_service', '=', True)]" options="{'no_create': True}"/>
-                                        <field name="name"/>
-                                        <field name="price_unit"/>
-                                        <field name="quantity"/>
-                                        <field name="tax_ids" widget="many2many_tags"/>
-                                        <field name="price_subtotal" readonly="1"/>
-                                        <field name="recurring_invoice"/>
-                                    </list>
-                                </field>
+                            <group string="Pièce d'identité">
+                                <group>
+                                    <field name="tenant_id_type"/>
+                                    <field name="tenant_id_number"/>
+                                    <field name="tenant_id_expiry"/>
+                                </group>
+                                <group>
+                                    <field name="tenant_id_scan" filename="tenant_id_scan_filename"/>
+                                    <field name="tenant_id_scan_filename" invisible="1"/>
+                                    <field name="tenant_id_scan_back" filename="tenant_id_scan_back_filename"/>
+                                    <field name="tenant_id_scan_back_filename" invisible="1"/>
+                                </group>
                             </group>
                         </page>
 
-                        <!-- ── ONGLET TAXES & ÉPARGNE ── -->
-                        <page string="📊 Taxes &amp; Épargne" name="taxes_saving_tab">
-                            <group string="Taxes applicables">
-                                <field name="tax_line_ids" nolabel="1">
+                        <!-- 3. ONGLET RÉSUMÉ FINANCIER -->
+                        <page string="💰 Résumé financier" name="financial_tab">
+                            <group string="Grille Loyer &amp; Caution">
+                                <group>
+                                    <field name="rent_amount" readonly="lease_state != '1_draft'"/>
+                                    <field name="advance_months" readonly="lease_state != '1_draft'"/>
+                                    <field name="advance_amount" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="deposit_amount" readonly="lease_state != '1_draft'"/>
+                                    <field name="signature_total" string="Total à l'entrée" readonly="1"/>
+                                </group>
+                            </group>
+                            <group string="Statut Financier">
+                                <group>
+                                    <label for="deposit_paid"/>
+                                    <div class="o_row">
+                                        <field name="deposit_paid" readonly="1"/>
+                                        <span class="badge text-bg-success" invisible="not deposit_paid">Déjà payée</span>
+                                        <button name="action_force_deposit_paid" string="Forcer caution payée" type="object" class="btn btn-warning py-0" invisible="deposit_paid or lease_state != '1_draft'"/>
+                                    </div>
+                                    <field name="deposit_paid_date" readonly="1" invisible="not deposit_paid"/>
+                                    <field name="deposit_returned"/>
+                                    <field name="deposit_return_date" invisible="not deposit_returned"/>
+                                </group>
+                                <group>
+                                    <label for="entry_invoice_paid"/>
+                                    <div class="o_row">
+                                        <field name="entry_invoice_paid" readonly="1"/>
+                                        <span class="badge text-bg-success" invisible="not entry_invoice_paid">Déjà payée</span>
+                                        <button name="action_force_entry_invoice_paid" string="Forcer avance payée" type="object" class="btn btn-warning py-0" invisible="entry_invoice_paid or lease_state != '1_draft'"/>
+                                    </div>
+                                </group>
+                            </group>
+                            <group string="Taxes Applicables">
+                                <field name="tax_line_ids" nolabel="1" readonly="is_locked">
                                     <list editable="bottom">
-                                        <field name="tax_id"/>
+                                        <field name="tax_id" domain="[('is_real_estate_tax', '=', True)]"/>
                                         <field name="tax_bearer"/>
                                         <field name="tenant_share_percent"/>
                                         <field name="is_active"/>
                                     </list>
                                 </field>
                             </group>
-                            <group string="Règles d'épargne provisionnée">
-                                <p class="text-muted" style="margin-bottom:8px;">
-                                    L'épargne est automatiquement calculée et enregistrée lors de chaque quittance de loyer.
-                                    Vous pouvez annuler une ligne d'épargne sur la quittance concernée.
-                                </p>
+                        </page>
+
+                        <!-- 4. ONGLET ÉCHÉANCES -->
+                        <page string="📅 Échéances" name="invoices_tab">
+                            <group string="Historique des échéances (Reçus de loyer)">
+                                <field name="invoice_ids" nolabel="1" readonly="1">
+                                    <list create="0" delete="0">
+                                        <field name="invoice_date_due" string="Échéance"/>
+                                        <field name="name" string="Référence"/>
+                                        <field name="invoice_period_start" string="Début"/>
+                                        <field name="invoice_period_end" string="Fin"/>
+                                        <field name="amount_total" string="Montant"/>
+                                        <field name="payment_state" widget="badge"
+                                               decoration-success="payment_state in ('paid', 'in_payment')"
+                                               decoration-warning="payment_state == 'partial'"
+                                               decoration-danger="payment_state == 'not_paid'"/>
+                                        <button name="action_print_payment_receipt" string="🖨️ Reçu" type="object"
+                                                icon="fa-print" title="Télécharger le reçu de paiement"
+                                                invisible="payment_state not in ('paid', 'in_payment')"/>
+                                        <button name="action_post" string="Valider" type="object"
+                                                icon="fa-check" title="Valider ce reçu"
+                                                invisible="state != 'draft'"/>
+                                    </list>
+                                </field>
+                            </group>
+                            <group string="Pénalités générées">
+                                <field name="penalty_ids" nolabel="1" readonly="1">
+                                    <list>
+                                        <field name="name" string="Référence"/>
+                                        <field name="invoice_id" string="Reçu"/>
+                                        <field name="days_late" string="Retard (jours)"/>
+                                        <field name="penalty_amount" string="Montant"/>
+                                        <field name="state" widget="badge"
+                                               decoration-warning="state == 'draft'"
+                                               decoration-success="state == 'invoiced'"
+                                               decoration-danger="state == 'cancelled'"/>
+                                    </list>
+                                </field>
+                            </group>
+                        </page>
+
+                        <!-- 5. ONGLET ÉPARGNES -->
+                        <page string="🏦 Épargnes" name="savings_tab">
+                            <group string="Règles d'épargne actives">
                                 <field name="saving_rule_ids" nolabel="1">
                                     <list editable="bottom">
-                                        <field name="name"/>
+                                        <field name="name" string="Motif"/>
                                         <field name="mode"/>
-                                        <field name="value"/>
+                                        <field name="value" string="Valeur"/>
                                         <field name="base"/>
-                                        <field name="target_account_id"
+                                        <field name="target_account_id" string="Compte cible"
                                                options="{'no_create': True}"
                                                domain="[('account_type', 'not in', ['asset_cash','liability_payable'])]"/>
                                         <field name="is_active"/>
                                     </list>
                                 </field>
                             </group>
-                        </page>
-
-                        <!-- ── ONGLET PÉNALITÉS ── -->
-                        <page string="⚠️ Pénalités" name="penalties_tab">
-                            <group string="Calendrier des pénalités">
-                                <p class="text-muted" style="margin-bottom:8px;">
-                                    Définissez ici les paliers de pénalités applicables aux loyers impayés.
-                                    Les pénalités sont calculées automatiquement par le système.
-                                </p>
-                                <field name="schedule_ids" nolabel="1">
-                                    <list editable="bottom">
-                                        <field name="sequence" widget="handle"/>
-                                        <field name="name"/>
-                                        <field name="trigger_days" string="Délai (jours)"/>
-                                        <field name="mode"/>
-                                        <field name="value"/>
-                                        <field name="base"/>
-                                        <field name="is_active"/>
-                                        <field name="auto_generate"/>
-                                    </list>
-                                </field>
-                            </group>
-                            <group string="Pénalités générées">
-                                <field name="penalty_ids" nolabel="1">
-                                    <list decoration-danger="days_late &gt; 30" decoration-warning="days_late &gt; 15">
-                                        <field name="name" readonly="1"/>
-                                        <field name="invoice_id" string="Quittance"/>
-                                        <field name="days_late" string="Retard (j)"/>
-                                        <field name="penalty_amount" string="Montant"/>
-                                        <field name="state" widget="badge"
-                                               decoration-warning="state=='draft'"
-                                               decoration-success="state=='invoiced'"
-                                               decoration-danger="state=='cancelled'"/>
-                                    </list>
-                                </field>
-                            </group>
-                        </page>
-
-                        <!-- ── ONGLET ÉTAT DES LIEUX ── -->
-                        <page string="🏠 État des lieux" name="checkin_tab">
-                            <group string="Entrée dans les lieux">
-                                <field name="checkin_done"/>
-                                <field name="checkin_date"/>
-                                <field name="checkin_note" widget="html"/>
-                                <field name="checkin_image_ids" widget="many2many_binary"/>
-                            </group>
-                            <group string="Sortie des lieux">
-                                <field name="checkout_done"/>
-                                <field name="checkout_date"/>
-                                <field name="checkout_note" widget="html"/>
-                                <field name="deposit_deductions" string="Déductions sur caution"/>
-                                <field name="deposit_deduction_note"/>
-                                <field name="checkout_image_ids" widget="many2many_binary"/>
-                            </group>
-                        </page>
-
-                        <!-- ── ONGLET SIGNATURES ── -->
-                        <page string="✍️ Signatures" name="signatures_tab">
                             <group>
-                                <group string="Signature Locataire">
+                                <group>
+                                    <field name="total_saving_collected" string="Épargne cumulée collectée" readonly="1"/>
+                                </group>
+                            </group>
+                        </page>
+
+                        <!-- 6. ONGLET DOCUMENTS -->
+                        <page string="📁 Documents" name="documents_tab">
+                            <group string="Signatures électroniques">
+                                <group>
                                     <field name="signature_tenant" widget="signature"/>
                                     <field name="signature_tenant_date"/>
                                     <field name="signature_tenant_name"/>
                                 </group>
-                                <group string="Signature Propriétaire">
+                                <group>
                                     <field name="signature_owner" widget="signature"/>
                                     <field name="signature_owner_date"/>
                                     <field name="signature_owner_name"/>
                                 </group>
                             </group>
-                            <group>
+                            <group string="Pièces jointes &amp; Contrat">
                                 <field name="is_fully_signed" readonly="1"/>
                                 <field name="contract_pdf_id" string="Contrat PDF signé"/>
                             </group>
-                        </page>
-
-                        <!-- ── ONGLET CONTRAT DYNAMIQUE ── -->
-                        <page string="📋 Contrat rédigé" name="contract_body_tab">
-                            <field name="contract_body" widget="html" options="{'safe': True}" placeholder="Sélectionnez un modèle de contrat pour générer le texte..."/>
-                        </page>
-
-                        <!-- ── ONGLET NOTES INTERNES ── -->
-                        <page string="📝 Notes" name="notes_tab">
-                            <field name="internal_note" widget="html"/>
+                            <group string="État des lieux">
+                                <group string="Entrée dans les lieux">
+                                    <field name="checkin_done"/>
+                                    <field name="checkin_date"/>
+                                    <field name="checkin_note" widget="html"/>
+                                    <field name="checkin_image_ids" widget="many2many_binary"/>
+                                </group>
+                                <group string="Sortie des lieux">
+                                    <field name="checkout_done"/>
+                                    <field name="checkout_date"/>
+                                    <field name="checkout_note" widget="html"/>
+                                    <field name="deposit_deductions"/>
+                                    <field name="deposit_deduction_note"/>
+                                    <field name="checkout_image_ids" widget="many2many_binary"/>
+                                </group>
+                            </group>
                         </page>
                     </notebook>
                 </sheet>
@@ -302,7 +294,7 @@
 
     <!-- Actions finances (quittances + paiements) -->
     <record id="action_re_lease_invoices" model="ir.actions.act_window">
-        <field name="name">Quittances de loyer</field>
+        <field name="name">Reçus de loyer</field>
         <field name="res_model">account.move</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('move_type', '=', 'out_invoice')]</field>

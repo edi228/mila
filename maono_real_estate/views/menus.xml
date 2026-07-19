@@ -71,9 +71,9 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <!-- Finances : Quittances de loyer -->
+    <!-- Finances : Reçus de loyer -->
     <record id="action_re_lease_invoices" model="ir.actions.act_window">
-        <field name="name">Quittances de loyer</field>
+        <field name="name">Reçus de loyer</field>
         <field name="res_model">account.move</field>
         <field name="view_mode">list,form</field>
         <field name="domain">[('move_type', '=', 'out_invoice')]</field>
@@ -214,7 +214,7 @@
          NIVEAU 2 : Finances
     ───────────────────────────────────────────────────────────────── -->
     <menuitem id="menu_re_invoices"
-              name="Quittances de loyer"
+              name="Reçus de loyer"
               parent="menu_re_finances"
               sequence="10"
               action="action_re_lease_invoices"/>

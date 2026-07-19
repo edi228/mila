@@ -41,3 +41,12 @@ class ReLeasePlan(models.Model):
     indexation_rate = fields.Float(string="Taux d'indexation annuelle (%)")
     notice_days = fields.Integer(string="Préavis de résiliation (jours)", default=30)
 
+    default_tax_ids = fields.Many2many(
+        'account.tax',
+        're_lease_plan_tax_rel',
+        'plan_id',
+        'tax_id',
+        string="Taxes par défaut",
+        domain="[('is_real_estate_tax', '=', True)]"
+    )
+

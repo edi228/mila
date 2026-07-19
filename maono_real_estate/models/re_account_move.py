@@ -94,6 +94,22 @@ class AccountMove(models.Model):
         for move in self:
             move.total_saving_amount = sum(move.lease_saving_ids.mapped('saving_amount'))
 
+    def action_print_payment_receipt(self):
+        self.ensure_one()
+        from odoo.exceptions import UserError
+        payments = self.payment_ids or self.matched_payment_ids
+        if not payments:
+            reconciled_lines = self.line_ids.filtered(lambda l: l.reconciled)
+            payments = reconciled_lines.mapped('matched_debit_ids.debit_move_id.payment_id') | \
+                       reconciled_lines.mapped('matched_credit_ids.credit_move_id.payment_id')
+        if not payments:
+            payments = self.env['account.payment'].search([
+                ('reconciled_invoice_ids', 'in', self.ids)
+            ])
+        if not payments:
+            raise UserError(_("Aucun paiement enregistré pour cette échéance. Veuillez d'abord enregistrer le paiement."))
+        return self.env.ref('maono_real_estate.report_re_payment_receipt').report_action(payments[0])
+
 class AccountPayment(models.Model):
     _inherit = 'account.payment'
 
@@ -129,6 +145,82 @@ class AccountPayment(models.Model):
             return number_to_french_words(val).upper() + " FRANCS CFA"
         except Exception:
             return ""
+
+    def action_post(self):
+        res = super(AccountPayment, self).action_post()
+        for payment in self:
+            if payment.payment_type == 'inbound' and payment.lease_id:
+                payment._generate_savings_entry()
+        return res
+
+    def _generate_savings_entry(self):
+        self.ensure_one()
+        lease = self.lease_id
+        active_rules = lease.saving_rule_ids.filtered('is_active')
+        if not active_rules:
+            return
+            
+        misc_journal = self.env['account.journal'].search([
+            ('type', '=', 'general'),
+            ('company_id', '=', self.company_id.id)
+        ], limit=1)
+        if not misc_journal:
+            return
+            
+        rent_product = self.env['product.product'].search([('is_rental_service', '=', True)], limit=1)
+        income_account = rent_product.property_account_income_id or rent_product.categ_id.property_account_income_categ_id
+        if not income_account:
+            income_account = self.env['account.account'].search([
+                ('account_type', '=', 'income'),
+                ('company_id', '=', self.company_id.id)
+            ], limit=1)
+        if not income_account:
+            return
+            
+        for rule in active_rules:
+            base = lease.rent_amount if rule.base == 'rent' else self.amount
+            if rule.mode == 'percent':
+                amount = base * (rule.value / 100.0)
+            else:
+                amount = rule.value
+                
+            if amount <= 0:
+                continue
+                
+            credit_account = rule.target_account_id
+            if not credit_account:
+                continue
+                
+            move = self.env['account.move'].create({
+                'move_type': 'entry',
+                'journal_id': misc_journal.id,
+                'date': fields.Date.context_today(self),
+                'ref': _("Provision Épargne — %s — Bail %s") % (rule.name, lease.name),
+                'lease_id': lease.id,
+                'line_ids': [
+                    (0, 0, {
+                        'name': _("Débit Loyer pour Épargne %s") % rule.name,
+                        'account_id': income_account.id,
+                        'debit': amount,
+                        'credit': 0.0,
+                    }),
+                    (0, 0, {
+                        'name': _("Provision Épargne %s") % rule.name,
+                        'account_id': credit_account.id,
+                        'debit': 0.0,
+                        'credit': amount,
+                    }),
+                ]
+            })
+            move.action_post()
+            
+            invoice = self.reconciled_invoice_ids[0] if self.reconciled_invoice_ids else False
+            if invoice:
+                self.env['account.move.saving.line'].create({
+                    'move_id': invoice.id,
+                    'saving_rule_id': rule.id,
+                    'base_amount': base,
+                })
 
 class AccountMoveSavingLine(models.Model):
     _name = 'account.move.saving.line'

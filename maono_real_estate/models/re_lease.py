@@ -33,6 +33,7 @@ class ReLease(models.Model):
     next_invoice_date = fields.Date(string="Prochaine échéance", compute='_compute_invoice_dates', store=True, tracking=True)
     last_invoice_date = fields.Date(string="Dernière quittance", compute='_compute_invoice_dates', store=True)
     first_contract_date = fields.Date(string="Premier bail", compute='_compute_first_contract', store=True)
+    first_due_date = fields.Date(string="Première échéance", compute='_compute_first_due_date', store=True)
 
     # 3.2 Conditions financières
     currency_id = fields.Many2one('res.currency', default=lambda self: self.env.company.currency_id)
@@ -115,12 +116,33 @@ class ReLease(models.Model):
     invoice_count = fields.Integer(string="Factures/Reçus", compute='_compute_invoice_count')
     is_overdue = fields.Boolean(string="Échéance dépassée", compute='_compute_is_overdue', store=False)
     entry_invoice_paid = fields.Boolean(string="Entrée payée", compute='_compute_entry_invoice_paid', store=True)
+    is_locked = fields.Boolean(string="Bail verrouillé", default=False)
+    force_deposit_paid = fields.Boolean(string="Forcer caution payée", default=False)
+    force_entry_invoice_paid = fields.Boolean(string="Forcer avance payée", default=False)
     
     total_tax_collected = fields.Monetary(string="Taxes collectées", compute='_compute_totals_collected')
     total_saving_collected = fields.Monetary(string="Épargne collectée", compute='_compute_totals_collected')
     
-    contract_template_id = fields.Many2one('re.contract.template', string="Modèle de contrat")
+    contract_template_id = fields.Many2one(
+        're.contract.template',
+        string="Modèle de contrat",
+        domain="[('lease_type', 'in', [False, lease_type])]"
+    )
     contract_body = fields.Html(string="Corps du contrat")
+    
+    tenant_id_type = fields.Selection([
+        ('cni', "Carte Nationale d'Identité"),
+        ('passport', 'Passeport'),
+        ('driver', 'Permis de conduire'),
+        ('residence', 'Titre de séjour'),
+        ('other', 'Autre'),
+    ], string="Type de pièce d'identité", default='cni')
+    tenant_id_number = fields.Char(string="Numéro de pièce")
+    tenant_id_expiry = fields.Date(string="Date d'expiration")
+    tenant_id_scan = fields.Binary(string="Scan recto")
+    tenant_id_scan_filename = fields.Char(string="Nom scan recto")
+    tenant_id_scan_back = fields.Binary(string="Scan verso")
+    tenant_id_scan_back_filename = fields.Char(string="Nom scan verso")
 
     # ── Champs inline Locataire (related natifs res.partner uniquement) ───
     tenant_phone = fields.Char(related='tenant_id.phone', string="Téléphone", readonly=False)
@@ -215,8 +237,19 @@ class ReLease(models.Model):
             rent_line.price_unit = self.rent_amount
             rent_line.name = 'Loyer — %s' % (self.property_id.name or '')
 
+    @api.onchange('plan_id', 'lease_type')
+    def _onchange_plan_id_taxes(self):
+        if self.plan_id and self.plan_id.default_tax_ids:
+            self.tax_line_ids = [(5, 0, 0)] + [(0, 0, {
+                'tax_id': tax.id,
+                'is_active': True
+            }) for tax in self.plan_id.default_tax_ids]
+
     def action_confirm(self):
         for lease in self.filtered(lambda l: l.is_lease):
+            if not lease.deposit_paid or not lease.entry_invoice_paid:
+                raise UserError(_("Veuillez encaisser la caution et l'avance à l'entrée avant d'activer le bail."))
+                
             tenant = lease.tenant_id
             if not tenant.tenant_ref:
                 tenant.tenant_ref = self.env['ir.sequence'].next_by_code('re.tenant.ref')
@@ -226,14 +259,35 @@ class ReLease(models.Model):
             if lease.owner_id:
                 lease.owner_id.is_property_owner = True
             
-            if not lease.is_fully_signed:
-                # Warning logic, non-blocking as per spec
-                pass
-            
             lease.lease_state = '3_progress'
+            lease.is_locked = True
+            
             # Init next_invoice_date on confirmation
             if not lease.next_invoice_date:
-                lease.next_invoice_date = lease.start_date
+                lease.next_invoice_date = lease.first_due_date or lease.start_date
+        return True
+
+    def action_reset_to_draft(self):
+        for lease in self:
+            lease.lease_state = '1_draft'
+            lease.is_locked = False
+            draft_invoices = lease.invoice_ids.filtered(lambda m: m.state == 'draft')
+            if draft_invoices:
+                draft_invoices.unlink()
+        return True
+
+    def action_force_deposit_paid(self):
+        for lease in self:
+            lease.force_deposit_paid = True
+            lease.deposit_paid = True
+            if not lease.deposit_paid_date:
+                lease.deposit_paid_date = fields.Date.today()
+        return True
+
+    def action_force_entry_invoice_paid(self):
+        for lease in self:
+            lease.force_entry_invoice_paid = True
+            lease.entry_invoice_paid = True
         return True
 
     def action_create_invoice_manual(self):
@@ -381,18 +435,26 @@ class ReLease(models.Model):
             else:
                 lease.is_overdue = False
 
-    @api.depends('invoice_ids.payment_state')
+    @api.depends('invoice_ids.payment_state', 'force_entry_invoice_paid')
     def _compute_entry_invoice_paid(self):
         for lease in self:
+            if lease.force_entry_invoice_paid:
+                lease.entry_invoice_paid = True
+                continue
             entry_inv = lease.invoice_ids.filtered(lambda m: m.is_entry_invoice)
             if entry_inv:
                 lease.entry_invoice_paid = all(m.payment_state in ('paid', 'in_payment') for m in entry_inv)
             else:
                 lease.entry_invoice_paid = lease.advance_months == 0
 
-    @api.depends('invoice_ids.payment_state')
+    @api.depends('invoice_ids.payment_state', 'force_deposit_paid')
     def _compute_deposit_paid(self):
         for lease in self:
+            if lease.force_deposit_paid:
+                lease.deposit_paid = True
+                if not lease.deposit_paid_date:
+                    lease.deposit_paid_date = fields.Date.today()
+                continue
             entry_inv = lease.invoice_ids.filtered(lambda m: m.is_entry_invoice)
             if entry_inv:
                 is_paid = all(m.payment_state in ('paid', 'in_payment') for m in entry_inv)
@@ -528,32 +590,88 @@ class ReLease(models.Model):
             'target': 'current',
         }
 
-    @api.onchange('contract_template_id')
-    def _onchange_contract_template(self):
-        if self.contract_template_id:
-            body = self.contract_template_id.content
-            placeholders = {
-                '${name}': self.name or '',
-                '${property_name}': self.property_id.name or '',
-                '${building_name}': self.property_id.building_id.name or '',
-                '${building_city}': self.property_id.building_id.city or 'Lomé',
-                '${owner_name}': self.owner_id.name or '',
-                '${owner_city}': self.owner_id.city or 'Lomé',
-                '${tenant_name}': self.tenant_id.name or '',
-                '${tenant_city}': self.tenant_id.city or 'Lomé',
-                '${tenant_nationality}': self.tenant_id.country_id.demonym or 'Togolaise',
-                '${guarantor_name}': self.guarantor_id.name or 'Néant',
-                '${rent_amount}': '{:,.0f}'.format(self.rent_amount).replace(',', ' ') if self.rent_amount else '0',
-                '${deposit_amount}': '{:,.0f}'.format(self.deposit_amount).replace(',', ' ') if self.deposit_amount else '0',
-                '${advance_amount}': '{:,.0f}'.format(self.advance_amount).replace(',', ' ') if self.advance_amount else '0',
-                '${advance_months}': str(self.advance_months),
-                '${start_date}': self.start_date.strftime('%d/%m/%Y') if self.start_date else '',
-                '${end_date}': self.end_date.strftime('%d/%m/%Y') if self.end_date else 'Indéterminée',
-                '${signature_total}': '{:,.0f}'.format(self.signature_total).replace(',', ' ') if self.signature_total else '0',
-            }
-            for key, val in placeholders.items():
-                body = body.replace(key, val)
-            self.contract_body = body
+    def action_print_contract(self):
+        self.ensure_one()
+        return self.env.ref('maono_real_estate.report_re_lease_contract').report_action(self)
+
+    @api.depends('start_date', 'advance_months')
+    def _compute_first_due_date(self):
+        """Première échéance = start_date + advance_months"""
+        for lease in self:
+            if lease.start_date and lease.advance_months:
+                lease.first_due_date = lease.start_date + relativedelta(months=lease.advance_months)
+            else:
+                lease.first_due_date = lease.start_date
+
+    def _get_contract_values(self):
+        self.ensure_one()
+        from .re_account_move import number_to_french_words
+        
+        tenant_addr = ", ".join(filter(None, [self.tenant_id.street, self.tenant_id.street2, self.tenant_id.city]))
+        owner_addr = ", ".join(filter(None, [self.owner_id.street, self.owner_id.street2, self.owner_id.city]))
+        prop_addr = ", ".join(filter(None, [self.property_id.building_id.street, self.property_id.building_id.city]))
+        
+        services_list = "Aucun"
+        services = self.line_ids.filtered(lambda l: not l.is_rent_line)
+        if services:
+            services_list = "<ul>" + "".join([f"<li>{s.product_id.name} : {'{:,.0f}'.format(s.price_unit).replace(',', ' ')} FCFA/mois</li>" for s in services]) + "</ul>"
+            
+        taxes_list = "Aucune"
+        taxes = self.tax_line_ids.filtered(lambda t: t.is_active)
+        if taxes:
+            taxes_list = "<ul>" + "".join([f"<li>{t.tax_id.name} (Retenue: {t.tenant_share_percent}%)</li>" for t in taxes]) + "</ul>"
+            
+        penalty_clause = "Pénalité de 10% appliquée après 10 jours de retard."
+        schedules = self.schedule_ids.filtered(lambda s: s.is_active)
+        if schedules:
+            sched = schedules[0]
+            val_str = f"{sched.value}%" if sched.mode == 'percent' else f"{sched.value} FCFA"
+            penalty_clause = f"Pénalité de {val_str} applicable après {sched.trigger_days} jours de retard."
+            
+        rent_words = number_to_french_words(self.rent_amount).upper() + " FRANCS CFA" if self.rent_amount else 'ZÉRO FRANC CFA'
+        dep_words = number_to_french_words(self.deposit_amount).upper() + " FRANCS CFA" if self.deposit_amount else 'ZÉRO FRANC CFA'
+        
+        return {
+            'tenant_name': self.tenant_id.name or '',
+            'tenant_address': tenant_addr or 'Lomé, Togo',
+            'tenant_id_type': dict(self._fields['tenant_id_type'].selection).get(self.tenant_id_type) or "Carte Nationale d'Identité",
+            'tenant_id_number': self.tenant_id_number or '',
+            'owner_name': self.owner_id.name or '',
+            'owner_address': owner_addr or 'Lomé, Togo',
+            'property_name': self.property_id.name or '',
+            'property_address': prop_addr or 'Lomé, Togo',
+            'property_type': dict(self.property_id._fields['type'].selection).get(self.property_id.type) or 'Appartement',
+            'property_surface': str(self.property_id.surface or 0),
+            'lease_ref': self.name or '',
+            'lease_type_label': dict(self._fields['lease_type'].selection).get(self.lease_type) or '',
+            'start_date': self.start_date.strftime('%d/%m/%Y') if self.start_date else '',
+            'end_date': self.end_date.strftime('%d/%m/%Y') if self.end_date else 'Indéterminée',
+            'rent_amount': '{:,.0f}'.format(self.rent_amount).replace(',', ' ') if self.rent_amount else '0',
+            'rent_amount_words': rent_words,
+            'deposit_amount': '{:,.0f}'.format(self.deposit_amount).replace(',', ' ') if self.deposit_amount else '0',
+            'deposit_amount_words': dep_words,
+            'advance_months': str(self.advance_months),
+            'advance_amount': '{:,.0f}'.format(self.advance_amount).replace(',', ' ') if self.advance_amount else '0',
+            'first_due_date': self.first_due_date.strftime('%d/%m/%Y') if self.first_due_date else '',
+            'plan_label': self.plan_id.name or '',
+            'services_list': services_list,
+            'taxes_list': taxes_list,
+            'penalty_clause': penalty_clause,
+            'today_date': fields.Date.context_today(self).strftime('%d/%m/%Y'),
+            'city': self.property_id.building_id.city or 'Lomé',
+        }
+
+    def _render_contract(self):
+        """Remplace les placeholders du template sélectionné par les valeurs du bail."""
+        self.ensure_one()
+        template = self.contract_template_id
+        if not template:
+            raise UserError(_("Veuillez sélectionner un modèle de contrat."))
+        body = template.body_html or ''
+        values = self._get_contract_values()
+        for key, val in values.items():
+            body = body.replace('${%s}' % key, str(val or ''))
+        return body
 
     def write(self, vals):
         if not self.env.context.get('bypass_lease_lock'):
@@ -562,6 +680,8 @@ class ReLease(models.Model):
                 'plan_id', 'start_date', 'advance_months', 'lease_type'
             ]
             for lease in self:
+                if lease.is_locked and 'tax_line_ids' in vals:
+                    raise UserError(_("Le tableau des taxes est verrouillé car le bail est actif."))
                 if lease.lease_state not in ('1_draft', '2_renewal'):
                     modified_locked = [f for f in locked_fields if f in vals]
                     if modified_locked:
@@ -572,3 +692,6 @@ class ReLease(models.Model):
                             "Veuillez passer par un avenant ou un renouvellement."
                         ) % (lease.name, ', '.join(field_labels)))
         return super(ReLease, self).write(vals)
+
+    def action_generate_receipt(self):
+        return self.action_create_invoice_manual()

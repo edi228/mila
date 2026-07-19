@@ -18,59 +18,9 @@
     <template id="report_re_lease_contract_doc">
         <t t-call="web.html_container">
             <t t-foreach="docs" t-as="lease">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <h2 class="text-center">CONTRAT DE BAIL</h2>
-                        <h3 class="text-center"><t t-out="lease.name"/></h3>
-                        <br/>
-
-                        <div class="row">
-                            <div class="col-6">
-                                <h4>Le Bailleur</h4>
-                                <p>
-                                    <strong><t t-out="lease.owner_id.name"/></strong><br/>
-                                    <t t-if="lease.owner_id.street"><t t-out="lease.owner_id.street"/><br/></t>
-                                    <t t-if="lease.owner_id.city"><t t-out="lease.owner_id.city"/></t>
-                                </p>
-                            </div>
-                            <div class="col-6">
-                                <h4>Le Locataire</h4>
-                                <p>
-                                    <strong><t t-out="lease.tenant_id.name"/></strong><br/>
-                                    <t t-if="lease.tenant_id.street"><t t-out="lease.tenant_id.street"/><br/></t>
-                                    <t t-if="lease.tenant_id.city"><t t-out="lease.tenant_id.city"/></t>
-                                    <t t-if="lease.tenant_ref_snapshot">
-                                        <br/>Réf : <t t-out="lease.tenant_ref_snapshot"/>
-                                    </t>
-                                </p>
-                            </div>
-                        </div>
-
-                        <div style="margin-top: 20px; font-size: 10pt; line-height: 1.5;">
-                            <t t-out="lease.contract_body"/>
-                        </div>
-                        <div class="row" style="margin-top: 60px;">
-                            <div class="col-6 text-center">
-                                <p>Le Bailleur</p>
-                                <t t-if="lease.signature_owner">
-                                    <img t-att-src="'data:image/png;base64,' + lease.signature_owner.decode()"
-                                         style="max-height:80px;"/>
-                                </t>
-                                <p style="margin-top:40px; border-top:1px solid #000;">
-                                    <t t-out="lease.owner_id.name"/>
-                                </p>
-                            </div>
-                            <div class="col-6 text-center">
-                                <p>Le Locataire</p>
-                                <t t-if="lease.signature_tenant">
-                                    <img t-att-src="'data:image/png;base64,' + lease.signature_tenant.decode()"
-                                         style="max-height:80px;"/>
-                                </t>
-                                <p style="margin-top:40px; border-top:1px solid #000;">
-                                    <t t-out="lease.tenant_id.name"/>
-                                </p>
-                            </div>
-                        </div>
+                <t t-call="web.basic_layout">
+                    <div class="page" style="padding: 15mm; font-family: Arial, sans-serif; box-sizing: border-box;">
+                        <t t-out="lease._render_contract()"/>
                     </div>
                 </t>
             </t>

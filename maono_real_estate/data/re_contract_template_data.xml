@@ -1,46 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data noupdate="1">
-        <record id="contract_template_togo_habitation" model="re.contract.template">
-            <field name="name">Contrat de Bail d'Habitation Standard (Togo)</field>
-            <field name="content"><![CDATA[
-<h3 style="text-align: center; color: #0f2a4a; font-weight: bold;">RÉPUBLIQUE TOGOLAISE</h3>
-<p style="text-align: center; font-weight: bold; margin-bottom: 20px;">CONTRAT DE BAIL À USAGE D'HABITATION</p>
+        <record id="contract_template_togo_residential_standard" model="re.contract.template">
+            <field name="name">Contrat de bail résidentiel standard — MEA &amp; FILS</field>
+            <field name="lease_type">monthly</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: Arial, sans-serif; font-size: 11pt; color: #1a1a1a; padding: 20px;">
 
-<p><strong>ENTRE LES SOUSSIGNÉS :</strong></p>
-<p><strong>Le Bailleur :</strong> M./Mme <strong>${owner_name}</strong>, demeurant à <strong>${owner_city}</strong>, ci-après dénommé(e) « le BAILLEUR » d'une part,</p>
-<p><strong>ET</strong></p>
-<p><strong>Le Locataire :</strong> M./Mme <strong>${tenant_name}</strong>, de nationalité <strong>${tenant_nationality}</strong>, ci-après dénommé(e) « le PRENEUR » d'autre part.</p>
+  <!-- EN-TÊTE -->
+  <div style="text-align:center; border-bottom: 3px solid #0f2a4a; padding-bottom: 16px; margin-bottom: 24px;">
+    <div style="font-size:20pt; font-weight:900; color:#0f2a4a; letter-spacing:4px;">MEA &amp; FILS</div>
+    <div style="font-size:10pt; color:#888; margin-top:4px;">Gestion Immobilière — Lomé, Togo</div>
+    <div style="font-size:16pt; font-weight:700; color:#c5a059; margin-top:12px; text-transform:uppercase;">
+      Contrat de Bail ${lease_type_label}
+    </div>
+    <div style="font-size:10pt; color:#555; margin-top:4px;">Référence : ${lease_ref} — Fait à ${city}, le ${today_date}</div>
+  </div>
 
-<p><strong>IL A ÉTÉ CONVENU ET ARRÊTÉ CE QUI SUIT :</strong></p>
+  <!-- PARTIES -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:12pt; font-weight:700; color:#0f2a4a; border-left:4px solid #c5a059; padding-left:10px; margin-bottom:10px;">
+      ENTRE LES SOUSSIGNÉS
+    </div>
+    <p><strong>LE BAILLEUR :</strong><br/>
+    ${owner_name}<br/>
+    Adresse : ${owner_address}<br/>
+    Ci-après dénommé <em>"le Bailleur"</em></p>
+    <br/>
+    <p><strong>LE PRENEUR :</strong><br/>
+    ${tenant_name}<br/>
+    Adresse : ${tenant_address}<br/>
+    Pièce d'identité : ${tenant_id_type} N° ${tenant_id_number}<br/>
+    Ci-après dénommé <em>"le Locataire"</em></p>
+  </div>
 
-<h4 style="color: #0f2a4a;">ARTICLE 1 — OBJET DU CONTRAT</h4>
-<p>Le BAILLEUR donne à bail d'habitation au PRENEUR, qui l'accepte, les locaux désignés ci-après : <strong>${property_name}</strong>, faisant partie de l'ensemble immobilier <strong>${building_name}</strong>, situé à <strong>${building_city}</strong>, Togo.</p>
+  <!-- BIEN LOUÉ -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:12pt; font-weight:700; color:#0f2a4a; border-left:4px solid #c5a059; padding-left:10px; margin-bottom:10px;">
+      ARTICLE 1 — DÉSIGNATION DU BIEN
+    </div>
+    <p>Le Bailleur donne en location au Locataire le bien désigné ci-après :</p>
+    <ul style="margin-top:8px;">
+      <li><strong>Bien :</strong> ${property_name}</li>
+      <li><strong>Type :</strong> ${property_type}</li>
+      <li><strong>Adresse :</strong> ${property_address}</li>
+      <li><strong>Surface :</strong> ${property_surface} m²</li>
+    </ul>
+  </div>
 
-<h4 style="color: #0f2a4a;">ARTICLE 2 — DURÉE ET PREMIER BAIL</h4>
-<p>Le présent contrat est consenti et accepté pour une durée commençant le <strong>${start_date}</strong> et se terminant le <strong>${end_date}</strong>. À l'expiration de cette période, le bail se renouvellera par tacite reconduction aux mêmes clauses et conditions, sauf congé donné par l'une des parties par lettre recommandée avec accusé de réception ou acte d'huissier, trois (3) mois à l'avance.</p>
+  <!-- DURÉE -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:12pt; font-weight:700; color:#0f2a4a; border-left:4px solid #c5a059; padding-left:10px; margin-bottom:10px;">
+      ARTICLE 2 — DURÉE DU BAIL
+    </div>
+    <p>Le présent bail prend effet le <strong>${start_date}</strong> et se termine le <strong>${end_date}</strong>.</p>
+    <p>La périodicité de facturation est : <strong>${plan_label}</strong>.</p>
+    <p>La première échéance de loyer est fixée au <strong>${first_due_date}</strong>.</p>
+  </div>
 
-<h4 style="color: #0f2a4a;">ARTICLE 3 — CONDITIONS FINANCIÈRES (LOYER ET CHARGES)</h4>
-<p>Le loyer mensuel est fixé d'accord parties à la somme de : <strong>${rent_amount} FCFA</strong>. Ce loyer est payable mensuellement et d'avance au plus tard le 5 de chaque mois. En aucun cas, le preneur ne pourra retarder le règlement du loyer sous aucun prétexte.</p>
+  <!-- CONDITIONS FINANCIÈRES -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:12pt; font-weight:700; color:#0f2a4a; border-left:4px solid #c5a059; padding-left:10px; margin-bottom:10px;">
+      ARTICLE 3 — LOYER &amp; CONDITIONS FINANCIÈRES
+    </div>
+    <table style="width:100%; border-collapse:collapse; margin-top:8px;">
+      <tr style="background:#0f2a4a; color:white;">
+        <th style="padding:8px 12px; text-align:left;">Élément</th>
+        <th style="padding:8px 12px; text-align:right;">Montant</th>
+      </tr>
+      <tr style="background:#f8f8f8;">
+        <td style="padding:7px 12px;">Loyer ${plan_label}</td>
+        <td style="padding:7px 12px; text-align:right; font-weight:700;">${rent_amount} FCFA</td>
+      </tr>
+      <tr>
+        <td style="padding:7px 12px; font-style:italic; color:#555;">En lettres</td>
+        <td style="padding:7px 12px; text-align:right; font-style:italic; color:#555;">${rent_amount_words}</td>
+      </tr>
+      <tr style="background:#f8f8f8;">
+        <td style="padding:7px 12px;">Caution (${advance_months} mois)</td>
+        <td style="padding:7px 12px; text-align:right; font-weight:700;">${deposit_amount} FCFA</td>
+      </tr>
+      <tr>
+        <td style="padding:7px 12px; font-style:italic; color:#555;">En lettres</td>
+        <td style="padding:7px 12px; text-align:right; font-style:italic; color:#555;">${deposit_amount_words}</td>
+      </tr>
+      <tr style="background:#fff8e8; font-weight:700; color:#0f2a4a;">
+        <td style="padding:8px 12px; border-top:2px solid #c5a059;">Total encaissé à l'entrée</td>
+        <td style="padding:8px 12px; text-align:right; border-top:2px solid #c5a059;">${advance_amount} FCFA</td>
+      </tr>
+    </table>
+  </div>
 
-<h4 style="color: #0f2a4a;">ARTICLE 4 — CAUTION ET AVANCE À LA SIGNATURE</h4>
-<p>Pour garantir la bonne exécution des obligations issues du présent contrat, le PRENEUR verse ce jour au BAILLEUR la somme de <strong>${deposit_amount} FCFA</strong> au titre de dépôt de garantie (caution non productive d'intérêts), et <strong>${advance_amount} FCFA</strong> représentant <strong>${advance_months}</strong> mois d'avance de loyer. Le total versé à la signature s'élève à <strong>${signature_total} FCFA</strong>.</p>
-<p>La caution sera restituée en fin de bail après libération complète des lieux, remise des clés et état des lieux contradictoire, déduction faite de toute somme qui pourrait être due au BAILLEUR.</p>
+  <!-- SERVICES INCLUS -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:12pt; font-weight:700; color:#0f2a4a; border-left:4px solid #c5a059; padding-left:10px; margin-bottom:10px;">
+      ARTICLE 4 — SERVICES INCLUS
+    </div>
+    <p>${services_list}</p>
+  </div>
 
-<h4 style="color: #0f2a4a;">ARTICLE 5 — OBLIGATIONS DU PRENEUR</h4>
-<p>Le PRENEUR s'engage à :
-<ul>
-    <li>User des lieux paisiblement et en bon père de famille conformément à leur destination d'habitation.</li>
-    <li>Prendre à sa charge l'entretien courant des locaux et les menues réparations locatives.</li>
-    <li>Ne faire aucune modification ni transformation dans les locaux sans l'accord écrit du BAILLEUR.</li>
-    <li>Laisser exécuter les travaux urgents et nécessaires incombant au propriétaire.</li>
-</ul>
-</p>
+  <!-- TAXES -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:12pt; font-weight:700; color:#0f2a4a; border-left:4px solid #c5a059; padding-left:10px; margin-bottom:10px;">
+      ARTICLE 5 — TAXES APPLICABLES
+    </div>
+    <p>${taxes_list}</p>
+  </div>
 
-<h4 style="color: #0f2a4a;">ARTICLE 6 — ÉLECTION DE DOMICILE ET LITIGES</h4>
-<p>Pour l'exécution des présentes et de leurs suites, les parties élisent domicile en leurs demeures respectives. En cas de contestation sur l'exécution ou l'interprétation du présent contrat, les tribunaux compétents de Lomé seront seuls compétents.</p>
+  <!-- PÉNALITÉS -->
+  <div style="margin-bottom:20px;">
+    <div style="font-size:12pt; font-weight:700; color:#0f2a4a; border-left:4px solid #c5a059; padding-left:10px; margin-bottom:10px;">
+      ARTICLE 6 — PÉNALITÉS DE RETARD
+    </div>
+    <p>${penalty_clause}</p>
+  </div>
 
-<p style="margin-top: 30px;">Fait à Lomé, le <strong>${start_date}</strong> en double exemplaire.</p>
+  <!-- SIGNATURES -->
+  <div style="margin-top:48px;">
+    <div style="font-size:12pt; font-weight:700; color:#0f2a4a; border-left:4px solid #c5a059; padding-left:10px; margin-bottom:20px;">
+      SIGNATURES DES PARTIES
+    </div>
+    <table style="width:100%;">
+      <tr>
+        <td style="width:50%; vertical-align:top; padding-right:20px;">
+          <div style="border:1px solid #CBD5E1; border-radius:6px; padding:16px; min-height:120px;">
+            <div style="font-weight:700; color:#0f2a4a; margin-bottom:8px;">LE BAILLEUR</div>
+            <div style="color:#555; font-size:9.5pt;">${owner_name}</div>
+            <div style="margin-top:40px; border-top:1px solid #CBD5E1; padding-top:8px; color:#888; font-size:8.5pt;">
+              Signature &amp; cachet — Date : ____________
+            </div>
+          </div>
+        </td>
+        <td style="width:50%; vertical-align:top; padding-left:20px;">
+          <div style="border:1px solid #CBD5E1; border-radius:6px; padding:16px; min-height:120px;">
+            <div style="font-weight:700; color:#0f2a4a; margin-bottom:8px;">LE LOCATAIRE</div>
+            <div style="color:#555; font-size:9.5pt;">${tenant_name}</div>
+            <div style="margin-top:40px; border-top:1px solid #CBD5E1; padding-top:8px; color:#888; font-size:8.5pt;">
+              Signature — Lu et approuvé — Date : ____________
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- PIED DE PAGE -->
+  <div style="margin-top:32px; border-top:1px solid #e5e7eb; padding-top:10px; text-align:center; color:#9CA3AF; font-size:8pt;">
+    ${lease_ref} — MEA &amp; FILS Gestion Immobilière — ${city} — Document généré le ${today_date}
+  </div>
+
+</div>
             ]]></field>
         </record>
     </data>
