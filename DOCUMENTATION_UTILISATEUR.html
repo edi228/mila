@@ -836,24 +836,7 @@
 <blockquote>
 <p>Le <strong>chatter</strong> (panneau droit de la fiche bail) trace toutes les modifications avec date et auteur.</p>
 </blockquote>
-<p><strong>Q : Comment augmenter le loyer sans créer un nouveau bail ?</strong></p>
-<blockquote>
-<p>Utilisez le bouton <strong>📈 Avenant</strong> → Type "Révision de loyer". Aucun nouveau bail n'est créé.</p>
-</blockquote>
-<p><strong>Q : La pénalité n'apparaît pas sur le dashboard ?</strong></p>
-<blockquote>
-<p>Les pénalités comptées sont celles en état <strong>Confirmée</strong> ou <strong>Brouillon</strong> (pas Annulée, pas Facturée).</p>
-</blockquote>
-<p><strong>Q : Comment calculer une pénalité sur une facture spécifique ?</strong></p>
-<blockquote>
-<p>Depuis la fiche du bail → <strong>Calculer pénalités</strong>. Le wizard liste toutes les factures en retard et propose les pénalités à créer.</p>
-</blockquote>
-<p><strong>Q : Comment savoir quel bien est disponible pour une nouvelle location ?</strong></p>
-<blockquote>
-<p>Aller dans <strong>Patrimoine → Biens immobiliers</strong> → Filtre <strong>"Disponible"</strong>. Ou cliquer la tuile "Biens totaux" et filtrer par statut "Disponible".</p>
-</blockquote>
-<hr />
-<h2 id="7-nouveautes-de-la-version-41-juillet-2026">7. Nouveautés de la Version 4.1 (Juillet 2026)</h2>
+<p>**Q : Comment augmenter le loyer sans créer un nouveau bail ## 7. Nouveautés de la Version 4.1 (Juillet 2026)</p>
 <h3 id="71-geolocalisation-contacts-dimmeubles">7.1 Géolocalisation &amp; Contacts d'immeubles</h3>
 <ul>
 <li><strong>Liaison dynamique automatique</strong> : À la création de chaque immeuble, un contact <code>res.partner</code> de type "Société" est automatiquement généré en arrière-plan et lié à l'immeuble.</li>
@@ -874,19 +857,51 @@
 2. <strong>Fiche descriptive du bien</strong> : Imprimable depuis la fiche d'un bien (Patrimoine → Biens). Contient le statut, les caractéristiques (surface, étage, type), le bail en cours, et l'historique complet des locataires passés.<br />
 3. <strong>Fiche d'immeuble</strong> : Imprimable depuis la fiche d'un immeuble (Patrimoine → Immeubles). Contient des compteurs de statistiques, le taux d'occupation sous forme de jauge visuelle colorée (vert/orange/rouge), et la liste détaillée de tous les appartements/locaux avec leur statut respectif.</p>
 <hr />
-<h2 id="8-scenarios-de-test-recommandes-version-41">8. Scénarios de Test Recommandés (Version 4.1)</h2>
-<p>Pour valider l'ensemble des nouveautés de cette version, nous suggérons à la cliente de suivre ces 4 scénarios de test pas-à-pas sur l'environnement de staging.</p>
-<h3 id="scenario-1-validation-du-tableau-de-bord">Scénario 1 : Validation du Tableau de Bord</h3>
+<h2 id="74-nouveautes-de-la-version-42-juillet-2026-sprint-securite-cartographie">7.4 Nouveautés de la Version 4.2 (Juillet 2026) — Sprint Sécurité &amp; Cartographie</h2>
+<h3 id="741-verrouillage-de-securite-des-baux-actifs">7.4.1 Verrouillage de Sécurité des Baux Actifs</h3>
+<ul>
+<li><strong>Protection des paramètres contractuels</strong> : Dès qu'un bail passe à l'état <strong>En cours (Actif)</strong> ou supérieur, les champs sensibles sont verrouillés en modification : bien, locataire, loyer de base, caution, plan de récurrence, mois d'avance, et date de début.</li>
+<li><strong>Modifications via Avenants</strong> : Les modifications de loyer ou de services inclus doivent obligatoirement passer par la procédure réglementée d'<strong>Avenant</strong> (bouton "Avenant" de la fiche bail) pour en conserver l'historique de traçabilité.</li>
+</ul>
+<h3 id="742-validation-stricte-a-la-confirmation">7.4.2 Validation Stricte à la Confirmation</h3>
+<ul>
+<li><strong>Encaissent obligatoire préalable</strong> : Il est désormais impossible de démarrer ou confirmer un bail (passage au statut <em>En cours</em>) si la caution (<code>deposit_amount &gt; 0</code> et non payée) ou l'avance de loyer (<code>advance_months &gt; 0</code> et non payée) n'ont pas été préalablement payées et réconciliées via le reçu d'entrée. Une erreur bloquante guidera l'utilisateur.</li>
+</ul>
+<h3 id="743-statut-visuel-dynamique-de-la-caution">7.4.3 Statut Visuel Dynamique de la Caution</h3>
+<ul>
+<li>À côté du champ "Payée" (caution), un badge vert <strong>"Déjà payée"</strong> s'affiche dynamiquement ainsi qu'un bouton de lien rapide <strong>"Voir le reçu"</strong> qui ouvre directement la pièce comptable concernée dès que l'encaissement est validé.</li>
+</ul>
+<h3 id="744-integration-cartographie-map-views">7.4.4 Intégration Cartographie (Map Views)</h3>
+<ul>
+<li><strong>Vue Carte interactive</strong> : La vue Cartographie (Map) d'Odoo Enterprise a été activée et intégrée pour les <strong>Immeubles</strong> et les <strong>Biens</strong>. Vous pouvez désormais basculer de la vue liste/kanban à la vue carte en un clic en haut à droite des écrans correspondants pour situer géographiquement votre patrimoine.</li>
+</ul>
+<h3 id="745-alerte-visuelle-rouge-pour-baux-en-retard">7.4.5 Alerte Visuelle Rouge pour Baux en Retard</h3>
+<ul>
+<li>Les baux dont la date d'échéance de loyer est dépassée (impayés) s'affichent automatiquement en <strong>rouge (danger)</strong> sur la vue liste globale pour une identification rapide par vos équipes.</li>
+</ul>
+<h3 id="746-modeles-de-contrats-de-bail-personnalisables">7.4.6 Modèles de Contrats de Bail Personnalisables</h3>
+<ul>
+<li><strong>Menu dédié</strong> : Accessible via <strong>Configuration → Modèles de contrats</strong>, vous pouvez créer et modifier vos contrats d'habitation ou commerciaux avec un traitement de texte riche HTML.</li>
+<li><strong>Remplacement automatique des placeholders</strong> : Les placeholders tels que <code>${owner_name}</code>, <code>${tenant_name}</code>, <code>${rent_amount}</code>, <code>${deposit_amount}</code>, etc. sont remplacés automatiquement en arrière-plan pour générer le contrat rédigé directement visible dans l'onglet <strong>"Contrat rédigé"</strong> du bail.</li>
+</ul>
+<h3 id="747-nettoyage-des-donnees-de-test">7.4.7 Nettoyage des données de test</h3>
+<ul>
+<li><strong>Action de réinitialisation</strong> : Une action globale accessible dans la liste des baux (Action → Réinitialiser les données de test) permet de nettoyer proprement toute la base de données immobilière et de générer instantanément un jeu de données 100% cohérent de 3 baux avec historique de paiement de janvier à juillet 2026.</li>
+</ul>
+<hr />
+<h2 id="8-scenarios-de-test-recommandes-version-41-42">8. Scénarios de Test Recommandés (Version 4.1 &amp; 4.2)</h2>
+<p>Pour valider l'ensemble des nouveautés, nous suggérons à la cliente de suivre ces scénarios de test pas-à-pas sur l'environnement de staging.</p>
+<h3 id="scenario-1-validation-du-tableau-de-bord-v41">Scénario 1 : Validation du Tableau de Bord (v4.1)</h3>
 <ol>
 <li>Connectez-vous sur <strong>https://staging-mila.afroit.net</strong> avec les identifiants de test (<code>admin</code> / <code>capelini</code>).</li>
 <li>Ouvrez le module <strong>Immobilier</strong> via l'écran d'accueil.</li>
 <li>Vérifiez le nouveau visuel du tableau de bord :</li>
-<li>Le KPI <strong>"Loyer mensuel global"</strong> (anciennement LMR) affiche le montant total cumulé de vos baux actifs.</li>
-<li>Le <strong>Taux d'occupation</strong> affiche un pourcentage exact (ex. <code>57.1 %</code>) cohérent avec le nombre de biens loués.</li>
-<li>Les onglets <strong>"Tous les biens"</strong> et <strong>"Par immeuble"</strong> s'affichent correctement lors du clic.</li>
+<li>Le KPI <strong>"Loyer mensuel global"</strong> affiche le montant total cumulé de vos baux actifs.</li>
+<li>Le <strong>Taux d'occupation</strong> affiche un pourcentage exact cohérent avec le nombre de biens loués.</li>
+<li>Les onglets <strong>"Tous les biens"</strong> et <strong>"Par immeuble"</strong> s'affichent correctement sans erreur lors du clic.</li>
 <li>La liste <strong>"Interventions en cours"</strong> à droite présente un défilement propre.</li>
 </ol>
-<h3 id="scenario-2-liaison-geolocalisation-automatique">Scénario 2 : Liaison Géolocalisation automatique</h3>
+<h3 id="scenario-2-liaison-geolocalisation-automatique-v41">Scénario 2 : Liaison Géolocalisation automatique (v4.1)</h3>
 <ol>
 <li>Allez dans <strong>Patrimoine → Immeubles</strong> et cliquez sur un immeuble (ex. "Immeuble Palmeraie").</li>
 <li>Dans la fiche, observez le champ <strong>"Contact de l'immeuble"</strong> : un partenaire Odoo a été créé et lié automatiquement en arrière-plan.</li>
@@ -894,18 +909,40 @@
 <li>Renseignez des coordonnées dans la section <strong>"Coordonnées GPS"</strong> (Latitude et Longitude), puis cliquez sur le bouton <strong>"Voir sur la carte"</strong> : Google Maps doit s'ouvrir dans un nouvel onglet à l'emplacement exact.</li>
 <li>Allez dans <strong>Patrimoine → Biens immobiliers</strong> et ouvrez un appartement faisant partie de cet immeuble : vérifiez qu'il hérite automatiquement des coordonnées GPS.</li>
 </ol>
-<h3 id="scenario-3-test-de-la-facturation-manuelle">Scénario 3 : Test de la facturation manuelle</h3>
+<h3 id="scenario-3-test-de-la-facturation-manuelle-v41">Scénario 3 : Test de la facturation manuelle (v4.1)</h3>
 <ol>
-<li>Allez dans <strong>Locations → Baux actifs</strong> et ouvrez un contrat (ex. Appartement 2B).</li>
+<li>Allez dans <strong>Locations → Baux actifs</strong> et ouvrez un contrat en état "En cours".</li>
 <li>Cliquez sur le bouton <strong>"💳 Facturer"</strong> situé dans la barre d'action supérieure.</li>
 <li>Odoo va automatiquement générer une facture en <strong>brouillon</strong> pour la période concernée et l'ouvrir à l'écran. Vérifiez les lignes de facturation (locataire, désignation du bien, période).</li>
 <li>Retournez sur la fiche du bail : la date de <strong>"Prochaine échéance"</strong> a automatiquement été repoussée à la période suivante.</li>
 </ol>
-<h3 id="scenario-4-impression-des-rapports-mea-fils">Scénario 4 : Impression des Rapports MEA &amp; FILS</h3>
+<h3 id="scenario-4-impression-des-rapports-mea-fils-v41">Scénario 4 : Impression des Rapports MEA &amp; FILS (v4.1)</h3>
 <ol>
 <li><strong>Reçu de paiement</strong> : Allez dans <strong>Finances → Reçus de paiement</strong>, ouvrez un règlement enregistré et cliquez sur <strong>Imprimer → Reçu de paiement (MEA &amp; FILS)</strong>. Vérifiez la mise en page bleu marine &amp; or, le montant en lettres et la mention des pénalités.</li>
 <li><strong>Fiche descriptive du bien</strong> : Allez sur la fiche d'un bien (ex. Appartement 3A), puis cliquez sur <strong>Imprimer → Fiche descriptive du bien</strong>.</li>
 <li><strong>Fiche d'immeuble</strong> : Allez sur la fiche d'un immeuble et cliquez sur <strong>Imprimer → Fiche d'immeuble</strong> pour voir la liste des appartements et la jauge d'occupation.</li>
+</ol>
+<h3 id="scenario-5-sprint-securite-cartographie-v42">Scénario 5 : Sprint Sécurité &amp; Cartographie (v4.2)</h3>
+<ol>
+<li><strong>Réinitialisation des données de test</strong> : </li>
+<li>Allez dans <strong>Locations → Baux actifs</strong>, passez en vue liste.</li>
+<li>Sélectionnez un ou plusieurs baux, cliquez sur le bouton <strong>Action</strong> (ou engrenage) et choisissez <strong>"Réinitialiser les données de test"</strong>.</li>
+<li>Le système va nettoyer les anciens tests et recréer 3 baux (Kofi Mensah, Marcel Togbe, Ama Diallo) avec tout l'historique financier depuis le 01/01/2026.</li>
+<li><strong>Validation des Verrous</strong> :</li>
+<li>Ouvrez un de ces baux actifs (ex: Kofi Mensah).</li>
+<li>Tentez de modifier directement le montant du loyer, le locataire, ou le bien. Constatez que ces champs sont verrouillés en écriture (readonly).</li>
+<li>Cliquer sur le bouton <strong>"Avenant"</strong> en haut de page pour modifier le loyer, et constatez que l'avenant applique la révision tout en traçant le changement dans le chatter.</li>
+<li><strong>Validation de l'encaissement obligatoire</strong> :</li>
+<li>Créez un nouveau bail brouillon pour le bien "Magasin RDC" et le locataire "TechTogo". Renseignez un loyer et une caution de 3 mois.</li>
+<li>Tentez de cliquer sur <strong>"Confirmer le bail"</strong> : le système refuse le démarrage en affichant un message vous demandant d'abord de générer et d'encaisser le reçu d'entrée.</li>
+<li>Cliquez sur <strong>"Générer reçu d'entrée"</strong> en haut de la fiche : une facture d'entrée regroupant l'avance et la caution est créée. Validez et enregistrez le règlement (bouton Enregistrer un paiement).</li>
+<li>Retournez sur la fiche du bail : Constatez que le badge vert <strong>"Déjà payée"</strong> est affiché et que le bouton <strong>"Voir le reçu"</strong> fonctionne.</li>
+<li>Cliquez maintenant sur <strong>"Confirmer le bail"</strong> : le bail passe à l'état <strong>En cours</strong> sans erreur.</li>
+<li><strong>Vue Cartographique (Map)</strong> :</li>
+<li>Allez dans <strong>Patrimoine → Immeubles</strong> ou <strong>Patrimoine → Biens immobiliers</strong>.</li>
+<li>Cliquez sur l'icône de carte en haut à droite des filtres : situez géographiquement vos biens sur la carte interactive d'Odoo.</li>
+<li><strong>Alerte de Retard (Rouge)</strong> :</li>
+<li>Allez dans la liste des baux. Modifiez (si vous avez un bail expiré ou en retard) et constatez que la ligne s'affiche en rouge pour attirer l'attention.</li>
 </ol>
 <hr />
 <h2 id="comptes-dacces-pour-les-tests">Comptes d'accès pour les tests</h2>
@@ -935,7 +972,7 @@
 </table>
 <p><strong>Support technique AFRO IT :</strong> contact@afroit.net | afroit.net</p>
 <hr />
-<p><em>MILA Gestion Immobilière v4.1 — AFRO IT — Juillet 2026</em></p>
+<p><em>MILA Gestion Immobilière v4.2 — AFRO IT — Juillet 2026</em></p>
     </div>
 </body>
 </html>
