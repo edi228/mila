@@ -83,6 +83,7 @@
         <field name="arch" type="xml">
             <map res_partner="partner_id">
                 <field name="name"/>
+                <field name="partner_id"/>
                 <field name="type"/>
                 <field name="state"/>
             </map>
